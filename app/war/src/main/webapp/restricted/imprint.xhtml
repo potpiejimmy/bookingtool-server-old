@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="0" />
+
+        <ui:define name="pagetitle">About BookingTool</ui:define>
+        
+        <ui:define name="body">
+
+			<h:panelGrid columns="1">
+				<h:outputText value="Authors"/>
+				<p/>
+				<h:outputText value="Fischer, Jens"/>
+				<h:outputText value="Siedentopf, Daniel"/>
+				<h:outputText value="Sammer, Paul"/>
+				<h:outputText value="Chaudhry, Sajid Nawaz"/>
+				<h:outputText value="Liese, Thorsten"/>
+			</h:panelGrid>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>

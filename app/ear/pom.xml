@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <parent>
+      <artifactId>bookingtool</artifactId>
+      <groupId>com.wincor.bcon</groupId>
+      <version>0.0.1-SNAPSHOT</version>
+   </parent>
+
+   <artifactId>bookingtool-ear</artifactId>
+   <packaging>ear</packaging>
+
+   <name>bookingtool-ear</name>
+
+   <dependencies>
+
+      <!-- Depend on the ejb module and war so that we can package them -->
+      <dependency>
+         <groupId>com.wincor.bcon</groupId>
+         <artifactId>bookingtool-war</artifactId>
+		 <version>0.0.1-SNAPSHOT</version>
+         <type>war</type>
+      </dependency>
+      <dependency>
+         <groupId>com.wincor.bcon</groupId>
+         <artifactId>bookingtool-ejb</artifactId>
+		 <version>0.0.1-SNAPSHOT</version>
+         <type>ejb</type>
+      </dependency>
+   </dependencies>
+
+   <build>
+      <finalName>bookingtool</finalName>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-ear-plugin</artifactId>
+            <version>2.6</version>
+            <configuration>
+               <!-- Tell Maven we are using Java EE 6 -->
+               <version>6</version>
+               <!-- Use Java EE ear libraries as needed. Java EE ear libraries 
+                  are in easy way to package any libraries needed in the ear, and automatically 
+                  have any modules (EJB-JARs and WARs) use them -->
+               <defaultLibBundleDir>lib</defaultLibBundleDir>
+               <modules>
+                  <!-- Register our War as a web module, and set the context 
+                     root -->
+                  <webModule>
+                     <groupId>com.wincor.bcon</groupId>
+                     <artifactId>bookingtool-war</artifactId>
+                     <!-- Define the context root for the webapp -->
+                     <contextRoot>/bookingtool</contextRoot>
+                  </webModule>
+               </modules>
+			   <security>
+				   <security-role>
+					  <role-name>user</role-name>
+				   </security-role>
+				   <security-role>
+					  <role-name>admin</role-name>
+				   </security-role>
+				   <security-role>
+					  <role-name>superuser</role-name>
+				   </security-role>
+			   </security>
+            </configuration>
+         </plugin>
+         <!-- The JBoss AS plugin deploys your ear to a local JBoss AS container -->
+         <!-- Due to Maven's lack of intelligence with EARs we need to configure 
+            the jboss-as maven plugin to skip deployment for all modules. We then enable 
+            it specifically in the ear module. -->
+         <!--plugin>
+            <groupId>org.jboss.as.plugins</groupId>
+            <artifactId>jboss-as-maven-plugin</artifactId>
+            <version>7.5.Final</version>
+            <configuration>
+               <skip>false</skip>
+            </configuration>
+         </plugin-->
+      </plugins>
+      <pluginManagement>
+      	<plugins>
+      		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+      		<plugin>
+      			<groupId>org.eclipse.m2e</groupId>
+      			<artifactId>lifecycle-mapping</artifactId>
+      			<version>1.0.0</version>
+      			<configuration>
+      				<lifecycleMappingMetadata>
+      					<pluginExecutions>
+      						<pluginExecution>
+      							<pluginExecutionFilter>
+      								<groupId>
+      									org.apache.maven.plugins
+      								</groupId>
+      								<artifactId>
+      									maven-ear-plugin
+      								</artifactId>
+      								<versionRange>
+      									[2.6,)
+      								</versionRange>
+      								<goals>
+      									<goal>
+      										generate-application-xml
+      									</goal>
+      								</goals>
+      							</pluginExecutionFilter>
+      							<action>
+      								<ignore></ignore>
+      							</action>
+      						</pluginExecution>
+      					</pluginExecutions>
+      				</lifecycleMappingMetadata>
+      			</configuration>
+      		</plugin>
+      	</plugins>
+      </pluginManagement>
+   </build>
+
+</project>

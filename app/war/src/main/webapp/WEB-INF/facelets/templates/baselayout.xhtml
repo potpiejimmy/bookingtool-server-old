@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+	<ui:composition template="/WEB-INF/facelets/templates/rootlayout.xhtml">
+
+		<ui:define name="pagetitle">BookingTool</ui:define>
+
+                <ui:define name="headerdivright">
+                    <h:form>
+            		<p:commandButton id="logoutBtn" value="Logout" action="#{logoutBean.logout}" ajax="false" immediate="true"/>
+                    </h:form>
+                </ui:define>
+                
+		<ui:define name="rootbody">
+				
+				<h:form>
+					<p:tabMenu activeIndex="${tabIndex}">  
+					    <p:menuitem value="Main" url="/restricted/maininputpanel.xhtml"/>  
+					    <p:menuitem value="Export" url="/restricted/excelexport.xhtml"/>  
+					    <p:menuitem value="Projects" url="/restricted/projects.xhtml" rendered="#{request.isUserInRole('admin')}"/>  
+					    <p:menuitem value="Budgets" url="/restricted/budgets.xhtml"/>
+					    <p:menuitem value="Booking Templates" url="/restricted/templates.xhtml" rendered="#{request.isUserInRole('admin')}"/>  
+					    <p:menuitem value="FI" url="/restricted/adminfi.xhtml" rendered="#{request.isUserInRole('admin')}"/>  
+					    <p:menuitem value="Budget Plans" url="/restricted/budgetplans.xhtml" rendered="#{request.isUserInRole('admin')}"/>  
+					</p:tabMenu>
+				</h:form>  
+
+				<p/>
+
+                <ui:insert name="body"/>
+                        
+		</ui:define>
+
+		<ui:define name="rootfooter">
+			
+	        <div id="root_footer">
+	            <hr/>
+	            <h:outputLink value="#{request.contextPath}/restricted/imprint.xhtml">
+	            	<h:outputText value="About"/>
+	            </h:outputLink>,
+	            <h:outputLink value="#{request.contextPath}/restricted/changepassword.xhtml">
+	            	<h:outputText value="Change Password"/>
+	            </h:outputLink>
+	        </div>
+        
+		</ui:define>
+
+	</ui:composition>
+    
+</html>

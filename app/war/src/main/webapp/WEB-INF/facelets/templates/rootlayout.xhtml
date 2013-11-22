@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <link rel="stylesheet" href="#{request.contextPath}/webres/styles/rootstyles.css" type="text/css" title="Root CI" media="screen" />
+        <title>
+            
+            <ui:insert name="pagetitle">Default Page Title</ui:insert>
+            
+        </title>
+    </h:head>
+    <h:body>
+        <div id="root_header">
+            <div class="floatleft">
+                <h:graphicImage value="/webres/img/icon.png"/>
+            </div>
+            <div id="root_title">
+                <h:outputText value="Welcome to the WN Booking Tool"/>
+            </div>
+            <div style="text-align:right;">
+                <ui:insert name="headerdivright"/>
+            </div>
+        </div>
+
+        <f:view contentType="text/html">
+            
+	        <div id="root_body">
+	            
+	            	<ui:insert name="rootbody"/>
+	
+	        </div>
+	        
+			<ui:insert name="rootfooter"/>
+	
+	        <p:messages globalOnly="true" showDetail="true"/>
+        
+        </f:view>
+    </h:body>
+</html>
+

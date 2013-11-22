@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+    <context-param>  
+        <param-name>primefaces.THEME</param-name>  
+        <param-value>bluesky</param-value>  
+    </context-param>  
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+	<filter>
+	    <filter-name>PrimeFaces FileUpload Filter</filter-name>
+	    <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>PrimeFaces FileUpload Filter</filter-name>
+	    <servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>bookingtool</realm-name>
+        <form-login-config>
+        	<form-login-page>/login.xhtml</form-login-page>
+        	<form-error-page>/login.xhtml?fail=true</form-error-page>
+        </form-login-config>
+    </login-config>
+    <welcome-file-list>
+        <welcome-file>restricted/maininputpanel.xhtml</welcome-file>
+    </welcome-file-list>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>BookingTool</web-resource-name>
+            <url-pattern>/restricted/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+            <role-name>user</role-name>
+            <role-name>superuser</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-constraint>
+    	<web-resource-collection>
+            <web-resource-name>BookingTool Root</web-resource-name>
+            <url-pattern>/</url-pattern>
+            <url-pattern>/login.xhtml</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+</web-app>

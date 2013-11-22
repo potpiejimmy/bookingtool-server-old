@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="5" />
+
+        <ui:define name="pagetitle">FI Administration</ui:define>
+        
+        <ui:define name="body">
+        
+                <f:metadata>
+                    <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+                </f:metadata>
+                
+	        <p:panel header="Auto-create budgets and templates for MKS">
+
+				<h:form id="editform">
+				
+					<p:panelGrid columns="2">
+						<h:outputText value="Select Project:"/>
+						<p:selectOneMenu value="#{adminFIBean.currentProjectId}">
+							<f:selectItems value="#{adminFIBean.projectItems}"/>
+							<p:ajax event="change" update="editform"/>
+						</p:selectOneMenu>
+
+						<h:outputText value="Parent Budget:"/>
+						<h:panelGroup>
+							<p:selectOneMenu value="#{adminFIBean.current.parentBudgetId}">
+								<f:selectItems value="#{adminFIBean.budgetItems}"/>
+							</p:selectOneMenu>
+							<p:outputLabel value="Bitte mindestens ein Budget zu diesem Projekt anlegen!" rendered="#{not adminFIBean.budgetAvailable}" styleClass="ui-message-error ui-widget"/>
+						</h:panelGroup>
+						
+						<h:outputText value="Specification Budget:"/>
+						<h:panelGroup>
+							<p:selectOneMenu value="#{adminFIBean.current.specBudgetId}">
+								<f:selectItems value="#{adminFIBean.budgetItems}"/>
+							</p:selectOneMenu>
+						</h:panelGroup>
+						
+						<h:outputText value="PSP Template:"/>
+						<p:inputText value="#{adminFIBean.current.pspTemplate}"/>
+						
+						<h:outputText value="PSP Name Template:"/>
+						<p:inputText value="#{adminFIBean.current.pspNameTemplate}" size="40"/>
+						
+						<h:outputText value="MKS No.:"/>
+						<h:panelGroup>
+							<p:inputText id="mks" value="#{adminFIBean.current.mksNo}" size="10">
+								<f:validateLength minimum="6" maximum="8"/>
+							</p:inputText>
+							<p:message for="mks" display="text"/>
+						</h:panelGroup>
+						
+						<h:outputText value="MKS Name:"/>
+						<h:panelGroup>
+							<p:inputText id="mksname" value="#{adminFIBean.current.mksName}" size="80">
+								<f:validateLength minimum="3" maximum="220"/>
+							</p:inputText>
+							<p:message for="mksname" display="text"/>
+						</h:panelGroup>
+						
+						<h:outputText value="Effort Development [hours]:"/>
+						<h:panelGroup>
+							<p:inputText id="dev" value="#{adminFIBean.currentBudgetHoursDev}" size="10">
+								<f:validateLongRange minimum="1" />
+								<p:ajax event="keyup" update="budgetInfoDev" />
+							</p:inputText><span> </span>
+							<h:outputText id="budgetInfoDev" value="#{budgetsBean.getFormattedBudgetTime(adminFIBean.current.minutesDev)}"/>
+							<p:message for="dev" display="text"/>
+						</h:panelGroup>
+						
+						<h:outputText value="Effort QA [hours]:"/>
+						<h:panelGroup>
+							<p:inputText id="qa" value="#{adminFIBean.currentBudgetHoursQA}" size="10">
+								<f:validateLongRange minimum="1" />
+								<p:ajax event="keyup" update="budgetInfoQA" />
+							</p:inputText><span> </span>
+							<h:outputText id="budgetInfoQA" value="#{budgetsBean.getFormattedBudgetTime(adminFIBean.current.minutesQA)}"/>
+							<p:message for="qa" display="text"/>
+						</h:panelGroup>
+							
+					</p:panelGrid>
+				
+					<p:commandButton rendered="#{adminFIBean.budgetAvailable}" value="Create budgets and templates" action="#{adminFIBean.save}" ajax="false"/>
+				
+				</h:form>        
+			
+			</p:panel>
+
+			<hr/>
+			
+			<h:form id="viewform" rendered="#{adminFIBean.createdTemplates ne null}">
+			
+				<p:panel header="Created budgets:">
+					<p:dataTable id="outputTable" value="#{adminFIBean.createdBudgets}" var="b">
+						<p:column headerText="ID">
+							<h:outputText value="#{b.id}"/>
+						</p:column>
+						<p:column headerText="Name">
+							<h:outputText value="#{budgetsBean.getFullBudgetName(b)}"/>
+						</p:column>
+						<p:column headerText="Budget">
+							<h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.minutes)}"/>
+						</p:column>
+						<p:column headerText="Release">
+							<h:outputText value="#{budgetsBean.getProject(b.projectId).name}"/>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			
+				<p:panel header="Created booking templates:">
+					<p:dataTable value="#{adminFIBean.createdTemplates}" var="t">
+						<p:column headerText="ID">
+							<h:outputText value="#{t.id}"/>
+						</p:column>
+						<p:column headerText="PSP">
+							<h:outputText value="#{t.psp}"/>
+						</p:column>
+						<p:column headerText="Bezeichnung">
+							<h:outputText value="#{t.name}"/>
+						</p:column>
+						<p:column headerText="Tätigkeitsart">
+							<h:outputText value="#{t.type}"/>
+						</p:column>
+						<p:column headerText="Vertriebsbeauftragter">
+							<h:outputText value="#{t.salesRepresentative}"/>
+						</p:column>
+						<p:column headerText="Teilprojekt">
+							<h:outputText value="#{t.subproject}"/>
+						</p:column>
+						<p:column headerText="Tätigkeit">
+							<h:outputText value="#{t.description}"/>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			
+			</h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

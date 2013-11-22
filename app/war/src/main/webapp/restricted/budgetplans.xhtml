@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="6" />
+
+        <ui:define name="pagetitle">Budget Plans Administration</ui:define>
+        
+        <ui:define name="body">
+
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+            </f:metadata>
+                
+            <h:form id="newplanform" rendered="#{budgetPlansBean.currentBudgetPlan.id eq null}">
+
+                <p:panel header="Create new budget plan">
+
+                    <p:panelGrid columns="3">
+                            <h:outputText value="Select Project:"/>
+                            <p:selectOneMenu id="projectId" 
+                                             value="#{budgetPlansBean.currentProjectId}">
+                                    <f:selectItems value="#{budgetPlansBean.projectItems}"/>
+                                    <f:validateLongRange minimum="1"/>
+                                    <p:ajax event="change" update="budget"/>
+                            </p:selectOneMenu>
+                            <p:message for="projectId"/>
+
+                            <h:outputText value="Select Budget:"/>
+                            <p:selectOneMenu id="budget" value="#{budgetPlansBean.currentBudgetPlan.budgetId}">
+                                    <f:selectItems value="#{budgetPlansBean.budgetItems}"/>
+                                    <f:validateLongRange minimum="1"/>
+                            </p:selectOneMenu>
+                            <p:message for="budget"/>
+
+                            <h:outputText value="Planning Month Begin (YYYY/MM):"/>
+                            <p:inputMask id="planBegin" value="#{budgetPlansBean.currentBudgetPlanBegin}" mask="9999/99" size="8" required="true"/>
+                            <p:message for="planBegin"/>
+                            
+                            <h:outputText value="Planning Month End (YYYY/MM):"/>
+                            <p:inputMask id="planEnd" value="#{budgetPlansBean.currentBudgetPlanEnd}" mask="9999/99" size="8" required="true"/>
+                            <p:message for="planEnd"/>
+                            
+                    </p:panelGrid>
+
+                    <p>
+                        <p:commandButton value="Create Budget Plan" action="#{budgetPlansBean.create}" ajax="false"/>
+                        <p:commandButton rendered="#{budgetPlansBean.currentBudgetPlan.id ne null}" value="Cancel" action="#{budgetPlansBean.clear}" ajax="false"/>
+                    </p>
+                </p:panel>
+
+            </h:form>        
+
+            <h:form id="editplanform" rendered="#{budgetPlansBean.currentBudgetPlan.id ne null}">
+                
+                <p:dataTable id="plantable" var="vo" value="#{budgetPlansBean.leafBudgets}"
+                             editable="true" editMode="cell">
+                    
+                    <!--p:ajax event="cellEdit" update="valcols" /-->  
+                    <!--p:ajax event="rowEditCancel" update="plantable" /-->  
+                    
+                    <p:column headerText="Budget Name">
+                        <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budget)}" />
+                    </p:column>
+                    <p:column headerText="Budget [PT]">
+                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.budget.minutes)}" />
+                    </p:column>
+                    <p:column headerText="Planned [PT]">
+                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(budgetPlansBean.getPlannedMinutesForRow(vo.budget.id))}" />
+                    </p:column>
+                    <p:column headerText="Planned">
+                            <p:progressBar labelTemplate="{value}%"
+                                           value="#{budgetPlansBean.getPlannedMinutesForRow(vo.budget.id)*100/vo.budget.minutes}"/>
+                    </p:column>
+
+                    <p:columns value="#{budgetPlansBean.monthColumns}" var="month" style="text-align: right;" styleClass="ui-editable-column">
+                        <f:facet name="header">
+                            <h:outputText value="#{budgetPlansBean.formatPeriodName(month)}"/>
+                        </f:facet>
+                        <ui:include src="/WEB-INF/facelets/budgetplaneditor.xhtml">
+                            <ui:param name="binding" value="#{vo.values[month]}"/>
+                        </ui:include>
+                        <f:facet name="footer">
+                            <h:outputText value="#{budgetsBean.getFormattedBudgetTime(budgetPlansBean.getPlannedMinutesForColumn(month))}"/>
+                        </f:facet>
+                    </p:columns>            
+                </p:dataTable>  
+
+                <p>
+                    <p:commandButton id="hiddenSubmit" style="display: none;" update="plantable"/>
+                    <p:commandButton value="Save" action="#{budgetPlansBean.savePlan}" ajax="false"/>
+                    <p:commandButton value="Cancel" action="#{budgetPlansBean.clear}" ajax="false"/>
+                </p>
+                <p:defaultCommand target="hiddenSubmit" />
+            </h:form>
+
+            <h:form id="viewform" rendered="#{budgetPlansBean.currentBudgetPlan.id eq null}">
+                
+                <hr/>
+			
+                <p:dataTable id="plans" var="plan" value="#{budgetPlansBean.budgetPlans}">
+                    <p:column headerText="Status">
+                        <h:outputText styleClass="ui-message-warn-icon" title="Incomplete" rendered="#{!budgetPlansBean.isPlanComplete(plan)}"/>
+                    </p:column>
+                    <p:column headerText="Budget">
+                        #{budgetsBean.getFullBudgetNameForId(plan.budgetId)}
+                    </p:column>
+                    <p:column headerText="Project">
+                        <h:outputText value="#{budgetsBean.getProject(budgetsBean.getBudget(plan.budgetId).projectId).name}"/>
+                    </p:column>
+                    <p:column headerText="Period">
+                        <h:outputText value="#{budgetPlansBean.formatPeriodName(plan.planBegin,true)} - #{budgetPlansBean.formatPeriodName(plan.planEnd,true)}"/>
+                    </p:column>
+                    <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
+                        <h:commandLink value="Edit" action="#{budgetPlansBean.edit(plan)}"/>,
+                        <h:commandLink value="Delete" action="#{budgetPlansBean.delete(plan)}"/>
+                    </p:column>
+                </p:dataTable>  
+                
+            </h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition>
+        
+            <p:cellEditor>
+                <f:facet name="output">
+                    <h:outputText value="#{binding}" rendered="#{binding gt 0}">
+                        <f:convertNumber locale="de_DE"/>
+                    </h:outputText>
+                </f:facet>
+                <f:facet name="input">
+                    <p:inputText value="#{binding}" style="width:60%; text-align: right;" size="2" label="PT">
+                        <f:convertNumber locale="de_DE"/>
+                    </p:inputText>
+                    <h:outputText value="PT"/>
+                </f:facet>  
+            </p:cellEditor>
+        
+    </ui:composition>
+    
+</html>
+

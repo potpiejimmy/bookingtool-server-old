@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+		<ui:param name="tabIndex" value="0" />
+
+        <ui:define name="pagetitle">Main Input Panel</ui:define>
+        
+        <ui:define name="body">
+        	
+                    <f:metadata>
+                        <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+                    </f:metadata>
+                
+			<h:form id="currentTemplate">
+				<p:panelGrid columns="2">
+					<h:outputText value="Datum:"/>
+					<h:panelGroup>
+						<p:commandButton title="Zurück" immediate="true" process="@this" update=":currentTemplate,:viewform" id="back"  
+							actionListener="#{bookingsBean.changeDay(false)}" icon="ui-icon-carat-1-w"/>
+							
+						<p:calendar value="#{bookingsBean.current.day}" 
+						            id="popupCal" 
+						            style="margin-left:2px;"
+						            pattern="dd. MMM yyyy"
+						            converter="dateConverter"
+						            showWeek="true">
+							<p:ajax event="dateSelect" update=":currentTemplate, :viewform"/>
+						</p:calendar>
+			
+						<p:commandButton style="margin-left:3px;" title="Vor" immediate="true" process="@this" update=":currentTemplate,:viewform" id="forward"  
+							actionListener="#{bookingsBean.changeDay(true)}" icon="ui-icon-carat-1-e"/>
+            				
+						<h:outputText id="formattedDay" value="#{bookingsBean.currentDayFormatted}" style="vertical-align: middle; margin-left:10px; font-size:small;"/>
+						<p:message for="popupCal" display="text"/>
+            				
+					</h:panelGroup>
+					
+					<h:outputText value="Vorlagensuche:"/>
+					<p:autoComplete id="acSimple" value="#{bookingsBean.currentTemplate}"
+					    size="160"
+						completeMethod="#{bookingsBean.complete}"
+						minQueryLength="3"
+						maxResults="20"
+						converter="#{templateConverter}"
+						forceSelection="true"
+						var="bookingTemplate"
+						itemLabel="#{bookingTemplate.searchString}" 
+						itemValue="#{bookingTemplate}">
+						
+						<p:ajax event="itemSelect" update=":currentTemplate"/>
+					</p:autoComplete>
+
+				</p:panelGrid>
+                                <p/>
+				<p:panelGrid columns="2" id="editPanel">
+					<h:outputText value="ID:"/>
+					<h:outputText id="ID" value="#{bookingsBean.current.id eq null ? '&lt;Neu&gt;' : bookingsBean.current.id}"/>
+					
+					<h:outputText value="Vorlagen-ID:"/>
+					<h:outputText id="templateID" value="#{bookingsBean.currentTemplate.id}"/>
+					
+					<h:outputText value="Benutzername:"/>
+					<h:outputText id="person" value="#{bookingsBean.current.person}"/>
+					
+					<h:outputText value="Budget:"/>
+                                        <h:panelGroup>
+                                            <h:outputText id="budget" 
+                                                          rendered="#{bookingsBean.currentBudget ne null}"
+                                                          value="#{budgetsBean.getFullBudgetName(bookingsBean.currentBudget.budget)}"/>
+                                        </h:panelGroup>
+					
+					<h:outputText value="Budget Used:"/>
+                                        <h:panelGroup>
+                                            <p:progressBar rendered="#{bookingsBean.currentBudget ne null and bookingsBean.currentBudget.budget.minutes ne 0}"
+                                                           labelTemplate="{value}%"
+                                                           value="#{bookingsBean.currentBudget.bookedMinutesRecursive*100/(bookingsBean.currentBudget.budget.minutes ge 0 ? bookingsBean.currentBudget.budget.minutes : -bookingsBean.currentBudget.budget.minutes)}"/>
+                                        </h:panelGroup>
+					
+					<h:outputText value="PSP:"/>
+					<h:outputText id="psp" value="#{bookingsBean.currentTemplate.psp}"/>
+					
+					<h:outputText value="Bezeichnung:"/>
+					<h:outputText id="name" value="#{bookingsBean.currentTemplate.name}"/>
+					
+					<h:outputText value="Tätigkeitsart:"/>
+					<h:outputText id="type" value="#{bookingsBean.currentTemplate.type}"/>
+					
+					<h:outputText value="Tätigkeit:"/>
+					<h:panelGroup>
+						<p:inputText  id="description" value="#{bookingsBean.current.description}" size="80"/>
+						<p:message for="description" display="text"/>
+					</h:panelGroup>
+					
+
+					<h:outputText value="Vertriebsbeauftragter:"/>
+					<h:panelGroup>
+						<p:inputText id="sales" value="#{bookingsBean.current.salesRepresentative}"
+                                                             readonly="#{bookingsBean.currentTemplate.salesRepresentative ne null and bookingsBean.currentTemplate.salesRepresentative ne ''}"/>
+						<p:message for="sales" display="text"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Teilprojekt:"/>
+					<h:outputText id="subproject" value="#{bookingsBean.currentTemplate.subproject}"/>
+					
+					<h:outputText value="Zeit in Minuten:"/>
+					<h:panelGroup>
+						<p:inputText id="minutes" value="#{bookingsBean.current.minutes}" size="10">
+							<f:validateLongRange minimum="1" />
+							<p:ajax event="keyup" update="hoursInfo" /> 
+						</p:inputText><span> </span>
+						<h:outputText id="hoursInfo" value="#{bookingsBean.getFormattedBookingTime(bookingsBean.current.minutes)}" style="margin-left:3px;"/>
+						<p:message for="minutes" display="text"/>
+					</h:panelGroup>
+
+				</p:panelGrid>
+				
+				<p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}" value="#{bookingsBean.current.id eq null ? 'Hinzufügen' : 'Speichern'}" action="#{bookingsBean.save}" ajax="false"/>
+				<p:commandButton id="cancelBtn" rendered="#{bookingsBean.current.id ne null or bookingsBean.currentTemplate.id ne null}" value="Abbrechen" action="#{bookingsBean.clear}" ajax="false" immediate="true">
+					<p:resetInput target=":currentTemplate"/>
+				</p:commandButton>
+                                <p:defaultCommand target="acSimple" />
+    
+	        </h:form>
+	        <hr/>
+			<h:form id="viewform">
+				<p:dataTable value="#{bookingsBean.bookings}" var="v">
+	                <p:column headerText="ID">
+	                    <f:facet name="header"><h:outputText value="ID"/></f:facet>
+	                    <h:outputText value="#{v.id}"/>
+	                </p:column>
+	                <p:column headerText="Person">
+	                    <h:outputText value="#{v.person}"/>
+	                </p:column>
+	                <p:column headerText="PSP">
+	                    <h:outputText value="#{bookingsBean.getPSPForBooking(v.bookingTemplateId)}"/>
+	                </p:column>
+	                <p:column headerText="Bezeichnung">
+	                    <h:outputText value="#{bookingsBean.getPSPNameForBooking(v.bookingTemplateId)}"/>
+	                </p:column>
+	                <p:column headerText="Description">
+	                    <h:outputText value="#{v.description}"/>
+	                </p:column>
+	                <p:column headerText="Vertriebsbeauftragter">
+	                    <h:outputText value="#{v.salesRepresentative}"/>
+	                </p:column>
+	                <p:column headerText="Stunden" footerText="#{bookingsBean.formattedBookingTimeSum}">
+	                    <h:outputText value="#{bookingsBean.getFormattedBookingTime(v.minutes)}"/>
+	                </p:column>
+	                <p:column headerText="Actions">
+	                    <p:commandLink value="Bearbeiten" action="#{bookingsBean.edit(v)}" ajax="false"> <p:resetInput target=":currentTemplate"/> </p:commandLink>,
+						<p:commandLink value="Löschen" action="#{bookingsBean.delete(v)}" ajax="false" /> 
+	                </p:column>
+	            </p:dataTable>
+			</h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>

@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition>
+        
+        <p:panel header="Change your password">
+
+        <h:form id="changepwform">
+                <p:focus/>
+                <p:panelGrid columns="2">
+                        <h:outputText value="Current Password:"/>
+                        <h:panelGroup>
+                            <p:password id="oldPassword" value="#{changePasswordBean.oldPassword}" required="true"/>
+                            <p:message for="oldPassword" display="text"/>
+                        </h:panelGroup>
+                        <h:outputText value="New Password:"/>
+                        <h:panelGroup>
+                            <p:password id="newPassword1" value="#{changePasswordBean.newPassword}" match="newPassword2" feedback="true" required="true"/>
+                            <p:message for="newPassword1" display="text"/>
+                        </h:panelGroup>
+                        <h:outputText value="New Password (Repeat):"/>
+                        <h:panelGroup>
+                            <p:password id="newPassword2" value="#{changePasswordBean.newPassword}" feedback="true" required="true"/>
+                            <p:message for="newPassword2" display="text"/>
+                        </h:panelGroup>
+                </p:panelGrid>
+
+                <p>
+                    <p:commandButton value="Change password" action="#{changePasswordBean.save}" ajax="false"/>
+                    <p:commandButton value="Cancel" action="maininputpanel" immediate="true" ajax="false" rendered="#{!changePasswordBean.changePasswordNeeded}"/>
+                </p>
+                
+                <span> </span>
+        </h:form>        
+
+        </p:panel>
+        
+    </ui:composition>
+    
+</html>
+

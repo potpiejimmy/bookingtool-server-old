@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="2" />
+
+        <ui:define name="pagetitle">Projects Administration</ui:define>
+        
+        <ui:define name="body">
+        
+                    <f:metadata>
+                        <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+                    </f:metadata>
+                
+			<h:form id="editform">
+			
+				<p:panelGrid columns="2">
+					<h:outputText value="Project ID:"/>
+					<h:outputText value="#{projectsBean.currentProject.id eq null ? '&lt;New&gt;' : projectsBean.currentProject.id}"/>
+					<h:outputText value="Project Name:"/>
+					<h:panelGroup>
+						<p:inputText id="project" value="#{projectsBean.currentProject.name}"/>
+						<p:message id="noProject" for="project" display="text"/>
+					</h:panelGroup>
+				</p:panelGrid>
+				
+				<p:commandButton value="#{projectsBean.currentProject.id eq null ? 'Create' : 'Save'}" action="#{projectsBean.save}" ajax="false"/>
+				<p:commandButton rendered="#{projectsBean.currentProject.id ne null}" value="Cancel" action="#{projectsBean.clear}" ajax="false"/>
+			
+			</h:form>        
+			
+			<hr/>
+			
+			<h:form id="viewform">
+			
+				<p:dataTable value="#{projectsBean.projects}" var="p">
+					<p:column headerText="ID">
+						<h:outputText value="#{p.id}"/>
+					</p:column>
+					<p:column headerText="Name">
+						<h:outputText value="#{p.name}"/>
+					</p:column>
+					<p:column headerText="Actions">
+	                    <p:commandLink value="Edit" action="#{projectsBean.edit(p)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,  
+	                    <p:commandLink value="Delete" action="#{projectsBean.delete(p)}" ajax="false"/>
+					</p:column>
+				</p:dataTable>
+			
+			</h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

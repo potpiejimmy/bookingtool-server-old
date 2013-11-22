@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="#{request.isUserInRole('admin') ? 3 : 2}" />
+
+        <ui:define name="pagetitle">Budgets Administration</ui:define>
+        
+        <ui:define name="body">
+
+                    <f:metadata>
+                        <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+                    </f:metadata>
+                
+			<h:form id="projectform">
+			
+				<p:panelGrid columns="2">
+					<h:outputText value="Select Project:"/>
+					<p:selectOneMenu value="#{budgetsBean.currentProjectId}" onchange="this.form.submit()">
+						<f:selectItems value="#{budgetsBean.projectItems}"/>
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+			</h:form>
+
+			<p/>
+
+			<h:form id="editform" rendered="#{request.isUserInRole('admin')}">
+			
+				<p:panelGrid columns="3">
+					<h:outputText value="Budget ID:"/>
+					<h:outputText value="#{budgetsBean.currentBudget.id eq null ? '&lt;New&gt;' : budgetsBean.currentBudget.id}"/>
+					<p:outputPanel/>
+
+					<h:outputText value="Budget Name:"/>
+					<h:panelGroup>
+						<p:inputText id="budgetName" value="#{budgetsBean.currentBudget.name}" size="60"/>
+						<p:message id="noBudgetName" for="budgetName" display="text"/>
+					</h:panelGroup>
+					<p:outputPanel/>
+
+					<h:outputText value="Budget [hours]:"/>
+					<h:panelGroup>
+						<p:inputText  id="hours" value="#{budgetsBean.currentBudgetHours}" size="10" rendered="#{budgetsBean.currentBudgetHours ge 0}">
+							<f:validateLongRange minimum="1" />
+							<p:ajax event="keyup" update="budgetInfo" />
+						</p:inputText>
+						<p:message id="noHours" for="hours" display="text" rendered="#{budgetsBean.currentBudgetHours ge 0}"/>
+        					<h:commandLink value="#{-budgetsBean.currentBudgetHours} h" action="#{budgetsBean.showSubBudgets(budgetsBean.currentBudget)}" rendered="#{budgetsBean.currentBudgetHours lt 0}"/>
+					</h:panelGroup>
+					<h:outputText id="budgetInfo" value="#{budgetsBean.getFormattedBudgetTime(budgetsBean.currentBudget.minutes)}"/>
+	
+					<h:outputText value="Parent Budget:"/>
+					<p:selectOneMenu id="parentBudget" value="#{budgetsBean.currentBudget.parentId}">
+						<f:selectItems value="#{budgetsBean.parentBudgetItems}"/>
+					</p:selectOneMenu>
+					<p:outputPanel/>
+					
+				</p:panelGrid>
+				
+				<p:commandButton value="#{budgetsBean.currentBudget.id eq null ? 'Create' : 'Save'}" action="#{budgetsBean.save}" ajax="false"/>
+				<p:commandButton rendered="#{budgetsBean.currentBudget.id ne null}" value="Cancel" action="#{budgetsBean.clear}" ajax="false"/>
+			
+			</h:form>        
+			
+			<hr/>
+			
+			<h:form id="viewform">
+			
+				<p:panelGrid columns="2">
+					<h:outputText value="Filter Parent Budget:"/>
+					<p:selectOneMenu value="#{budgetsBean.parentFilter}" onchange="this.form.submit()">
+						<f:selectItems value="#{budgetsBean.budgetFilterItems}"/>
+					</p:selectOneMenu>
+				</p:panelGrid>
+			
+				<p:dataTable id="outputTable" value="#{budgetsBean.budgets}" var="b">
+					<p:column headerText="ID">
+						<h:outputText value="#{b.budget.id}"/>
+					</p:column>
+					<p:column headerText="Name" filterBy="name">
+                                            <h:outputText value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes ge 0 and budgetsBean.parentFilter eq -1}"/>
+                                            <h:commandLink value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter eq -1}" action="#{budgetsBean.showSubBudgets(b.budget)}"/>
+                                            <h:outputText value="#{b.budget.name}" rendered="#{b.budget.minutes ge 0 and budgetsBean.parentFilter ne -1}"/>
+                                            <h:commandLink value="#{b.budget.name}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter ne -1}" action="#{budgetsBean.showSubBudgets(b.budget)}"/>
+					</p:column>
+					<p:column headerText="Budget">
+						<h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.budget.minutes)}"/>
+					</p:column>
+					<p:column headerText="Used">
+						<h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.bookedMinutesRecursive)}"/>
+					</p:column>
+					<p:column headerText="Progress">
+						<p:progressBar rendered="#{b.budget.minutes ne 0}"
+						               labelTemplate="{value}%"
+						               value="#{b.bookedMinutesRecursive*100/(b.budget.minutes ge 0 ? b.budget.minutes : -b.budget.minutes)}"/>
+					</p:column>
+					<p:column headerText="Bookings">
+						<p:commandLink ajax="false"
+						               rendered="#{b.bookedMinutes gt 0}"
+                                                               disabled="#{not request.isUserInRole('admin')}">
+						    <h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.bookedMinutes)}"/>
+						    <p:fileDownload value="#{excelExportBean.getExcelListForBudget(b.budget.id)}" />
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="Project">
+						<h:outputText value="#{budgetsBean.getProject(b.budget.projectId).name}"/>
+					</p:column>
+					<p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
+	                    <h:commandLink value="Edit" action="#{budgetsBean.edit(b.budget)}">
+                                <p:resetInput target=":editform"/>
+                            </h:commandLink>,  
+	                    <h:commandLink value="Delete" action="#{budgetsBean.delete(b.budget)}"/>
+					</p:column>
+				</p:dataTable>
+			
+			</h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

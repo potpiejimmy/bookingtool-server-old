@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="0" />
+
+        <ui:define name="pagetitle">Users Administration</ui:define>
+        
+        <ui:define name="body">
+        
+			<h:form id="editform">
+			
+				<p:panelGrid columns="2">
+					<h:outputText value="User Name (ID):"/>
+					<h:panelGroup>
+                                                <p:inputText id="userName" value="#{usersBean.current.user.name}" required="true"/>
+						<p:message for="userName" display="text"/>
+					</h:panelGroup>
+					<h:outputText value="User Roles:"/>
+					<h:panelGroup>
+                                                <p:inputText id="userRoles" value="#{usersBean.current.roleList}" required="true"/>
+						<p:message for="userRoles" display="text"/>
+					</h:panelGroup>
+				</p:panelGrid>
+				
+				<p:commandButton value="Save" action="#{usersBean.save}" ajax="false"/>
+			
+			</h:form>        
+			
+			<hr/>
+			
+			<h:form id="viewform">
+			
+				<p:dataTable value="#{usersBean.users}" var="p">
+					<p:column headerText="Name">
+						<h:outputText value="#{p.user.name}"/>
+					</p:column>
+					<p:column headerText="Roles">
+						<h:outputText value="#{p.roleList}"/>
+					</p:column>
+					<p:column headerText="PW status">
+                                                <h:outputText value="#{p.user.pwStatus}"/>
+					</p:column>
+					<p:column headerText="Actions">
+	                    <p:commandLink value="Edit" action="#{usersBean.edit(p)}" ajax="false"/>,  
+	                    <p:commandLink value="Delete" action="#{usersBean.delete(p)}" ajax="false"/>
+					</p:column>
+				</p:dataTable>
+			
+			</h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+
