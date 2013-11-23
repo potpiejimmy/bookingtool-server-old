@@ -23,7 +23,12 @@ public class BudgetPlansEJB implements BudgetPlansEJBLocal {
     
     @EJB
     private BudgetsEJBLocal budgetsEjb;
-	
+
+    @Override
+    public BudgetPlan getBudgetPlan(int id) {
+        return em.find(BudgetPlan.class, id);
+    }
+    
     @Override
     public List<BudgetPlan> getBudgetPlans() {
         return em.createNamedQuery("BudgetPlan.findAll", BudgetPlan.class).getResultList();

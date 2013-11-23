@@ -22,9 +22,13 @@
 			
 				<p:panelGrid columns="2">
 					<h:outputText value="Select Project:"/>
-					<p:selectOneMenu value="#{budgetsBean.currentProjectId}" onchange="this.form.submit()">
-						<f:selectItems value="#{budgetsBean.projectItems}"/>
-					</p:selectOneMenu>
+                                        <h:panelGroup>
+                                            <p:selectOneMenu value="#{budgetsBean.currentProjectId}" onchange="this.form.submit()">
+                                                    <f:selectItems value="#{budgetsBean.projectItems}"/>
+                                                    <f:validateLongRange minimum="1"/>
+                                            </p:selectOneMenu>
+                                            <p:outputLabel value="Bitte mindestens ein Projekt anlegen." rendered="#{budgetsBean.projectItems.size() eq 1}" styleClass="ui-message-error ui-widget"/>
+                                        </h:panelGroup>
 				</p:panelGrid>
 
 			</h:form>
@@ -32,7 +36,7 @@
 			<p/>
 
 			<h:form id="editform" rendered="#{request.isUserInRole('admin')}">
-			
+
 				<p:panelGrid columns="3">
 					<h:outputText value="Budget ID:"/>
 					<h:outputText value="#{budgetsBean.currentBudget.id eq null ? '&lt;New&gt;' : budgetsBean.currentBudget.id}"/>
@@ -63,9 +67,11 @@
 					<p:outputPanel/>
 					
 				</p:panelGrid>
-				
-				<p:commandButton value="#{budgetsBean.currentBudget.id eq null ? 'Create' : 'Save'}" action="#{budgetsBean.save}" ajax="false"/>
-				<p:commandButton rendered="#{budgetsBean.currentBudget.id ne null}" value="Cancel" action="#{budgetsBean.clear}" ajax="false"/>
+
+                                <p>
+				    <p:commandButton value="#{budgetsBean.currentBudget.id eq null ? 'Create' : 'Save'}" action="#{budgetsBean.save}" ajax="false"/>
+				    <p:commandButton rendered="#{budgetsBean.currentBudget.id ne null}" value="Cancel" action="#{budgetsBean.clear}" ajax="false"/>
+                                </p>
 			
 			</h:form>        
 			

@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="7" />
+
+        <ui:define name="pagetitle">Forecasts Administration</ui:define>
+        
+        <ui:define name="body">
+
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+            </f:metadata>
+                
+            <h:form id="editforecastform">
+
+                <p:panel header="Create or edit forecast">
+
+                    <p:panelGrid columns="3" style="text-align: right;">
+
+                            <h:outputText value="Forecast ID:"/>
+                            <h:outputText value="#{forecastsBean.current.id eq null ? '&lt;New&gt;' : forecastsBean.current.id}"/>
+                            <p:outputPanel/>
+
+                            <h:outputText value="Forecast Name:"/>
+                            <p:inputText id="forecastName" value="#{forecastsBean.current.name}" size="32" required="true"/>
+                            <p:message for="forecastName"/>
+                            
+                            <h:outputText value="Fiscal Year:"/>
+                            <p:inputText id="fiscalYear" style="text-align: right;" value="#{forecastsBean.current.fiscalYear}" size="4" required="true">
+                                <f:validateLongRange minimum="2000" maximum="3000"/>
+                            </p:inputText>
+                            <p:message for="fiscalYear"/>
+                            
+                            <h:outputText value="Forecast Yearly Budget Amount:"/>
+                            <h:panelGroup>
+                                <h:outputLabel for="budgetAmount" value="EUR "/>
+                                <p:inputText id="budgetAmount" style="text-align: right;" value="#{forecastsBean.fcBudgetCents}" size="12" required="true">
+                                    <f:convertNumber locale="de_DE" maxFractionDigits="2" minFractionDigits="2"/>
+                                </p:inputText>
+                            </h:panelGroup>
+                            <p:message for="budgetAmount"/>
+                            
+                            <h:outputText value="Hour rate:"/>
+                            <h:panelGroup>
+                                <h:outputLabel for="hourRate" value="EUR "/>
+                                <p:inputText id="hourRate" style="text-align: right;" value="#{forecastsBean.centsPerHour}" size="6" required="true">
+                                    <f:convertNumber locale="de_DE" maxFractionDigits="2" minFractionDigits="2"/>
+                                </p:inputText>
+                            </h:panelGroup>
+                            <p:message for="hourRate"/>
+                            
+                            <h:outputText value="Assigned Budget Plans:"/>
+                            <p:pickList id="assignedPlans" value="#{forecastsBean.assignedBudgetPlans}" var="item"
+                                        converter="#{forecastsBean}"
+                                        itemLabel="#{budgetsBean.getFullBudgetNameForId(item.budgetId)}"
+                                        itemValue="#{item}"/>
+                            <p:message for="assignedPlans"/>
+                            
+                    </p:panelGrid>
+
+                    <p>
+                        <p:commandButton value="#{forecastsBean.current.id eq null ? 'Create' : 'Save'}" action="#{forecastsBean.save}" ajax="false"/>
+                        <p:commandButton rendered="#{forecastsBean.current.id ne null}" value="Cancel" action="#{forecastsBean.clear}" ajax="false"/>
+                    </p>
+                </p:panel>
+
+            </h:form>        
+
+            <h:form id="listform">
+                
+                <hr/>
+			
+                <p:dataTable id="forecasts" var="f" value="#{forecastsBean.forecasts}">
+                    <p:column headerText="Name">
+                        <h:outputText value="#{f.name}"/>
+                    </p:column>
+                    <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
+                        <h:commandLink value="Edit" action="#{forecastsBean.edit(f)}"/>,
+                        <h:commandLink value="Delete" action="#{forecastsBean.delete(f)}"/>
+                    </p:column>
+                </p:dataTable>
+                
+            </h:form>
+
+            <h:form id="forecastviewform" rendered="#{forecastsBean.current.id ne null}">
+                
+                <hr/>
+			
+                <p:panel header="#{forecastsBean.current.name}">
+                
+                    
+                    
+                </p:panel>
+                
+            </h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

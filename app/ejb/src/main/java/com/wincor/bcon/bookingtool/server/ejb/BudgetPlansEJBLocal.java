@@ -18,6 +18,13 @@ import javax.ejb.Local;
 public interface BudgetPlansEJBLocal {
     
     /**
+     * Get the budget plan for the given ID
+     * @param id budget plan id
+     * @return budget plan
+     */
+    public BudgetPlan getBudgetPlan(int id);
+    
+    /**
      * Get the list of budget plans
      * @return list of budget plans
      */
