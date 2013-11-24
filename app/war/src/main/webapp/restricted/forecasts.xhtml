@@ -95,7 +95,11 @@
 			
                 <p:panel header="#{forecastsBean.current.name}">
                 
-                    
+                    <p:treeTable value="#{forecastsBean.forecastBudgets}" var="budget">
+                        <p:column headerText="Budget">
+                            <h:outputText value="#{budgetsBean.getFullBudgetName(budget)}"/>
+                        </p:column>
+                    </p:treeTable>
                     
                 </p:panel>
                 

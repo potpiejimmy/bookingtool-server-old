@@ -8,6 +8,7 @@ package com.wincor.bcon.bookingtool.server.ejb;
 
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
+import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
 import java.util.List;
 
 /**
@@ -41,4 +42,21 @@ public interface ForecastsEJBLocal {
      * @return list of budget plans
      */
     public List<BudgetPlan> getAssignedBudgetPlans(int forecastId);
+    
+    /**
+     * Returns the forecast info row for the given budget ID
+     * @param forecastId a forecast ID
+     * @param budgetId a budget ID
+     * @return forecast info
+     */
+    public ForecastInfoRowVo getForecastInfoForBudget(int forecastId, int budgetId);
+    
+    /**
+     * Returns the forecast info value objects for all children of the given
+     * parent budget.
+     * @param forecastId a forecast ID
+     * @param parentBudgetId a budget ID
+     * @return list of forecast info value objects
+     */
+    public List<ForecastInfoRowVo> getForecastInfosForParentBudget(int forecastId, int parentBudgetId);
 }

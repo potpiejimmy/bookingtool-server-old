@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Budget.findByProjectId", query = "SELECT b FROM Budget b WHERE b.projectId = :projectId ORDER BY b.name"),
     @NamedQuery(name = "Budget.findRoots", query = "SELECT b FROM Budget b WHERE b.parentId IS NULL AND b.projectId = :projectId ORDER BY b.name"),
     @NamedQuery(name = "Budget.findByParentId", query = "SELECT b FROM Budget b WHERE b.parentId = :parentId ORDER BY b.name"),
-    @NamedQuery(name = "Budget.getBookedMinutes", query = "SELECT SUM(b.minutes) FROM Booking b, BookingTemplate t WHERE b.bookingTemplateId=t.id AND t.budgetId=:budgetId")})
+    @NamedQuery(name = "Budget.getBookedMinutes", query = "SELECT SUM(b.minutes) FROM Booking b, BookingTemplate t WHERE b.bookingTemplateId=t.id AND t.budgetId=:budgetId"),
+    @NamedQuery(name = "Budget.getBookedMinutesInPeriod", query = "SELECT SUM(b.minutes) FROM Booking b, BookingTemplate t WHERE b.bookingTemplateId=t.id AND t.budgetId=:budgetId AND b.day>=:from AND b.day<:to")})
 public class Budget implements Serializable {
 	private static final long serialVersionUID = 1L;
 

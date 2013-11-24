@@ -7,6 +7,7 @@ import javax.ejb.Local;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
+import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 
 @Local
 public interface BudgetsEJBLocal {
@@ -81,6 +82,18 @@ public interface BudgetsEJBLocal {
 	public List<BudgetInfoVo> getBudgetInfosForParent(int projectId, Integer parentId);
 	
 	/**
+	 * Returns the list of budgets found for the given parent budget ID.
+	 * If null is specified for the parentId, the list of root budgets
+	 * without a parent ID is returned.
+	 * 
+	 * @param projectId a project ID
+	 * @param parentId a budget ID or null to retrieve root budgets
+         * @param period  a time period for the sum of booking minutes returned in the info value object
+	 * @return list of budgets
+	 */
+	public List<BudgetInfoVo> getBudgetInfosForParent(int projectId, Integer parentId, TimePeriod period);
+	
+	/**
 	 * Returns the budget with the given ID
 	 * @param budgetId a budget ID
 	 * @return the budget
@@ -93,6 +106,14 @@ public interface BudgetsEJBLocal {
 	 * @return the budget info value object
 	 */
 	public BudgetInfoVo getBudgetInfo(int budgetId);
+
+	/**
+	 * Returns the budget info value object for the given budget ID
+	 * @param budgetId a budget ID
+         * @param period  a time period for the sum of booking minutes returned in the info value object
+	 * @return the budget info value object
+	 */
+	public BudgetInfoVo getBudgetInfo(int budgetId, TimePeriod period);
 
 	/**
 	 * Saves or updates the given budget

@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
+import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 
 @Stateless
 public class BudgetsEJB implements BudgetsEJBLocal {
@@ -87,10 +88,16 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	@Override
 	@RolesAllowed({"admin","user"})
 	public List<BudgetInfoVo> getBudgetInfosForParent(int projectId, Integer parentId) {
+            return getBudgetInfosForParent(projectId, parentId, null);
+	}
+
+	@Override
+	@RolesAllowed({"admin","user"})
+	public List<BudgetInfoVo> getBudgetInfosForParent(int projectId, Integer parentId, TimePeriod period) {
 		if (parentId == null)
-			return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findRoots", Budget.class).setParameter("projectId", projectId).getResultList()));
+			return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findRoots", Budget.class).setParameter("projectId", projectId).getResultList(), period));
 		else
-			return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByParentId", Budget.class).setParameter("parentId", parentId).getResultList()));
+			return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByParentId", Budget.class).setParameter("parentId", parentId).getResultList(), period));
 	}
 
 	@Override
@@ -102,7 +109,13 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	@Override
 	@RolesAllowed({"admin","user"})
 	public BudgetInfoVo getBudgetInfo(int budgetId) {
-            return calculateBudget(toInfoVo(getBudget(budgetId)));
+            return getBudgetInfo(budgetId, null);
+        }
+        
+	@Override
+	@RolesAllowed({"admin","user"})
+	public BudgetInfoVo getBudgetInfo(int budgetId, TimePeriod period) {
+            return calculateBudget(toInfoVo(getBudget(budgetId), period));
         }
         
 	@Override
@@ -126,13 +139,26 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 		return s != null ? s.intValue() : 0;
 	}
 	
-	protected BudgetInfoVo toInfoVo(Budget budget) {
-		return new BudgetInfoVo(budget, getBookedMinutes(budget.getId()));
+	protected int getBookedMinutes(int budgetId, long from, long to) {
+		Long s = (Long)em.createNamedQuery("Budget.getBookedMinutesInPeriod").setParameter("budgetId", budgetId).
+                        setParameter("from", new java.sql.Timestamp(from)).
+                        setParameter("to", new java.sql.Timestamp(to)).getSingleResult(); 
+		return s != null ? s.intValue() : 0;
+	}
+	
+	protected BudgetInfoVo toInfoVo(Budget budget, TimePeriod period) {
+		return new BudgetInfoVo(budget, period!=null ? 
+                        getBookedMinutes(budget.getId(), period.getFrom(), period.getTo()) :
+                        getBookedMinutes(budget.getId()));
 	}
 
 	protected List<BudgetInfoVo> toInfoVos(List<Budget> budgets) {
+                return toInfoVos(budgets, null);
+	}
+
+	protected List<BudgetInfoVo> toInfoVos(List<Budget> budgets, TimePeriod period) {
 		List<BudgetInfoVo> result = new ArrayList<BudgetInfoVo>(budgets.size());
-		for (Budget b : budgets) result.add(toInfoVo(b));
+		for (Budget b : budgets) result.add(toInfoVo(b, period));
 		return result;
 	}
 
@@ -145,7 +171,7 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	
 	protected BudgetInfoVo calculateBudget(BudgetInfoVo budget) {
 		List<BudgetInfoVo> childBudgets = getBudgetInfosForParent(budget.getBudget().getProjectId(), budget.getBudget().getId());
-		if (childBudgets.size() == 0) {
+		if (childBudgets.isEmpty()) {
 			// leaf budget
 			//change prefix if budget was a root in his previous life
 			if(budget.getBudget().getMinutes() < 0)

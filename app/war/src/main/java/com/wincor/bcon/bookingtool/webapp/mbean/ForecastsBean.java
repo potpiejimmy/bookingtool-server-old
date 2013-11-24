@@ -3,6 +3,7 @@ package com.wincor.bcon.bookingtool.webapp.mbean;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetPlansEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,7 +17,9 @@ import java.util.ArrayList;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.DualListModel;
+import org.primefaces.model.TreeNode;
 
 @Named
 @SessionScoped
@@ -26,6 +29,9 @@ public class ForecastsBean implements Serializable, Converter {
 
     @EJB
     private ForecastsEJBLocal ejb;
+
+    @EJB
+    private BudgetsEJBLocal budgetsEjb;
 
     @EJB
     private BudgetPlansEJBLocal budgetPlansEjb;
@@ -104,6 +110,15 @@ public class ForecastsBean implements Serializable, Converter {
         } catch (Exception ex) {
             WebUtils.addFacesMessage(ex);
         }
+    }
+    
+    public TreeNode getForecastBudgets() {
+        if (current.getId() == null) return null;
+        TreeNode root = new DefaultTreeNode("root", null);
+        for (BudgetPlan p : ejb.getAssignedBudgetPlans(current.getId())) {
+            new DefaultTreeNode(budgetsEjb.getBudget(p.getBudgetId()), root);
+        }
+        return root;
     }
 
     @Override
