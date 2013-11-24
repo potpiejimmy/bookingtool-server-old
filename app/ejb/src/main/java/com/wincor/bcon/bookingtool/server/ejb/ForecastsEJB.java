@@ -76,14 +76,25 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     }
 
     @Override
+    public List<Integer> getMonthsForFiscalYear(int fiscalYear) {
+        List<Integer> result = new ArrayList<Integer>(12);
+        for (int month = 0; month < 12; month++) {
+            int year = month < 3 ? fiscalYear - 1 : fiscalYear;
+            int monthOfYear = month < 3 ? month + 9 : month - 3;
+            int period = year * 100 + (monthOfYear+1);
+            result.add(period);
+        }
+        return result;
+    }
+    
+    @Override
     public ForecastInfoRowVo getForecastInfoForBudget(int forecastId, int budgetId) {
         Forecast forecast = em.find(Forecast.class, forecastId);
         ForecastInfoRowVo row = new ForecastInfoRowVo(budgetsEjb.getBudgetInfo(budgetId));
-        for (int month = 0; month < 12; month++) {
+        for (int period : getMonthsForFiscalYear(forecast.getFiscalYear())) {
             ForecastInfoVo cell = new ForecastInfoVo();
-            int year = month < 3 ? forecast.getFiscalYear() - 1 : forecast.getFiscalYear();
-            int monthOfYear = month < 3 ? month + 9 : month - 3;
-            int period = year * 100 + (monthOfYear+1);
+            int year = period / 100;
+            int monthOfYear = (period % 100) - 1;
             Calendar start = Calendar.getInstance();
             start.set(Calendar.YEAR, year);
             start.set(Calendar.MONTH, monthOfYear);
@@ -95,6 +106,7 @@ public class ForecastsEJB implements ForecastsEJBLocal {
             cell.setPeriod(period);
             cell.setPlannedMinutes(budgetPlansEjb.getPlannedMinutesForPeriod(budgetId, period));
             cell.setBookedMinutes(budgetsEjb.getBudgetInfo(budgetId, timePeriod).getBookedMinutesRecursive());
+            row.getMonths().put(period, cell);
         }
         return row;
     }

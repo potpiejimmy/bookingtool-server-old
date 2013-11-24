@@ -9,6 +9,7 @@ package com.wincor.bcon.bookingtool.server.ejb;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlanItem;
+import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -63,13 +64,13 @@ public class BudgetPlansEJB implements BudgetPlansEJBLocal {
     public boolean isPlanComplete(int budgetPlanId) {
         int sum = 0;
         BudgetPlan plan = em.find(BudgetPlan.class, budgetPlanId);
-        Budget planParentBudget = em.find(Budget.class, plan.getBudgetId());
-        for (Budget b : budgetsEjb.getLeafBudgets(planParentBudget.getId())) {
+        BudgetInfoVo planParentBudget = budgetsEjb.getBudgetInfo(plan.getBudgetId());
+        for (Budget b : budgetsEjb.getLeafBudgets(planParentBudget.getBudget().getId())) {
             for (BudgetPlanItem i : getBudgetPlanItems(b.getId())) {
                 sum += i.getMinutes();
             }
         }
-        return sum == planParentBudget.getMinutes();
+        return sum == Math.abs(planParentBudget.getBudget().getMinutes());
     }
     
     @Override

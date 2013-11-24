@@ -12,6 +12,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
+import javax.persistence.TemporalType;
 
 @Stateless
 public class BudgetsEJB implements BudgetsEJBLocal {
@@ -82,7 +83,7 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	@Override
 	@RolesAllowed({"admin","user"})
 	public List<BudgetInfoVo> getBudgetInfos(int projectId) {
-		return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByProjectId", Budget.class).setParameter("projectId", projectId).getResultList()));
+            return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByProjectId", Budget.class).setParameter("projectId", projectId).getResultList()), null);
 	}
 
 	@Override
@@ -94,10 +95,10 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	@Override
 	@RolesAllowed({"admin","user"})
 	public List<BudgetInfoVo> getBudgetInfosForParent(int projectId, Integer parentId, TimePeriod period) {
-		if (parentId == null)
-			return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findRoots", Budget.class).setParameter("projectId", projectId).getResultList(), period));
-		else
-			return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByParentId", Budget.class).setParameter("parentId", parentId).getResultList(), period));
+            if (parentId == null)
+                return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findRoots", Budget.class).setParameter("projectId", projectId).getResultList(), period), period);
+            else
+                return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByParentId", Budget.class).setParameter("parentId", parentId).getResultList(), period), period);
 	}
 
 	@Override
@@ -115,7 +116,7 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	@Override
 	@RolesAllowed({"admin","user"})
 	public BudgetInfoVo getBudgetInfo(int budgetId, TimePeriod period) {
-            return calculateBudget(toInfoVo(getBudget(budgetId), period));
+            return calculateBudget(toInfoVo(getBudget(budgetId), period), period);
         }
         
 	@Override
@@ -141,8 +142,8 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	
 	protected int getBookedMinutes(int budgetId, long from, long to) {
 		Long s = (Long)em.createNamedQuery("Budget.getBookedMinutesInPeriod").setParameter("budgetId", budgetId).
-                        setParameter("from", new java.sql.Timestamp(from)).
-                        setParameter("to", new java.sql.Timestamp(to)).getSingleResult(); 
+                        setParameter("from", new java.sql.Date(from), TemporalType.DATE).
+                        setParameter("to", new java.sql.Date(to), TemporalType.DATE).getSingleResult(); 
 		return s != null ? s.intValue() : 0;
 	}
 	
@@ -162,15 +163,15 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 		return result;
 	}
 
-	protected List<BudgetInfoVo> calculateBudgets(List<BudgetInfoVo> budgets) {
+	protected List<BudgetInfoVo> calculateBudgets(List<BudgetInfoVo> budgets, TimePeriod period) {
 		for (BudgetInfoVo b : budgets) {
-			calculateBudget(b);
+			calculateBudget(b, period);
 		}
 		return budgets;
 	}
 	
-	protected BudgetInfoVo calculateBudget(BudgetInfoVo budget) {
-		List<BudgetInfoVo> childBudgets = getBudgetInfosForParent(budget.getBudget().getProjectId(), budget.getBudget().getId());
+	protected BudgetInfoVo calculateBudget(BudgetInfoVo budget, TimePeriod period) {
+		List<BudgetInfoVo> childBudgets = getBudgetInfosForParent(budget.getBudget().getProjectId(), budget.getBudget().getId(), period);
 		if (childBudgets.isEmpty()) {
 			// leaf budget
 			//change prefix if budget was a root in his previous life
@@ -183,7 +184,7 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 		int sum = 0;
 		int sumBookedRecursive = budget.getBookedMinutes();
 		for (BudgetInfoVo b : childBudgets) {
-			BudgetInfoVo child = calculateBudget(b); 
+			BudgetInfoVo child = calculateBudget(b, period); 
 			sum += Math.abs(child.getBudget().getMinutes());
 			sumBookedRecursive += child.getBookedMinutesRecursive();
 		}

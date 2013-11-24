@@ -59,4 +59,11 @@ public interface ForecastsEJBLocal {
      * @return list of forecast info value objects
      */
     public List<ForecastInfoRowVo> getForecastInfosForParentBudget(int forecastId, int parentBudgetId);
+
+    /**
+     * Returns the months for the given fiscal year
+     * @param fiscalYear a fiscal year
+     * @return list of month periods
+     */
+    public List<Integer> getMonthsForFiscalYear(int fiscalYear);
 }

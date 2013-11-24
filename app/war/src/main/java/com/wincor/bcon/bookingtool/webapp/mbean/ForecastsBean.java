@@ -12,6 +12,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.ejb.ForecastsEJBLocal;
+import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import javax.faces.component.UIComponent;
@@ -112,13 +113,19 @@ public class ForecastsBean implements Serializable, Converter {
         }
     }
     
-    public TreeNode getForecastBudgets() {
+    public TreeNode getForecastRows() {
         if (current.getId() == null) return null;
         TreeNode root = new DefaultTreeNode("root", null);
         for (BudgetPlan p : ejb.getAssignedBudgetPlans(current.getId())) {
-            new DefaultTreeNode(budgetsEjb.getBudget(p.getBudgetId()), root);
+            ForecastInfoRowVo row = ejb.getForecastInfoForBudget(current.getId(), p.getBudgetId());
+            new DefaultTreeNode(row, root);
         }
         return root;
+    }
+    
+    public List<Integer> getMonthColumns() {
+        if (current == null || current.getId() == null) return null;
+        return ejb.getMonthsForFiscalYear(current.getFiscalYear());
     }
 
     @Override
