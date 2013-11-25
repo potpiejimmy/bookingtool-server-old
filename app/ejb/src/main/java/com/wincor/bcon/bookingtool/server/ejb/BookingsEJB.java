@@ -31,6 +31,16 @@ public class BookingsEJB implements BookingsEJBLocal {
 
 	@Override
 	@RolesAllowed({"admin", "user"})
+	public List<Booking> getBookingsByLastExportDay(String person, Date day) {
+		TypedQuery<Booking> tq = em.createNamedQuery("Booking.findByLastExportDay", Booking.class);
+		tq.setParameter("person", person);
+		tq.setParameter("day", day);
+		
+		return tq.getResultList();
+	}
+	
+	@Override
+	@RolesAllowed({"admin", "user"})
 	public List<Booking> getBookings(String person, Date day) {
 		TypedQuery<Booking> tq = em.createNamedQuery("Booking.findByPersonAndDay", Booking.class);
 		tq.setParameter("person", person);

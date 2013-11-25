@@ -47,6 +47,11 @@
 	            <h:outputLink value="#{request.contextPath}/restricted/changepassword.xhtml">
 	            	<h:outputText value="Change Password"/>
 	            </h:outputLink>
+                    <h:panelGroup rendered="#{request.isUserInRole('superuser')}">,
+                        <h:outputLink value="#{request.contextPath}/restricted/adminuser.xhtml">
+                            <h:outputText value="Manage Users"/>
+                        </h:outputLink>
+                    </h:panelGroup>
 	        </div>
         
 		</ui:define>

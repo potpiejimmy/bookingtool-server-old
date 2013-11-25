@@ -7,7 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 @Local
 public interface ExcelExportEJBLocal {
 
-	public HSSFWorkbook getExcelForName(String person);
+	public HSSFWorkbook getExcelForName(String person, Integer weeksToExport);
 
 	public HSSFWorkbook getExcelForAdmin();
 

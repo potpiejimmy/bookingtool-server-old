@@ -1,6 +1,8 @@
 package com.wincor.bcon.bookingtool.server.ejb;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
@@ -29,8 +31,13 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 	
 	@Override
 	@RolesAllowed({"admin","user"})
-	public HSSFWorkbook getExcelForName(String person) {
-		List<Booking> bookingList = bookingEJB.getBookings(person);
+	public HSSFWorkbook getExcelForName(String person, Integer weeksToExport) {
+		
+		Calendar lastExportDay = Calendar.getInstance();
+		lastExportDay.add(Calendar.WEEK_OF_YEAR, -weeksToExport);
+		
+		List<Booking> bookingList = bookingEJB.getBookingsByLastExportDay(person, lastExportDay.getTime());
+
 		return getExcelForBookings(bookingList, false);
 	}
 		
@@ -57,12 +64,16 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 		HSSFSheet sheet = wb.createSheet();
 		sheet = createHeader(sheet, withNameColumn);
 		
+		Date lastDate = null;
 		int rowPosition = sheet.getLastRowNum();
 		
 		for(Booking booking : bookingList)
 		{
 			BookingTemplate bt = bookingTemplateEJB.getBookingTemplate(booking.getBookingTemplateId());
 			
+			if(lastDate != null && lastDate.after(booking.getDay()))
+				sheet.createRow(++rowPosition);
+
 			HSSFRow row = sheet.createRow(++rowPosition);
 			HSSFCell cell;
 			int cellPosition = 0;
@@ -108,6 +119,8 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 			//Stunden
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(df.format(((float)Math.round(booking.getMinutes().doubleValue()/60*100))/100));
+			
+			lastDate = booking.getDay();
 		}
 		
 		//autosize every column!

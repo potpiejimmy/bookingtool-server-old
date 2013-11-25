@@ -21,24 +21,31 @@
 	        <h:form id="from">
 	           
                     <p:panel header="Export all bookings for #{excelExportBean.currentUserName}">
-
-                        <p>
-				<p:commandButton id="downloadLink" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
-        			icon="ui-icon-arrowthick-1-s">  
-                                    <p:fileDownload value="#{excelExportBean.excelList}" />  
-				</p:commandButton>  
-                        </p>
-                        
+                    
+	                    <p:panelGrid columns="2" id="excelByWeeks">
+	                    	<p:outputLabel value="Export of last:"/>
+	                    	<h:panelGroup>
+	                    		<p:spinner id="weeksToExport" value="#{excelExportBean.weeksToExport}" size="2" min="1" max="1000" maxlength="2"/>
+	                    		<h:outputText value="  Week(s)"/>
+	                    	</h:panelGroup>
+	                    </p:panelGrid>
+	                    
+	                    <p>
+	                    	<p:commandButton id="downloadLink" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"
+	                    					 icon="ui-icon-arrowthick-1-s">
+	                    			<p:fileDownload value="#{excelExportBean.excelList}" />  
+	                    	</p:commandButton>
+	                    </p> 
                     </p:panel>
 
                     <p:panel header="Export all bookings (Superuser Only)" rendered="#{request.isUserInRole('superuser')}">
-	                
-                        <p>
-				<p:commandButton id="downloadLinkAdmin" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
-        			icon="ui-icon-arrowthick-1-s">  
-                                    <p:fileDownload value="#{excelExportBean.excelListAdmin}" />  
-				</p:commandButton>  
-                        </p>
+                    
+	                    <p>
+	                    	<p:commandButton id="downloadLinkAdmin" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
+	                    					 icon="ui-icon-arrowthick-1-s">  
+	                    				<p:fileDownload value="#{excelExportBean.excelListAdmin}" />  
+	                    	</p:commandButton>
+	                    </p>
                         
                     </p:panel>
 

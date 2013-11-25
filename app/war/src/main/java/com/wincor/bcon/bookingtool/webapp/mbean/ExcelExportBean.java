@@ -27,6 +27,7 @@ public class ExcelExportBean implements Serializable {
 	private ExcelExportEJBLocal myExcelExportEJB; 
 	
 	private HSSFWorkbook wb = null;
+	private Integer weeksToExport = 2;
 	
         public String getCurrentUserName() {
             return WebUtils.getCurrentPerson();
@@ -34,7 +35,7 @@ public class ExcelExportBean implements Serializable {
         
 	public StreamedContent getExcelList () {
 		
-		wb = myExcelExportEJB.getExcelForName(WebUtils.getCurrentPerson());
+		wb = myExcelExportEJB.getExcelForName(WebUtils.getCurrentPerson(), getWeeksToExport());
 		return streamForWorkbook(wb, "buchungen_"+WebUtils.getCurrentPerson());
 	}
 	
@@ -50,6 +51,14 @@ public class ExcelExportBean implements Serializable {
 		return streamForWorkbook(wb, "buchungen_budget_"+budgetId);
 	}
 	
+	public Integer getWeeksToExport() {
+		return weeksToExport;
+	}
+
+	public void setWeeksToExport(Integer weeksToExport) {
+		this.weeksToExport = weeksToExport;
+	}
+
 	protected DefaultStreamedContent streamForWorkbook(HSSFWorkbook wb, String filename) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {

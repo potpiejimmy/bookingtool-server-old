@@ -22,6 +22,14 @@ public interface BookingsEJBLocal {
 	 * @return list of bookings
 	 */
 	public List<Booking> getBookings(String person);
+	
+	/**
+	 * Returns the list of all bookings for the given person name and last day
+	 * @param person a person name
+	 * @param lastDay - the last export day
+	 * @return list of bookings
+	 */
+	public List<Booking> getBookingsByLastExportDay(String person, Date lastDay);
 
 	/**
 	 * Returns the list of all booking for the given person and day
