@@ -43,7 +43,7 @@ public class BudgetPlansEJB implements BudgetPlansEJBLocal {
             for (BudgetPlan p : getBudgetPlans()) {
                 if (budgetsEjb.isDescendantOf(plan.getBudgetId(), p.getBudgetId()) ||
                     budgetsEjb.isDescendantOf(p.getBudgetId(), plan.getBudgetId())) {
-                    throw new IllegalArgumentException("Sorry, there is already a budget plan for the budget itself or any of its parent or child budgets. Budget plans must not be overlapping with other budget plans.");
+                    throw new IllegalArgumentException("Sorry, there is already a budget plan for the budget or any of its parent or child budgets. Budget plans must not overlap with other budget plans.");
                 }
             }
             

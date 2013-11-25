@@ -39,6 +39,8 @@ public class ForecastsBean implements Serializable, Converter {
 
     private Forecast current = null;
     
+    private List<ForecastInfoRowVo> rows = null;
+    
     private DualListModel<BudgetPlan> assignedBudgetPlans = null;
 
     public void clear() {
@@ -49,6 +51,7 @@ public class ForecastsBean implements Serializable, Converter {
         current = new Forecast();
         
         assignedBudgetPlans = new DualListModel<BudgetPlan>(budgetPlansEjb.getBudgetPlans(), new ArrayList<BudgetPlan>());
+        rows = null;
     }
 
     public Forecast getCurrent() {
@@ -97,6 +100,7 @@ public class ForecastsBean implements Serializable, Converter {
 
     public void edit(Forecast f) {
         current = f;
+        rows = null;
 
         List<BudgetPlan> source = new ArrayList<BudgetPlan>(budgetPlansEjb.getBudgetPlans());
         List<BudgetPlan> target = ejb.getAssignedBudgetPlans(current.getId());
@@ -108,24 +112,46 @@ public class ForecastsBean implements Serializable, Converter {
     public void delete(Forecast f) {
         try {
             ejb.deleteForecast(f.getId());
+            clear();
         } catch (Exception ex) {
             WebUtils.addFacesMessage(ex);
         }
     }
     
-    public TreeNode getForecastRows() {
+    public List<ForecastInfoRowVo> getForecastRows() {
+        if (rows != null) return rows;
+        
         if (current.getId() == null) return null;
-        TreeNode root = new DefaultTreeNode("root", null);
+        rows = new ArrayList<ForecastInfoRowVo>();
         for (BudgetPlan p : ejb.getAssignedBudgetPlans(current.getId())) {
             ForecastInfoRowVo row = ejb.getForecastInfoForBudget(current.getId(), p.getBudgetId());
-            new DefaultTreeNode(row, root);
+            rows.add(row);
         }
-        return root;
+        return rows;
     }
     
     public List<Integer> getMonthColumns() {
         if (current == null || current.getId() == null) return null;
         return ejb.getMonthsForFiscalYear(current.getFiscalYear());
+    }
+    
+    public int getColumnSumMinutesPlanned(int month) {
+        int result = 0;
+        for (ForecastInfoRowVo row : getForecastRows()) {
+            result += row.getMonths().get(month).getPlannedMinutes();
+        }
+        return result;
+    }
+
+    public Float getColumnSumEurosPlanned(int month) {
+        return ((float)getColumnSumMinutesPlanned(month))/60 * current.getCentsPerHour() / 100;
+    }
+
+    public Float getTotalSumEurosPlanned() {
+        int sumMinutes = 0;
+        for (int month : getMonthColumns())
+            sumMinutes += getColumnSumMinutesPlanned(month);
+        return ((float)sumMinutes)/60 * current.getCentsPerHour() / 100;
     }
 
     @Override
