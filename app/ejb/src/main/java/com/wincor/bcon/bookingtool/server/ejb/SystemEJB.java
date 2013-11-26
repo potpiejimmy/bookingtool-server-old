@@ -10,7 +10,8 @@ import javax.ejb.Stateless;
 public class SystemEJB implements SystemEJBLocal {
 
 	//protected final static String EAR_FILE = "C:\\jboss-7.1.1\\standalone\\deployments\\bookingtool.ear";
-	protected final static String EAR_FILE = "/opt/glassfish3/glassfish/domains/domain1/autodeploy/bookingtool.ear";
+	//protected final static String EAR_FILE = "/opt/glassfish3/glassfish/domains/domain1/autodeploy/bookingtool.ear";
+	protected final static String EAR_FILE = "/usr/jboss/standalone/deployments/bookingtool.ear";
 	
 	@Override
 	@RolesAllowed("superuser")
