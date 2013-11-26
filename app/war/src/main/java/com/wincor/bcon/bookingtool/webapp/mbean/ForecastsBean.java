@@ -15,12 +15,11 @@ import com.wincor.bcon.bookingtool.server.ejb.ForecastsEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
+import java.util.Calendar;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.DualListModel;
-import org.primefaces.model.TreeNode;
 
 @Named
 @SessionScoped
@@ -126,6 +125,7 @@ public class ForecastsBean implements Serializable, Converter {
         for (BudgetPlan p : ejb.getAssignedBudgetPlans(current.getId())) {
             ForecastInfoRowVo row = ejb.getForecastInfoForBudget(current.getId(), p.getBudgetId());
             rows.add(row);
+            rows.add(row); // display two rows for each budget
         }
         return rows;
     }
@@ -143,6 +143,14 @@ public class ForecastsBean implements Serializable, Converter {
         return result;
     }
 
+    public int getColumnSumMinutesBooked(int month) {
+        int result = 0;
+        for (ForecastInfoRowVo row : getForecastRows()) {
+            result += row.getMonths().get(month).getBookedMinutes();
+        }
+        return result;
+    }
+
     public Float getColumnSumEurosPlanned(int month) {
         return ((float)getColumnSumMinutesPlanned(month))/60 * current.getCentsPerHour() / 100;
     }
@@ -152,6 +160,35 @@ public class ForecastsBean implements Serializable, Converter {
         for (int month : getMonthColumns())
             sumMinutes += getColumnSumMinutesPlanned(month);
         return ((float)sumMinutes)/60 * current.getCentsPerHour() / 100;
+    }
+
+    public Float getColumnSumEurosBooked(int month) {
+        return ((float)getColumnSumMinutesBooked(month))/60 * current.getCentsPerHour() / 100;
+    }
+
+    public Float getTotalSumEurosBooked() {
+        int sumMinutes = 0;
+        for (int month : getMonthColumns())
+            if (month <= getCurrentMonth())
+                sumMinutes += getColumnSumMinutesBooked(month);
+        return ((float)sumMinutes)/60 * current.getCentsPerHour() / 100;
+    }
+
+    public Float getColumnSumEurosDiff(int month) {
+        return getColumnSumEurosPlanned(month) - getColumnSumEurosBooked(month);
+    }
+    
+    public Float getTotalSumEurosDiff() {
+        int diffMinutes = 0;
+        for (int month : getMonthColumns())
+            if (month <= getCurrentMonth())
+                diffMinutes += getColumnSumMinutesPlanned(month) - getColumnSumMinutesBooked(month);
+        return ((float)diffMinutes)/60 * current.getCentsPerHour() / 100;
+    }
+
+    public int getCurrentMonth() {
+        Calendar cal = Calendar.getInstance();
+        return cal.get(Calendar.YEAR) * 100 + (cal.get(Calendar.MONTH)+1);
     }
 
     @Override

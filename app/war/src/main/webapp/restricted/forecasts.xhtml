@@ -48,7 +48,7 @@
                             </h:panelGroup>
                             <p:message for="budgetAmount"/>
                             
-                            <h:outputText value="Hour rate:"/>
+                            <h:outputText value="Hourly rate:"/>
                             <h:panelGroup>
                                 <h:outputLabel for="hourRate" value="EUR "/>
                                 <p:inputText id="hourRate" style="text-align: right;" value="#{forecastsBean.centsPerHour}" size="6" required="true">
@@ -74,7 +74,7 @@
 
             </h:form>        
 
-            <h:form id="listform">
+            <h:form id="listform" rendered="#{forecastsBean.current.id eq null}">
                 
                 <hr/>
 			
@@ -83,7 +83,7 @@
                         <h:outputText value="#{f.name}"/>
                     </p:column>
                     <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
-                        <h:commandLink value="Edit" action="#{forecastsBean.edit(f)}"/>,
+                        <h:commandLink value="Show" action="#{forecastsBean.edit(f)}"/>,
                         <h:commandLink value="Delete" action="#{forecastsBean.delete(f)}"/>
                     </p:column>
                 </p:dataTable>
@@ -96,17 +96,23 @@
 			
                 <p:panel header="#{forecastsBean.current.name}">
                 
-                    <p:dataTable value="#{forecastsBean.forecastRows}" var="vo">
+                    <p:dataTable value="#{forecastsBean.forecastRows}" var="vo" rowIndexVar="i">
                         <p:column headerText="Budget">
-                            <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budgetInfo.budget)}"/>
+                            <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budgetInfo.budget)}"
+                                          rendered="#{i%2 eq 0}"/>
                         </p:column>
-                        <p:columns value="#{forecastsBean.monthColumns}" var="month" style="width:80px;">
+                        <p:columns value="#{forecastsBean.monthColumns}" var="month" style="width:80px;text-align:right;">
                             <f:facet name="header">
                                 <h:outputText value="#{budgetPlansBean.formatPeriodName(month, month%100 eq 10 or month%100 eq 1)}"/>
                             </f:facet>
+                            <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].plannedMinutes)}"
+                                          rendered="#{i%2 eq 0}"/>
                             <p:progressBar labelTemplate="{value}%"
-                                           value="#{vo.months[month].bookedMinutes*100/vo.months[month].plannedMinutes}"/>
-                            <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].plannedMinutes)}"/>
+                                           value="#{vo.months[month].bookedMinutes*100/vo.months[month].plannedMinutes}"
+                                           rendered="#{i%2 eq 1 and vo.months[month].plannedMinutes ne 0}"/>
+                            <h:outputText style="color: red;"
+                                          value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].bookedMinutes)}"
+                                          rendered="#{i%2 eq 1 and vo.months[month].plannedMinutes eq 0 and vo.months[month].bookedMinutes ne 0}"/>
                         </p:columns>
                         <p:columnGroup type="footer">
                             <p:row>
@@ -128,17 +134,60 @@
                                 </c:forEach>>
                             </p:row>
                             <p:row>
-                                <p:column style="text-align: right;" footerText="Sum:"/>
-                                <p:column colspan="12" style="text-align: right;">
-                                    <f:facet name="footer">
-                                        <h:outputText value="#{forecastsBean.totalSumEurosPlanned}">
-                                            <f:convertNumber type="currency" currencyCode="EUR" locale="de_DE"/>
-                                        </h:outputText>
-                                    </f:facet>
-                                </p:column>
+                                <p:column style="text-align: right;" footerText="Used [EUR]:"/>
+                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                    <p:column style="text-align: right;">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{forecastsBean.getColumnSumEurosBooked(month)}" rendered="#{forecastsBean.currentMonth ge month}">
+                                                <f:convertNumber type="currency" currencyCode="EUR" locale="de_DE"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </c:forEach>>
+                            </p:row>
+                            <p:row>
+                                <p:column style="text-align: right;" footerText="Plan Diff [EUR]:"/>
+                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                    <p:column style="text-align: right;">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{forecastsBean.getColumnSumEurosDiff(month)}" rendered="#{forecastsBean.currentMonth ge month and forecastsBean.getColumnSumEurosDiff(month) ge 0}" style="color:green;">
+                                                <f:convertNumber type="currency" currencyCode="EUR" locale="de_DE"/>
+                                            </h:outputText>
+                                            <h:outputText value="#{forecastsBean.getColumnSumEurosDiff(month)}" rendered="#{forecastsBean.currentMonth ge month and forecastsBean.getColumnSumEurosDiff(month) lt 0}" style="color:red;">
+                                                <f:convertNumber type="currency" currencyCode="EUR" locale="de_DE"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </c:forEach>>
                             </p:row>
                         </p:columnGroup>
                     </p:dataTable>
+                    
+                    <p:panelGrid columns="2" style="text-align: right;">
+                        <h:outputText value="Sum Plan:"/>
+                        <h:panelGroup>
+                            <h:outputText value="#{forecastsBean.totalSumEurosPlanned}">
+                                <f:convertNumber type="currency" currencyCode="EUR" locale="de_DE"/>
+                            </h:outputText>
+                        </h:panelGroup>
+
+                        <h:outputText value="Sum Used:"/>
+                        <h:panelGroup>
+                            <h:outputText value="#{forecastsBean.totalSumEurosBooked}">
+                                <f:convertNumber type="currency" currencyCode="EUR" locale="de_DE"/>
+                            </h:outputText>
+                        </h:panelGroup>
+
+                        <h:outputText value="Sum Plan Diff:"/>
+                        <h:panelGroup>
+                            <h:outputText value="#{forecastsBean.totalSumEurosDiff}" rendered="#{forecastsBean.totalSumEurosDiff ge 0}" style="color:green;">
+                                <f:convertNumber type="currency" currencyCode="EUR" locale="de_DE"/>
+                            </h:outputText>
+                            <h:outputText value="#{forecastsBean.totalSumEurosDiff}" rendered="#{forecastsBean.totalSumEurosDiff lt 0}" style="color:red;">
+                                <f:convertNumber type="currency" currencyCode="EUR" locale="de_DE"/>
+                            </h:outputText>
+                        </h:panelGroup>
+                    </p:panelGrid>
                     
                 </p:panel>
                 

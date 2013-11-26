@@ -17,6 +17,7 @@ import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 
 @Named
 @SessionScoped
@@ -26,7 +27,9 @@ public class BudgetsBean implements Serializable {
 
 	@EJB
 	private BudgetsEJBLocal ejb;
-	
+
+        private NumberFormat budgetTimeFormatter = NumberFormat.getNumberInstance(Locale.GERMANY);
+        
 	private Budget currentBudget = null;
 	private int currentBudgetHours = 0; // for editing Budget in hours
 	
@@ -110,10 +113,9 @@ public class BudgetsBean implements Serializable {
 	}
 	
 	public String getFormattedBudgetTime(int minutes) {
-		int hours = Math.abs(minutes / 60);
-		NumberFormat f = NumberFormat.getNumberInstance();
-		f.setMaximumFractionDigits(1);
-		return f.format(((float)hours)/8) + " PT";
+		float hours = ((float)Math.abs(minutes)) / 60;
+		budgetTimeFormatter.setMaximumFractionDigits(2);
+		return budgetTimeFormatter.format(hours/8) + " PT";
 	}
 
 	public void setCurrentBudgetHours(int currentBudgetHours) {
