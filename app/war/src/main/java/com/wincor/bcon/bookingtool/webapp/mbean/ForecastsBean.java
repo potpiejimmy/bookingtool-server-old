@@ -1,5 +1,6 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
+import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetPlansEJBLocal;
@@ -13,6 +14,7 @@ import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.ejb.ForecastsEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
+import com.wincor.bcon.bookingtool.server.vo.ForecastInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +43,8 @@ public class ForecastsBean implements Serializable, Converter {
     private List<ForecastInfoRowVo> rows = null;
     
     private DualListModel<BudgetPlan> assignedBudgetPlans = null;
+    
+    private boolean showDetails = false;
 
     public void clear() {
         newForecast();
@@ -123,9 +127,23 @@ public class ForecastsBean implements Serializable, Converter {
         if (current.getId() == null) return null;
         rows = new ArrayList<ForecastInfoRowVo>();
         for (BudgetPlan p : ejb.getAssignedBudgetPlans(current.getId())) {
-            ForecastInfoRowVo row = ejb.getForecastInfoForBudget(current.getId(), p.getBudgetId());
-            rows.add(row);
-            rows.add(row); // display two rows for each budget
+            ForecastInfoRowVo parentRow = ejb.getForecastInfoForBudget(current.getId(), p.getBudgetId());
+            rows.add(parentRow);
+
+            if (showDetails) {
+                // detail view: iterate over all leaf budgets:
+                for (Budget b : budgetsEjb.getLeafBudgets(p.getBudgetId())) {
+                    ForecastInfoRowVo row = ejb.getForecastInfoForBudget(current.getId(), b.getId());
+                    rows.add(row);
+                    // subtract planned and booked from parent for the detail view:
+                    for (int month : getMonthColumns()) {
+                        ForecastInfoVo myCell = row.getMonths().get(month);
+                        ForecastInfoVo parentCell = parentRow.getMonths().get(month);
+                        parentCell.setBookedMinutes(parentCell.getBookedMinutes() - myCell.getBookedMinutes());
+                        parentCell.setPlannedMinutes(parentCell.getPlannedMinutes() - myCell.getPlannedMinutes());
+                    }
+                }
+            }
         }
         return rows;
     }
@@ -189,6 +207,15 @@ public class ForecastsBean implements Serializable, Converter {
     public int getCurrentMonth() {
         Calendar cal = Calendar.getInstance();
         return cal.get(Calendar.YEAR) * 100 + (cal.get(Calendar.MONTH)+1);
+    }
+
+    public boolean isShowDetails() {
+        return showDetails;
+    }
+
+    public void setShowDetails(boolean showDetails) {
+        this.showDetails = showDetails;
+        this.rows = null; // reset rows
     }
 
     @Override

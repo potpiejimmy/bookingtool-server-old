@@ -19,71 +19,14 @@
                 <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
             </f:metadata>
                 
-            <h:form id="editforecastform">
-
-                <p:panel header="Create or edit forecast">
-
-                    <p:panelGrid columns="3" style="text-align: right;">
-
-                            <h:outputText value="Forecast ID:"/>
-                            <h:outputText value="#{forecastsBean.current.id eq null ? '&lt;New&gt;' : forecastsBean.current.id}"/>
-                            <p:outputPanel/>
-
-                            <h:outputText value="Forecast Name:"/>
-                            <p:inputText id="forecastName" value="#{forecastsBean.current.name}" size="32" required="true"/>
-                            <p:message for="forecastName"/>
-                            
-                            <h:outputText value="Fiscal Year:"/>
-                            <p:inputText id="fiscalYear" style="text-align: right;" value="#{forecastsBean.current.fiscalYear}" size="4" required="true">
-                                <f:validateLongRange minimum="2000" maximum="3000"/>
-                            </p:inputText>
-                            <p:message for="fiscalYear"/>
-                            
-                            <h:outputText value="Forecast Yearly Budget Amount:"/>
-                            <h:panelGroup>
-                                <h:outputLabel for="budgetAmount" value="EUR "/>
-                                <p:inputText id="budgetAmount" style="text-align: right;" value="#{forecastsBean.fcBudgetCents}" size="12" required="true">
-                                    <f:convertNumber locale="de_DE" maxFractionDigits="2" minFractionDigits="2"/>
-                                </p:inputText>
-                            </h:panelGroup>
-                            <p:message for="budgetAmount"/>
-                            
-                            <h:outputText value="Hourly rate:"/>
-                            <h:panelGroup>
-                                <h:outputLabel for="hourRate" value="EUR "/>
-                                <p:inputText id="hourRate" style="text-align: right;" value="#{forecastsBean.centsPerHour}" size="6" required="true">
-                                    <f:convertNumber locale="de_DE" maxFractionDigits="2" minFractionDigits="2"/>
-                                </p:inputText>
-                            </h:panelGroup>
-                            <p:message for="hourRate"/>
-                            
-                            <h:outputText value="Assigned Budget Plans:"/>
-                            <p:pickList id="assignedPlans" value="#{forecastsBean.assignedBudgetPlans}" var="item"
-                                        converter="#{forecastsBean}"
-                                        itemLabel="#{budgetsBean.getFullBudgetNameForId(item.budgetId)}"
-                                        itemValue="#{item}"/>
-                            <p:message for="assignedPlans"/>
-                            
-                    </p:panelGrid>
-
-                    <p>
-                        <p:commandButton value="#{forecastsBean.current.id eq null ? 'Create' : 'Save'}" action="#{forecastsBean.save}" ajax="false"/>
-                        <p:commandButton rendered="#{forecastsBean.current.id ne null}" value="Cancel" action="#{forecastsBean.clear}" ajax="false"/>
-                    </p>
-                </p:panel>
-
-            </h:form>        
-
             <h:form id="listform" rendered="#{forecastsBean.current.id eq null}">
                 
-                <hr/>
-			
                 <p:dataTable id="forecasts" var="f" value="#{forecastsBean.forecasts}">
                     <p:column headerText="Name">
                         <h:outputText value="#{f.name}"/>
                     </p:column>
                     <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
-                        <h:commandLink value="Show" action="#{forecastsBean.edit(f)}"/>,
+                        <h:commandLink value="Show / Edit" action="#{forecastsBean.edit(f)}"/>,
                         <h:commandLink value="Delete" action="#{forecastsBean.delete(f)}"/>
                     </p:column>
                 </p:dataTable>
@@ -92,27 +35,30 @@
 
             <h:form id="forecastviewform" rendered="#{forecastsBean.current.id ne null}">
                 
-                <hr/>
-			
                 <p:panel header="#{forecastsBean.current.name}">
                 
+                    <p:selectBooleanButton value="#{forecastsBean.showDetails}"
+                                           onLabel="Hide Details" offLabel="Show Details"
+                                           onIcon="ui-icon-check">  
+                        <p:ajax update=":forecastviewform"/>
+                    </p:selectBooleanButton>  
+                    
                     <p:dataTable value="#{forecastsBean.forecastRows}" var="vo" rowIndexVar="i">
                         <p:column headerText="Budget">
-                            <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budgetInfo.budget)}"
-                                          rendered="#{i%2 eq 0}"/>
+                            <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budgetInfo.budget)}"/>
                         </p:column>
                         <p:columns value="#{forecastsBean.monthColumns}" var="month" style="width:80px;text-align:right;">
                             <f:facet name="header">
                                 <h:outputText value="#{budgetPlansBean.formatPeriodName(month, month%100 eq 10 or month%100 eq 1)}"/>
                             </f:facet>
-                            <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].plannedMinutes)}"
-                                          rendered="#{i%2 eq 0}"/>
+                            <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].plannedMinutes)}"/>
+                            <br/>
                             <p:progressBar labelTemplate="{value}%"
                                            value="#{vo.months[month].bookedMinutes*100/vo.months[month].plannedMinutes}"
-                                           rendered="#{i%2 eq 1 and vo.months[month].plannedMinutes ne 0}"/>
+                                           rendered="#{vo.months[month].plannedMinutes ne 0 and forecastsBean.currentMonth ge month}"/>
                             <h:outputText style="color: red;"
                                           value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].bookedMinutes)}"
-                                          rendered="#{i%2 eq 1 and vo.months[month].plannedMinutes eq 0 and vo.months[month].bookedMinutes ne 0}"/>
+                                          rendered="#{vo.months[month].plannedMinutes eq 0 and vo.months[month].bookedMinutes ne 0}"/>
                         </p:columns>
                         <p:columnGroup type="footer">
                             <p:row>
@@ -192,6 +138,65 @@
                 </p:panel>
                 
             </h:form>
+
+            <h:form id="editforecastform">
+
+                <hr/>
+			
+                <p:panel header="Create or edit forecast">
+
+                    <p:panelGrid columns="3" style="text-align: right;">
+
+                            <h:outputText value="Forecast ID:"/>
+                            <h:outputText value="#{forecastsBean.current.id eq null ? '&lt;New&gt;' : forecastsBean.current.id}"/>
+                            <p:outputPanel/>
+
+                            <h:outputText value="Forecast Name:"/>
+                            <p:inputText id="forecastName" value="#{forecastsBean.current.name}" size="32" required="true"/>
+                            <p:message for="forecastName"/>
+                            
+                            <h:outputText value="Fiscal Year:"/>
+                            <p:inputText id="fiscalYear" style="text-align: right;" value="#{forecastsBean.current.fiscalYear}" size="4" required="true">
+                                <f:validateLongRange minimum="2000" maximum="3000"/>
+                            </p:inputText>
+                            <p:message for="fiscalYear"/>
+                            
+                            <h:outputText value="Forecast Yearly Budget Amount:"/>
+                            <h:panelGroup>
+                                <h:outputLabel for="budgetAmount" value="EUR "/>
+                                <p:inputText id="budgetAmount" style="text-align: right;" value="#{forecastsBean.fcBudgetCents}" size="12" required="true">
+                                    <f:convertNumber locale="de_DE" maxFractionDigits="2" minFractionDigits="2"/>
+                                </p:inputText>
+                            </h:panelGroup>
+                            <p:message for="budgetAmount"/>
+                            
+                            <h:outputText value="Hourly rate:"/>
+                            <h:panelGroup>
+                                <h:outputLabel for="hourRate" value="EUR "/>
+                                <p:inputText id="hourRate" style="text-align: right;" value="#{forecastsBean.centsPerHour}" size="6" required="true">
+                                    <f:convertNumber locale="de_DE" maxFractionDigits="2" minFractionDigits="2"/>
+                                </p:inputText>
+                            </h:panelGroup>
+                            <p:message for="hourRate"/>
+                            
+                    </p:panelGrid>
+
+                    <p>
+                        <h:outputText value="Assigned Budget Plans:"/><br/>
+                        <p:pickList id="assignedPlans" value="#{forecastsBean.assignedBudgetPlans}" var="item"
+                                    converter="#{forecastsBean}"
+                                    itemLabel="#{budgetsBean.getFullBudgetNameForId(item.budgetId)}"
+                                    itemValue="#{item}"/>
+                        <p:message for="assignedPlans"/>
+                    </p>
+                        
+                    <p>
+                        <p:commandButton value="#{forecastsBean.current.id eq null ? 'Create' : 'Save'}" action="#{forecastsBean.save}" ajax="false"/>
+                        <p:commandButton rendered="#{forecastsBean.current.id ne null}" value="Cancel" action="#{forecastsBean.clear}" ajax="false"/>
+                    </p>
+                </p:panel>
+
+            </h:form>        
 
         </ui:define>
         

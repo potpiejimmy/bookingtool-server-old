@@ -51,7 +51,7 @@
                      <groupId>com.wincor.bcon</groupId>
                      <artifactId>bookingtool-war</artifactId>
                      <!-- Define the context root for the webapp -->
-                     <contextRoot>/bookingtool</contextRoot>
+                     <contextRoot>/pt</contextRoot>
                   </webModule>
                </modules>
 			   <security>

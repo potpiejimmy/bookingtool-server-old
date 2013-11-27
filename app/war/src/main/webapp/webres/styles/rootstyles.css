@@ -36,3 +36,8 @@ html {
 #root_footer {
     font-size: 10pt;
 }
+
+.ui-picklist .ui-picklist-list { 
+   width: 400px;
+   height: 200px;
+}
