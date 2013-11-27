@@ -20,6 +20,8 @@ import com.wincor.bcon.bookingtool.server.ejb.BookingsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
+import java.util.Map;
+import org.primefaces.model.chart.PieChartModel;
 
 @Named
 @SessionScoped
@@ -39,6 +41,7 @@ public class BookingsBean implements Serializable {
 	private BookingTemplate currentTemplate = null;
 	
 	private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("EEEEE", Locale.GERMANY);
+	private final static DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMM", Locale.GERMANY);
 	
 	public List<Booking> getBookings() {
 		return bookingEjb.getBookings(WebUtils.getCurrentPerson(), current.getDay());
@@ -135,4 +138,20 @@ public class BookingsBean implements Serializable {
 		
 		currentTemplate = null;
 	}
+        
+        public PieChartModel getPieChart() {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(getCurrent().getDay());
+            Map<String,Number> sums = bookingEjb.getBookingSumsForMonth(
+                    WebUtils.getCurrentPerson(), 
+                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
+            if (sums.isEmpty()) sums.put("keine Buchungen", 1);
+            PieChartModel model = new PieChartModel();
+            model.setData(sums);
+            return model;
+        }
+        
+        public String getPieChartTitle() {
+            return "Buchungen im Monat " + MONTH_FORMATTER.format(getCurrent().getDay());
+        }
 }

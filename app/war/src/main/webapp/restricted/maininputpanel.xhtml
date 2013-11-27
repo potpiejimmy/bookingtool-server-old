@@ -22,7 +22,7 @@
 				<p:panelGrid columns="2">
 					<h:outputText value="Datum:"/>
 					<h:panelGroup>
-						<p:commandButton title="Zurück" immediate="true" process="@this" update=":currentTemplate,:viewform" id="back"  
+						<p:commandButton title="Zurück" immediate="true" process="@this" update=":currentTemplate,:viewform,:pieChart" id="back"  
 							actionListener="#{bookingsBean.changeDay(false)}" icon="ui-icon-carat-1-w"/>
 							
 						<p:calendar value="#{bookingsBean.current.day}" 
@@ -31,10 +31,10 @@
 						            pattern="dd. MMM yyyy"
 						            converter="dateConverter"
 						            showWeek="true">
-							<p:ajax event="dateSelect" update=":currentTemplate, :viewform"/>
+							<p:ajax event="dateSelect" update=":currentTemplate, :viewform, :pieChart"/>
 						</p:calendar>
 			
-						<p:commandButton style="margin-left:3px;" title="Vor" immediate="true" process="@this" update=":currentTemplate,:viewform" id="forward"  
+						<p:commandButton style="margin-left:3px;" title="Vor" immediate="true" process="@this" update=":currentTemplate,:viewform,:pieChart" id="forward"  
 							actionListener="#{bookingsBean.changeDay(true)}" icon="ui-icon-carat-1-e"/>
             				
 						<h:outputText id="formattedDay" value="#{bookingsBean.currentDayFormatted}" style="vertical-align: middle; margin-left:10px; font-size:small;"/>
@@ -159,7 +159,14 @@
 	                </p:column>
 	            </p:dataTable>
 			</h:form>
-
+                
+                <hr/>
+                
+                <p:outputPanel id="pieChart">
+                    <p:pieChart value="#{bookingsBean.pieChart}" legendPosition="e" fill="false" showDataLabels="true"  
+                                title="#{bookingsBean.pieChartTitle}" style="width:300px;height:200px" sliceMargin="5" diameter="120" />  
+                </p:outputPanel>
+ 
         </ui:define>
         
     </ui:composition>

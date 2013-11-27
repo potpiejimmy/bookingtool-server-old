@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Local;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
+import java.util.Map;
 
 @Local
 public interface BookingsEJBLocal {
@@ -31,6 +32,16 @@ public interface BookingsEJBLocal {
 	 */
 	public List<Booking> getBookingsByLastExportDay(String person, Date lastDay);
 
+        /**
+         * Returns the sum of booked minutes per BookingTemplate.type (NP,0W,1T)
+         * for the given month
+         * @param person a person name
+         * @param year the year, e.g. 2013
+         * @param month a month constant as defined by Calendar.JANUARY to Calendar.DECEMBER
+         * @return Map of booked minutes per booking type
+         */
+        public Map<String,Number> getBookingSumsForMonth(String person, int year, int month);
+        
 	/**
 	 * Returns the list of all booking for the given person and day
 	 * @param person a person name

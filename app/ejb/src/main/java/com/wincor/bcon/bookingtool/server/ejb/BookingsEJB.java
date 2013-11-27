@@ -10,6 +10,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
+import com.wincor.bcon.bookingtool.server.util.Utils;
+import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.TemporalType;
 
 @Stateless
 public class BookingsEJB implements BookingsEJBLocal {
@@ -38,7 +43,23 @@ public class BookingsEJB implements BookingsEJBLocal {
 		
 		return tq.getResultList();
 	}
-	
+        
+        @Override
+	@RolesAllowed({"admin", "user"})
+        public Map<String,Number> getBookingSumsForMonth(String person, int year, int month) {
+            TimePeriod timePeriod = Utils.timePeriodForMonth(year, month);
+            List<Object[]> sums = (List<Object[]>)em.createNamedQuery("Booking.sumsByTypeForPersonAndTimePeriod").
+                    setParameter("person", person).
+                    setParameter("from", new java.sql.Date(timePeriod.getFrom()), TemporalType.DATE).
+                    setParameter("to", new java.sql.Date(timePeriod.getTo()), TemporalType.DATE).
+                    getResultList();
+            Map<String,Number> result = new HashMap<String,Number>();
+            for (Object[] o : sums) {
+                result.put((String)o[0], (Number)o[1]);
+            }
+            return result;
+        }
+
 	@Override
 	@RolesAllowed({"admin", "user"})
 	public List<Booking> getBookings(String person, Date day) {

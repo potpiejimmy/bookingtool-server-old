@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Booking.findByDay", query = "SELECT b FROM Booking b WHERE b.day = :day"),
     @NamedQuery(name = "Booking.findByBudgetId", query = "SELECT b FROM Booking b,BookingTemplate t WHERE b.bookingTemplateId=t.id AND t.budgetId=:budgetId ORDER BY b.day DESC, b.person"),
     @NamedQuery(name = "Booking.findByPerson", query = "SELECT b FROM Booking b WHERE b.person = :person ORDER BY b.day DESC"),
-    @NamedQuery(name = "Booking.findByPersonAndDay", query = "SELECT b FROM Booking b WHERE b.person = :person AND b.day = :day")})
+    @NamedQuery(name = "Booking.findByPersonAndDay", query = "SELECT b FROM Booking b WHERE b.person = :person AND b.day = :day"),
+    @NamedQuery(name = "Booking.sumsByTypeForPersonAndTimePeriod", query = "SELECT t.type,SUM(b.minutes) FROM Booking b,BookingTemplate t WHERE b.bookingTemplateId=t.id AND b.person=:person AND b.day>=:from AND b.day<:to GROUP BY t.type")})
 public class Booking implements Serializable {
 	private static final long serialVersionUID = 1L;
 
