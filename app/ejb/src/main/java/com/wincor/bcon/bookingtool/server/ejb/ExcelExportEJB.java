@@ -17,6 +17,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
+import com.wincor.bcon.bookingtool.server.util.Utils;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -102,7 +103,7 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 			
 			//Bezeichnung der Tätigkeitsart
 			cell = row.createCell(cellPosition++) ;
-			cell.setCellValue(new HSSFRichTextString("0W".equals(bt.getType()) ? "Arbeitszeit" : "1T".equals(bt.getType()) ? "Reisezeit" : "nicht produktive Tätigkeiten"));
+			cell.setCellValue(new HSSFRichTextString(Utils.labelForBookingType(bt.getType(), false)));
 			
 			//Tätigkeit
 			cell = row.createCell(cellPosition++) ;

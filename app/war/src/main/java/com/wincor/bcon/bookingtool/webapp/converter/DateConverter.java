@@ -27,7 +27,7 @@ public class DateConverter implements Converter {
             	return dateFormat.parse(submittedValue);
             	
             } catch(ParseException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid player"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid date"));  
             }  
         }  
 	}

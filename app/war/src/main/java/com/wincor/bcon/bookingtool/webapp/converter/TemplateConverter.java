@@ -28,7 +28,7 @@ public class TemplateConverter implements Converter {
                 return bookingTemplateEJB.getBookingTemplate(number); 
   
             } catch(NumberFormatException exception) {  
-                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid player"));  
+                throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid templateId"));  
             }  
         }  
 	}

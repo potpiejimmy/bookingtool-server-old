@@ -22,7 +22,7 @@
 				<p:panelGrid columns="2">
 					<h:outputText value="Datum:"/>
 					<h:panelGroup>
-						<p:commandButton title="Zurück" immediate="true" process="@this" update=":currentTemplate,:viewform,:pieChart" id="back"  
+						<p:commandButton title="Zurück" immediate="true" process="@this" update=":currentTemplate,:viewform,pieChart" id="back"  
 							actionListener="#{bookingsBean.changeDay(false)}" icon="ui-icon-carat-1-w"/>
 							
 						<p:calendar value="#{bookingsBean.current.day}" 
@@ -31,10 +31,10 @@
 						            pattern="dd. MMM yyyy"
 						            converter="dateConverter"
 						            showWeek="true">
-							<p:ajax event="dateSelect" update=":currentTemplate, :viewform, :pieChart"/>
+							<p:ajax event="dateSelect" update=":currentTemplate, :viewform, pieChart"/>
 						</p:calendar>
 			
-						<p:commandButton style="margin-left:3px;" title="Vor" immediate="true" process="@this" update=":currentTemplate,:viewform,:pieChart" id="forward"  
+						<p:commandButton style="margin-left:3px;" title="Vor" immediate="true" process="@this" update=":currentTemplate,:viewform,pieChart" id="forward"  
 							actionListener="#{bookingsBean.changeDay(true)}" icon="ui-icon-carat-1-e"/>
             				
 						<h:outputText id="formattedDay" value="#{bookingsBean.currentDayFormatted}" style="vertical-align: middle; margin-left:10px; font-size:small;"/>
@@ -59,7 +59,9 @@
 
 				</p:panelGrid>
                                 <p/>
-				<p:panelGrid columns="2" id="editPanel">
+                                <table><tr><td>
+                                    
+                                    <p:panelGrid columns="2" id="editPanel">
 					<h:outputText value="ID:"/>
 					<h:outputText id="ID" value="#{bookingsBean.current.id eq null ? '&lt;Neu&gt;' : bookingsBean.current.id}"/>
 					
@@ -119,7 +121,16 @@
 						<p:message for="minutes" display="text"/>
 					</h:panelGroup>
 
-				</p:panelGrid>
+                                    </p:panelGrid>
+                                            
+                                </td><td style="vertical-align: top;">
+                                    
+                                    <p:outputPanel id="pieChart">
+                                        <p:pieChart value="#{bookingsBean.pieChart}" legendPosition="e" fill="false" showDataLabels="true"  
+                                                    title="#{bookingsBean.pieChartTitle}" style="width:300px;height:240px" sliceMargin="5" diameter="120" />  
+                                    </p:outputPanel>
+                                    
+                                </td></tr></table>
 				
 				<p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}" value="#{bookingsBean.current.id eq null ? 'Hinzufügen' : 'Speichern'}" action="#{bookingsBean.save}" ajax="false"/>
 				<p:commandButton id="cancelBtn" rendered="#{bookingsBean.current.id ne null or bookingsBean.currentTemplate.id ne null}" value="Abbrechen" action="#{bookingsBean.clear}" ajax="false" immediate="true">
@@ -160,13 +171,6 @@
 	            </p:dataTable>
 			</h:form>
                 
-                <hr/>
-                
-                <p:outputPanel id="pieChart">
-                    <p:pieChart value="#{bookingsBean.pieChart}" legendPosition="e" fill="false" showDataLabels="true"  
-                                title="#{bookingsBean.pieChartTitle}" style="width:300px;height:200px" sliceMargin="5" diameter="120" />  
-                </p:outputPanel>
- 
         </ui:define>
         
     </ui:composition>

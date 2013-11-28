@@ -18,6 +18,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.BookingsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
+import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.Map;
@@ -147,11 +148,12 @@ public class BookingsBean implements Serializable {
                     cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
             if (sums.isEmpty()) sums.put("keine Buchungen", 1);
             PieChartModel model = new PieChartModel();
-            model.setData(sums);
+            for (String key : sums.keySet())
+                model.set(key + " " + Utils.labelForBookingType(key, true), sums.get(key));
             return model;
         }
         
         public String getPieChartTitle() {
-            return "Buchungen im Monat " + MONTH_FORMATTER.format(getCurrent().getDay());
+            return "Deine Buchungen im Monat " + MONTH_FORMATTER.format(getCurrent().getDay());
         }
 }

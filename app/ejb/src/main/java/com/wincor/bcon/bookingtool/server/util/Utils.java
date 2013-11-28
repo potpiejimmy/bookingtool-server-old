@@ -34,4 +34,20 @@ public class Utils {
         end.add(Calendar.MONTH, 1);
         return new TimePeriod(start.getTimeInMillis(), end.getTimeInMillis());
     }
+    
+    /**
+     * Returns the official label associated with the given booking type.
+     * @param type booking type, such as 0W or NP
+     * @param shorten return a shortened version of the label
+     * @return type label
+     */
+    public static String labelForBookingType(String type, boolean shorten) {
+        if ("0W".equals(type)) 
+            return "Arbeitszeit";
+        else if ("1T".equals(type)) 
+            return "Reisezeit";
+        else if ("NP".equals(type)) 
+            return shorten ? "Nicht-Prod." : "nicht produktive Tätigkeiten";
+        else return "Unbekannt";
+    }
 }
