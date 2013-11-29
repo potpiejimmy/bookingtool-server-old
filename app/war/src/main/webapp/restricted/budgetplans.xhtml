@@ -62,9 +62,6 @@
                 <p:dataTable id="plantable" var="vo" value="#{budgetPlansBean.leafBudgets}"
                              editable="true" editMode="cell">
                     
-                    <!--p:ajax event="cellEdit" update="valcols" /-->  
-                    <!--p:ajax event="rowEditCancel" update="plantable" /-->  
-                    
                     <p:column headerText="Budget Name">
                         <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budget)}" />
                     </p:column>
@@ -105,8 +102,13 @@
                 <hr/>
 			
                 <p:dataTable id="plans" var="plan" value="#{budgetPlansBean.budgetPlans}">
-                    <p:column headerText="Status">
-                        <h:outputText styleClass="ui-message-warn-icon" title="Incomplete" rendered="#{!budgetPlansBean.isPlanComplete(plan)}"/>
+                    <p:column headerText="Status" style="width: 32px;">
+                        <h:panelGroup rendered="#{!budgetPlansBean.isPlanComplete(plan)}">
+                            <h:outputText styleClass="ui-message-warn-icon" title="Incomplete"/>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{budgetPlansBean.isPlanComplete(plan)}">
+                            <span class="ui-button-icon-left ui-icon ui-c ui-icon-check"> </span>
+                        </h:panelGroup>
                     </p:column>
                     <p:column headerText="Budget">
                         #{budgetsBean.getFullBudgetNameForId(plan.budgetId)}

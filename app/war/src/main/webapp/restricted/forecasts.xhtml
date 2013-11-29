@@ -19,21 +19,25 @@
                 <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
             </f:metadata>
                 
-            <h:form id="listform" rendered="#{forecastsBean.current.id eq null}">
+            <h:form id="listform" rendered="#{forecastsBean.current eq null}">
                 
                 <p:dataTable id="forecasts" var="f" value="#{forecastsBean.forecasts}">
                     <p:column headerText="Name">
-                        <h:outputText value="#{f.name}"/>
+                        <h:graphicImage value="/webres/img/forecast.png" alt="forecast" title="Forecast" style="vertical-align: middle;"/>
+                        <span> </span>
+                        <h:commandLink value="#{f.name}" style="font-size: 12pt; vertical-align: middle;" action="#{forecastsBean.edit(f)}"/>
                     </p:column>
                     <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
                         <h:commandLink value="Show / Edit" action="#{forecastsBean.edit(f)}"/>,
                         <h:commandLink value="Delete" action="#{forecastsBean.delete(f)}"/>
                     </p:column>
                 </p:dataTable>
-                
+                <p>
+                    <h:commandLink value="New forecast" action="#{forecastsBean.newForecast}"/>
+                </p>
             </h:form>
 
-            <h:form id="forecastviewform" rendered="#{forecastsBean.current.id ne null}">
+            <h:form id="forecastviewform" rendered="#{forecastsBean.current ne null and forecastsBean.current.id ne null}">
                 
                 <p:panel header="#{forecastsBean.current.name}">
                 
@@ -151,11 +155,11 @@
                 
             </h:form>
 
-            <h:form id="editforecastform">
+            <h:form id="editforecastform" rendered="#{forecastsBean.current ne null}">
 
                 <hr/>
 			
-                <p:panel header="Create or edit forecast">
+                <p:panel header="#{forecastsBean.current.id eq null ? 'Create' : 'Edit'} forecast">
 
                     <p:panelGrid columns="3" style="text-align: right;">
 
@@ -204,7 +208,7 @@
                         
                     <p>
                         <p:commandButton value="#{forecastsBean.current.id eq null ? 'Create' : 'Save'}" action="#{forecastsBean.save}" ajax="false"/>
-                        <p:commandButton rendered="#{forecastsBean.current.id ne null}" value="Cancel" action="#{forecastsBean.clear}" ajax="false"/>
+                        <p:commandButton value="Cancel" action="#{forecastsBean.clear}" ajax="false" immediate="true"/>
                     </p>
                 </p:panel>
 

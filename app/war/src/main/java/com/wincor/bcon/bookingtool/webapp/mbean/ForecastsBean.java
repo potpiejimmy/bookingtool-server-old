@@ -42,23 +42,23 @@ public class ForecastsBean implements Serializable, Converter {
     
     private List<ForecastInfoRowVo> rows = null;
     
-    private DualListModel<BudgetPlan> assignedBudgetPlans = null;
+    private DualListModel<BudgetPlan> assignedBudgetPlans = new DualListModel<BudgetPlan>();
     
     private boolean showDetails = false;
 
     public void clear() {
-        newForecast();
+        current = null;
     }
     
-    protected void newForecast() {
+    public void newForecast() {
         current = new Forecast();
         
-        assignedBudgetPlans = new DualListModel<BudgetPlan>(budgetPlansEjb.getBudgetPlans(), new ArrayList<BudgetPlan>());
+        assignedBudgetPlans.setSource(budgetPlansEjb.getBudgetPlans());
+        assignedBudgetPlans.setTarget(new ArrayList<BudgetPlan>());
         rows = null;
     }
 
     public Forecast getCurrent() {
-        if (current == null) newForecast();
         return current;
     }
     
@@ -96,6 +96,7 @@ public class ForecastsBean implements Serializable, Converter {
     public void save() {
         try {
             current = ejb.saveForecast(current, assignedBudgetPlans.getTarget());
+            rows = null; // reset row data
         } catch (Exception ex) {
             WebUtils.addFacesMessage(ex);
         }
