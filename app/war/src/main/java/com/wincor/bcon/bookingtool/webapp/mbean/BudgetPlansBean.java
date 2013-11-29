@@ -129,6 +129,7 @@ public class BudgetPlansBean implements Serializable {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, period / 100);
         cal.set(Calendar.MONTH, (period%100) - 1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
         return (longFormat ? MONTH_FORMATTER_LONG : MONTH_FORMATTER_SHORT).format(cal.getTime());
     }
     
