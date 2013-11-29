@@ -73,7 +73,8 @@ public class BookingsBean implements Serializable {
 	public void setCurrentTemplate(BookingTemplate bt) {
 		this.currentTemplate = bt;
 		this.current.setSalesRepresentative(bt.getSalesRepresentative()); // adapt Vertriebsbeauftragter
-		this.current.setDescription(bt.getDescription()); // adapt description
+                if (this.current.getId() == null)
+                    this.current.setDescription(bt.getDescription()); // adapt description, but only for new bookings
 	}
         
         public BudgetInfoVo getCurrentBudget() {
@@ -146,7 +147,7 @@ public class BookingsBean implements Serializable {
             Map<String,Number> sums = bookingEjb.getBookingSumsForMonth(
                     WebUtils.getCurrentPerson(), 
                     cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
-            if (sums.isEmpty()) sums.put("keine Buchungen", 1);
+            if (sums.isEmpty()) sums.put("", 1);
             PieChartModel model = new PieChartModel();
             for (String key : sums.keySet())
                 model.set(key + " " + Utils.labelForBookingType(key, true), sums.get(key));

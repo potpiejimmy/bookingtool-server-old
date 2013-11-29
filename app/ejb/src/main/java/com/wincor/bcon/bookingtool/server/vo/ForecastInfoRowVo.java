@@ -18,6 +18,8 @@ public class ForecastInfoRowVo implements java.io.Serializable {
     
     private Map<Integer,ForecastInfoVo> months = null;
     
+    private boolean summaryRow = false;
+    
     public ForecastInfoRowVo(BudgetInfoVo budgetInfo) {
         this.budgetInfo = budgetInfo;
         this.months = new HashMap<Integer,ForecastInfoVo>();
@@ -29,5 +31,13 @@ public class ForecastInfoRowVo implements java.io.Serializable {
 
     public Map<Integer, ForecastInfoVo> getMonths() {
         return months;
+    }
+
+    public boolean isSummaryRow() {
+        return summaryRow;
+    }
+
+    public void setSummaryRow(boolean summaryRow) {
+        this.summaryRow = summaryRow;
     }
 }

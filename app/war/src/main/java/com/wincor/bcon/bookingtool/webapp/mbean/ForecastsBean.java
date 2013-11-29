@@ -121,6 +121,16 @@ public class ForecastsBean implements Serializable, Converter {
         }
     }
     
+    public String getBudgetDisplayName(Budget b) {
+        // display only budget name and maximum one parent
+        StringBuilder stb = new StringBuilder(b.getName());
+        if (b.getParentId() != null) {
+                b = budgetsEjb.getBudget(b.getParentId());
+                stb.insert(0, b.getName() + " \u25B6 ");
+        }
+        return stb.toString();
+    }
+
     public List<ForecastInfoRowVo> getForecastRows() {
         if (rows != null) return rows;
         
@@ -132,6 +142,7 @@ public class ForecastsBean implements Serializable, Converter {
 
             if (showDetails) {
                 // detail view: iterate over all leaf budgets:
+                parentRow.setSummaryRow(true);
                 for (Budget b : budgetsEjb.getLeafBudgets(p.getBudgetId())) {
                     ForecastInfoRowVo row = ejb.getForecastInfoForBudget(current.getId(), b.getId());
                     rows.add(row);

@@ -42,16 +42,28 @@
                                            onIcon="ui-icon-check">  
                         <p:ajax update=":forecastviewform"/>
                     </p:selectBooleanButton>  
+                    <p:ajaxStatus style="width:16px;height:16px;" id="ajaxStatusPanel">  
+                        <f:facet name="start">  
+                            <h:graphicImage value="/webres/img/ajax-loader.gif" />  
+                        </f:facet>  
+
+                        <f:facet name="complete">  
+                            <h:outputText value="" />  
+                        </f:facet>  
+                    </p:ajaxStatus>  
                     
-                    <p:dataTable value="#{forecastsBean.forecastRows}" var="vo" rowIndexVar="i">
-                        <p:column headerText="Budget">
-                            <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budgetInfo.budget)}"/>
+                    <p:dataTable value="#{forecastsBean.forecastRows}" var="vo"
+                                 rowIndexVar="i"
+                                 rowStyleClass="#{vo.summaryRow ? 'rowhighlight' : null}">
+                        <p:column headerText="Budget Plan">
+                            <h:outputText value="#{forecastsBean.getBudgetDisplayName(vo.budgetInfo.budget)}"/>
                         </p:column>
                         <p:columns value="#{forecastsBean.monthColumns}" var="month" style="width:80px;text-align:right;">
                             <f:facet name="header">
                                 <h:outputText value="#{budgetPlansBean.formatPeriodName(month, month%100 eq 10 or month%100 eq 1)}"/>
                             </f:facet>
-                            <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].plannedMinutes)}"/>
+                            <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].plannedMinutes)}"
+                                          rendered="#{!vo.summaryRow}"/>
                             <br/>
                             <p:progressBar labelTemplate="{value}%"
                                            value="#{vo.months[month].bookedMinutes*100/vo.months[month].plannedMinutes}"

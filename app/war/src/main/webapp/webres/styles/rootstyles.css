@@ -41,3 +41,7 @@ html {
    width: 400px;
    height: 200px;
 }
+
+.rowhighlight {
+    background-color: #CAE2FF;
+}
