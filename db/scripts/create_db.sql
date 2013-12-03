@@ -186,6 +186,7 @@ DROP TABLE IF EXISTS `forecast_budget_plan` ;
 CREATE  TABLE IF NOT EXISTS `forecast_budget_plan` (
   `forecast_id` INT NOT NULL ,
   `budget_plan_id` INT NOT NULL ,
+  `position` INT NULL ,
   PRIMARY KEY (`forecast_id`, `budget_plan_id`) ,
   INDEX `fk_forecast_budget_plan_budget_plan1_idx` (`budget_plan_id` ASC) ,
   CONSTRAINT `fk_forecast_budget_plan_forecast1`

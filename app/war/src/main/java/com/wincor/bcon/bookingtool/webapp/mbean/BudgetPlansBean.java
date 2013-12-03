@@ -48,11 +48,10 @@ public class BudgetPlansBean implements Serializable {
     private List<BudgetPlanVo> planData = null;
 
     public void clear() {
-            newBudgetPlan();
+            currentBudgetPlan = null;
     }
 
     public BudgetPlan getCurrentBudgetPlan() {
-            if (currentBudgetPlan == null) newBudgetPlan(); // lazy initialization to enable EJB access
             return currentBudgetPlan;
     }
 
@@ -139,7 +138,7 @@ public class BudgetPlansBean implements Serializable {
             throw new IllegalArgumentException("Invalid month: " + month);
     }
     
-    public void create() {
+    public void save() {
         try {
             currentBudgetPlan.setPlanBegin(periodStringToInt(currentBudgetPlanBegin));
             currentBudgetPlan.setPlanEnd(periodStringToInt(currentBudgetPlanEnd));
@@ -166,6 +165,7 @@ public class BudgetPlansBean implements Serializable {
             currentBudgetPlan = b;
             currentBudgetPlanBegin = periodIntToString(currentBudgetPlan.getPlanBegin());
             currentBudgetPlanEnd = periodIntToString(currentBudgetPlan.getPlanEnd());
+            currentProjectId = budgetsEjb.getBudget(currentBudgetPlan.getBudgetId()).getProjectId();
             
             List<Budget> leafBudgets = budgetsEjb.getLeafBudgets(currentBudgetPlan.getBudgetId());
             planData = new ArrayList<BudgetPlanVo>(leafBudgets.size());

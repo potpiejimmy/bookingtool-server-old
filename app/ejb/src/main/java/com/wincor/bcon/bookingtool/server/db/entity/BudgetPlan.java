@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name="budget_plan")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "BudgetPlan.findAll", query = "SELECT p FROM BudgetPlan p")})
+    @NamedQuery(name = "BudgetPlan.findAll", query = "SELECT p FROM BudgetPlan p, Budget b WHERE p.budgetId=b.id ORDER BY b.projectId,b.name")})
 
 public class BudgetPlan implements Serializable {
 	private static final long serialVersionUID = 1L;

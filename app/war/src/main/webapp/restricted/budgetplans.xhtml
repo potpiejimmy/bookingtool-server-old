@@ -18,46 +18,40 @@
                 <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
             </f:metadata>
                 
-            <h:form id="newplanform" rendered="#{budgetPlansBean.currentBudgetPlan.id eq null}">
+            <h:form id="viewform" rendered="#{budgetPlansBean.currentBudgetPlan eq null}">
+                
+                <p:dataTable id="plans" var="plan" value="#{budgetPlansBean.budgetPlans}">
+                    <p:column headerText="Status" style="width: 32px;">
+                        <h:panelGroup rendered="#{!budgetPlansBean.isPlanComplete(plan)}">
+                            <h:outputText styleClass="ui-message-warn-icon" title="Incomplete"/>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{budgetPlansBean.isPlanComplete(plan)}">
+                            <span class="ui-button-icon-left ui-icon ui-c ui-icon-check"> </span>
+                        </h:panelGroup>
+                    </p:column>
+                    <p:column headerText="Budget">
+                        #{budgetsBean.getFullBudgetNameForId(plan.budgetId)}
+                    </p:column>
+                    <p:column headerText="Project">
+                        <h:outputText value="#{budgetsBean.getProject(budgetsBean.getBudget(plan.budgetId).projectId).name}"/>
+                    </p:column>
+                    <p:column headerText="Period">
+                        <h:outputText value="#{budgetPlansBean.formatPeriodName(plan.planBegin,true)} - #{budgetPlansBean.formatPeriodName(plan.planEnd,true)}"/>
+                    </p:column>
+                    <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
+                        <h:commandLink value="Edit" action="#{budgetPlansBean.edit(plan)}"/>,
+                        <h:commandLink value="Delete" action="#{budgetPlansBean.delete(plan)}"/>
+                    </p:column>
+                </p:dataTable>  
+                
+                <p>
+                    <h:commandLink value="New budget plan" action="#{budgetPlansBean.newBudgetPlan}"/>
+                </p>
+            </h:form>
 
-                <p:panel header="Create new budget plan">
-
-                    <p:panelGrid columns="3">
-                            <h:outputText value="Select Project:"/>
-                            <p:selectOneMenu id="projectId" 
-                                             value="#{budgetPlansBean.currentProjectId}">
-                                    <f:selectItems value="#{budgetPlansBean.projectItems}"/>
-                                    <f:validateLongRange minimum="1"/>
-                                    <p:ajax event="change" update="budget"/>
-                            </p:selectOneMenu>
-                            <p:message for="projectId"/>
-
-                            <h:outputText value="Select Budget:"/>
-                            <p:selectOneMenu id="budget" value="#{budgetPlansBean.currentBudgetPlan.budgetId}">
-                                    <f:selectItems value="#{budgetPlansBean.budgetItems}"/>
-                                    <f:validateLongRange minimum="1"/>
-                            </p:selectOneMenu>
-                            <p:message for="budget"/>
-
-                            <h:outputText value="Planning Month Begin (YYYY/MM):"/>
-                            <p:inputMask id="planBegin" value="#{budgetPlansBean.currentBudgetPlanBegin}" mask="9999/99" size="8" required="true"/>
-                            <p:message for="planBegin"/>
-                            
-                            <h:outputText value="Planning Month End (YYYY/MM):"/>
-                            <p:inputMask id="planEnd" value="#{budgetPlansBean.currentBudgetPlanEnd}" mask="9999/99" size="8" required="true"/>
-                            <p:message for="planEnd"/>
-                            
-                    </p:panelGrid>
-
-                    <p>
-                        <p:commandButton value="Create Budget Plan" action="#{budgetPlansBean.create}" ajax="false"/>
-                        <p:commandButton rendered="#{budgetPlansBean.currentBudgetPlan.id ne null}" value="Cancel" action="#{budgetPlansBean.clear}" ajax="false"/>
-                    </p>
-                </p:panel>
-
-            </h:form>        
-
-            <h:form id="editplanform" rendered="#{budgetPlansBean.currentBudgetPlan.id ne null}">
+            <h:form id="editplanform" rendered="#{budgetPlansBean.currentBudgetPlan ne null and budgetPlansBean.currentBudgetPlan.id ne null}">
+                
+                <hr/>
                 
                 <p:dataTable id="plantable" var="vo" value="#{budgetPlansBean.leafBudgets}"
                              editable="true" editMode="cell">
@@ -97,35 +91,49 @@
                 <p:defaultCommand target="hiddenSubmit" />
             </h:form>
 
-            <h:form id="viewform" rendered="#{budgetPlansBean.currentBudgetPlan.id eq null}">
-                
+            <h:form id="newplanform" rendered="#{budgetPlansBean.currentBudgetPlan ne null}">
+
                 <hr/>
 			
-                <p:dataTable id="plans" var="plan" value="#{budgetPlansBean.budgetPlans}">
-                    <p:column headerText="Status" style="width: 32px;">
-                        <h:panelGroup rendered="#{!budgetPlansBean.isPlanComplete(plan)}">
-                            <h:outputText styleClass="ui-message-warn-icon" title="Incomplete"/>
-                        </h:panelGroup>
-                        <h:panelGroup rendered="#{budgetPlansBean.isPlanComplete(plan)}">
-                            <span class="ui-button-icon-left ui-icon ui-c ui-icon-check"> </span>
-                        </h:panelGroup>
-                    </p:column>
-                    <p:column headerText="Budget">
-                        #{budgetsBean.getFullBudgetNameForId(plan.budgetId)}
-                    </p:column>
-                    <p:column headerText="Project">
-                        <h:outputText value="#{budgetsBean.getProject(budgetsBean.getBudget(plan.budgetId).projectId).name}"/>
-                    </p:column>
-                    <p:column headerText="Period">
-                        <h:outputText value="#{budgetPlansBean.formatPeriodName(plan.planBegin,true)} - #{budgetPlansBean.formatPeriodName(plan.planEnd,true)}"/>
-                    </p:column>
-                    <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
-                        <h:commandLink value="Edit" action="#{budgetPlansBean.edit(plan)}"/>,
-                        <h:commandLink value="Delete" action="#{budgetPlansBean.delete(plan)}"/>
-                    </p:column>
-                </p:dataTable>  
-                
-            </h:form>
+                <p:panel header="#{budgetPlansBean.currentBudgetPlan.id eq null ? 'Create' : 'Edit'} budget plan">
+
+                    <p:panelGrid columns="3">
+                            <h:outputText value="Select Project:"/>
+                            <p:selectOneMenu id="projectId" 
+                                             value="#{budgetPlansBean.currentProjectId}"
+                                             disabled="#{budgetPlansBean.currentBudgetPlan.id ne null}">
+                                    <f:selectItems value="#{budgetPlansBean.projectItems}"/>
+                                    <f:validateLongRange minimum="1"/>
+                                    <p:ajax event="change" update="budget"/>
+                            </p:selectOneMenu>
+                            <p:message for="projectId"/>
+
+                            <h:outputText value="Select Budget:"/>
+                            <p:selectOneMenu id="budget"
+                                             value="#{budgetPlansBean.currentBudgetPlan.budgetId}"
+                                             disabled="#{budgetPlansBean.currentBudgetPlan.id ne null}">
+                                    <f:selectItems value="#{budgetPlansBean.budgetItems}"/>
+                                    <f:validateLongRange minimum="1"/>
+                            </p:selectOneMenu>
+                            <p:message for="budget"/>
+
+                            <h:outputText value="Planning Month Begin (YYYY/MM):"/>
+                            <p:inputMask id="planBegin" value="#{budgetPlansBean.currentBudgetPlanBegin}" mask="9999/99" size="8" required="true"/>
+                            <p:message for="planBegin"/>
+                            
+                            <h:outputText value="Planning Month End (YYYY/MM):"/>
+                            <p:inputMask id="planEnd" value="#{budgetPlansBean.currentBudgetPlanEnd}" mask="9999/99" size="8" required="true"/>
+                            <p:message for="planEnd"/>
+                            
+                    </p:panelGrid>
+
+                    <p>
+                        <p:commandButton value="Save" action="#{budgetPlansBean.save}" ajax="false"/>
+                        <p:commandButton value="Cancel" action="#{budgetPlansBean.clear}" ajax="false" immediate="true"/>
+                    </p>
+                </p:panel>
+
+            </h:form>        
 
         </ui:define>
         

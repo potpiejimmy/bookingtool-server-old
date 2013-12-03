@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name="forecast_budget_plan")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ForecastBudgetPlan.findByForecastId", query = "SELECT f FROM ForecastBudgetPlan f WHERE f.forecastId=:forecastId ORDER BY f.budgetPlanId"),
+    @NamedQuery(name = "ForecastBudgetPlan.findByForecastId", query = "SELECT f FROM ForecastBudgetPlan f WHERE f.forecastId=:forecastId ORDER BY f.position"),
     @NamedQuery(name = "ForecastBudgetPlan.deleteByForecastId", query = "DELETE FROM ForecastBudgetPlan f WHERE f.forecastId=:forecastId")})
 public class ForecastBudgetPlan implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -29,6 +29,9 @@ public class ForecastBudgetPlan implements Serializable {
 	@NotNull
 	@Column(name="budget_plan_id")
 	private Integer budgetPlanId;
+
+	@Column
+	private Integer position;
 
 	public ForecastBudgetPlan() {
 	}
@@ -47,5 +50,13 @@ public class ForecastBudgetPlan implements Serializable {
 
     public void setBudgetPlanId(Integer budgetPlanId) {
         this.budgetPlanId = budgetPlanId;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

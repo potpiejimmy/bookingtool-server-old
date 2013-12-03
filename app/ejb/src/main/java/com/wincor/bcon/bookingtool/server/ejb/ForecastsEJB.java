@@ -50,10 +50,12 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         }
         
         // save budget plan assignments:
+        int index = 0;
         for (BudgetPlan b : assignedBudgetPlans) {
             ForecastBudgetPlan p = new ForecastBudgetPlan();
             p.setForecastId(forecast.getId());
             p.setBudgetPlanId(b.getId());
+            p.setPosition(index++);
             em.persist(p);
         }
         
