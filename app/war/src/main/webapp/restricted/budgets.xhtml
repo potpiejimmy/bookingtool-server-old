@@ -107,6 +107,13 @@
 						               labelTemplate="{value}%"
 						               value="#{b.bookedMinutesRecursive*100/(b.budget.minutes ge 0 ? b.budget.minutes : -b.budget.minutes)}"/>
 					</p:column>
+					<p:column headerText="Templates" style="width:32px;">
+						<h:outputLink rendered="#{b.numberOfTemplates gt 0}"
+                                                              disabled="#{not request.isUserInRole('admin')}"
+                                                              value="templates.xhtml?filter=#{b.budget.id}">
+						    <h:outputText value="#{b.numberOfTemplates}"/>
+						</h:outputLink>
+					</p:column>
 					<p:column headerText="Bookings">
 						<p:commandLink ajax="false"
 						               rendered="#{b.bookedMinutes gt 0}"

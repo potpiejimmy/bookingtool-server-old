@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "BookingTemplate.findAll", query = "SELECT b FROM BookingTemplate b"),
     @NamedQuery(name = "BookingTemplate.findByProjectId", query = "SELECT bt FROM BookingTemplate bt, Budget bu WHERE bt.budgetId = bu.id AND bu.projectId = :projectId ORDER BY bt.salesRepresentative,bt.psp"),
+    @NamedQuery(name = "BookingTemplate.findByBudgetId", query = "SELECT bt FROM BookingTemplate bt WHERE bt.budgetId = :budgetId ORDER BY bt.salesRepresentative,bt.psp"),
     @NamedQuery(name = "BookingTemplate.findBySearchString", query = "SELECT b FROM BookingTemplate b WHERE b.searchString LIKE :searchString AND b.active = :active")})
 
 public class BookingTemplate implements Serializable {

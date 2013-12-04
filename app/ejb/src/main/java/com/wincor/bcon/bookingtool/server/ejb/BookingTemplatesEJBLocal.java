@@ -30,6 +30,13 @@ public interface BookingTemplatesEJBLocal {
 	public List<BookingTemplate> getBookingTemplatesByProjectId(int projectId);
 	
 	/**
+	 * Returns the booking templates associated with the given budget ID
+	 * @param budgetId a budget ID
+	 * @return a list of booking templates
+	 */
+	public List<BookingTemplate> getBookingTemplatesByBudgetId(int budgetId);
+	
+	/**
 	 * Saves or updates the given booking template
 	 * @param bookingTemplate a booking template
 	 */

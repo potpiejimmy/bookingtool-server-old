@@ -16,6 +16,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
+import javax.faces.context.FacesContext;
 
 @Named
 @SessionScoped
@@ -36,9 +37,24 @@ public class TemplatesBean implements Serializable {
 	
 	private BookingTemplate currentTemplate = null;
 	
+	private int budgetFilter = 0;
+
 	public TemplatesBean() {
 		clear();
 	}
+        
+        public void checkFilterRequestParam() {
+            String filter = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("filter");
+            if (filter != null) {
+                try {
+                    Budget filterBudget = budgetsEjb.getBudget(Integer.parseInt(filter));
+                    this.currentProjectId = filterBudget.getProjectId();
+                    this.budgetFilter = filterBudget.getId();
+                } catch (Exception ex) {
+                    // ignore
+                }
+            }
+        }
 
 	public void clear() {
 		currentTemplate = new BookingTemplate();
@@ -59,7 +75,9 @@ public class TemplatesBean implements Serializable {
 	}
 
 	public void setCurrentProjectId(int currentProjectId) {
-		this.currentProjectId = currentProjectId;
+                // clear filter if project changed:
+                if (this.currentProjectId != currentProjectId) budgetFilter = 0;
+                this.currentProjectId = currentProjectId;
 	}
 
 	public List<SelectItem> getProjectItems() {
@@ -72,7 +90,10 @@ public class TemplatesBean implements Serializable {
 	}
 	
 	public List<BookingTemplate> getTemplates() {
-		return ejb.getBookingTemplatesByProjectId(this.getCurrentProjectId());
+            if (budgetFilter > 0)
+                return ejb.getBookingTemplatesByBudgetId(budgetFilter);
+            else
+		return ejb.getBookingTemplatesByProjectId(getCurrentProjectId());
 	}
 	
 	public List<SelectItem> getBudgetItems() {
@@ -83,6 +104,24 @@ public class TemplatesBean implements Serializable {
 		}
 		return WebUtils.sortSelectItems(result);
 	}
+
+	public List<SelectItem> getBudgetFilterItems() {
+		List<Budget> budgets = budgetsEjb.getBudgets(currentProjectId);
+		List<SelectItem> result = new ArrayList<SelectItem>(budgets.size() + 1);
+		result.add(new SelectItem(0, "<Show all>"));
+		for (Budget b : budgets) {
+			result.add(new SelectItem(b.getId(), budgetsBean.getFullBudgetName(b)));
+		}
+		return WebUtils.sortSelectItems(result);
+	}
+	
+        public int getBudgetFilter() {
+                return budgetFilter;
+        }
+
+        public void setBudgetFilter(int budgetFilter) {
+                this.budgetFilter = budgetFilter;
+        }
         
         public String getBudgetDisplayName(int budgetId) {
             final int MAX_PART_SIZE = 32;

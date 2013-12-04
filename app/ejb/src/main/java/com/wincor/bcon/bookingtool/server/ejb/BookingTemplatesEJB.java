@@ -28,6 +28,11 @@ public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
 	}
 
 	@Override
+	public List<BookingTemplate> getBookingTemplatesByBudgetId(int budgetId) {
+		return em.createNamedQuery("BookingTemplate.findByBudgetId", BookingTemplate.class).setParameter("budgetId", budgetId).getResultList();
+	}
+
+	@Override
 	@RolesAllowed({"admin", "user"})
 	public BookingTemplate getBookingTemplate(int bookingTemplateId) {
 		return em.find(BookingTemplate.class, bookingTemplateId);

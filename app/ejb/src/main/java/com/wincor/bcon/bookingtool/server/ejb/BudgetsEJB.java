@@ -12,6 +12,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
+import javax.ejb.EJB;
 import javax.persistence.TemporalType;
 
 @Stateless
@@ -19,6 +20,9 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 
 	@PersistenceContext(unitName = "EJBsPU")
 	EntityManager em;
+        
+        @EJB
+        private BookingTemplatesEJBLocal bookingsEjb;
 	
 	@Override
 	@RolesAllowed({"admin","user"})
@@ -148,9 +152,12 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	}
 	
 	protected BudgetInfoVo toInfoVo(Budget budget, TimePeriod period) {
-		return new BudgetInfoVo(budget, period!=null ? 
+		BudgetInfoVo vo = new BudgetInfoVo(budget, period!=null ? 
                         getBookedMinutes(budget.getId(), period.getFrom(), period.getTo()) :
                         getBookedMinutes(budget.getId()));
+                // set the number of associated templates:
+                vo.setNumberOfTemplates(bookingsEjb.getBookingTemplatesByBudgetId(budget.getId()).size());
+                return vo;
 	}
 
 	protected List<BudgetInfoVo> toInfoVos(List<Budget> budgets) {

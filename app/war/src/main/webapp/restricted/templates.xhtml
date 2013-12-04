@@ -16,6 +16,7 @@
         
                     <f:metadata>
                         <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+                        <f:event type="preRenderView" listener="#{templatesBean.checkFilterRequestParam}"/>
                     </f:metadata>
                 
 			<h:form id="projectform">
@@ -92,6 +93,13 @@
 			<hr/>
 			
 			<h:form id="viewform">
+			
+				<p:panelGrid columns="2">
+					<h:outputText value="Filter Budget:"/>
+					<p:selectOneMenu value="#{templatesBean.budgetFilter}" onchange="this.form.submit()">
+						<f:selectItems value="#{templatesBean.budgetFilterItems}"/>
+					</p:selectOneMenu>
+				</p:panelGrid>
 			
 				<p:dataTable value="#{templatesBean.templates}" var="t">
 					<p:column headerText="ID">

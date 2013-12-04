@@ -10,6 +10,8 @@ public class BudgetInfoVo {
         
 	private int bookedMinutes = 0;
 	private int bookedMinutesRecursive = 0;
+        
+        private int numberOfTemplates = 0;
 
 	public BudgetInfoVo(Budget budget, int bookedMinutes) {
 		this.budget = budget;
@@ -40,12 +42,19 @@ public class BudgetInfoVo {
 		this.bookedMinutesRecursive = bookedMinutesRecursive;
 	}
 
-    public String getFullBudgetName() {
-        return fullBudgetName;
-    }
+        public int getNumberOfTemplates() {
+            return numberOfTemplates;
+        }
 
-    public void setFullBudgetName(String fullBudgetName) {
-        this.fullBudgetName = fullBudgetName;
-    }
-        
+        public void setNumberOfTemplates(int numberOfTemplates) {
+            this.numberOfTemplates = numberOfTemplates;
+        }
+
+        public String getFullBudgetName() {
+            return fullBudgetName;
+        }
+
+        public void setFullBudgetName(String fullBudgetName) {
+            this.fullBudgetName = fullBudgetName;
+        }
 }
