@@ -10,10 +10,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
+import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
+import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.util.Utils;
+import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 import java.util.HashMap;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.persistence.TemporalType;
 
 @Stateless
@@ -22,6 +26,9 @@ public class BookingsEJB implements BookingsEJBLocal {
 	@PersistenceContext(unitName = "EJBsPU")
 	EntityManager em;
 	
+        @EJB
+        private BudgetsEJBLocal budgetsEjb;
+        
 	@Override
 	@RolesAllowed({"admin"})
 	public List<Booking> getBookings() {
@@ -84,12 +91,30 @@ public class BookingsEJB implements BookingsEJBLocal {
 	@Override
 	@RolesAllowed({"admin", "user"})
 	public void saveBooking(Booking booking) {
+                assertNoOverrun(booking);
 		if (booking.getId() != null)
 			em.merge(booking);		// update the booking
 		else
 			em.persist(booking); 	//insert a new booking
 
 	}
+        
+        protected void assertNoOverrun(Booking booking) {
+            // get associated budget:
+            BookingTemplate t = em.find(BookingTemplate.class, booking.getBookingTemplateId());
+            Budget budget = em.find(Budget.class, t.getBudgetId());
+            if (budget.getAllowOverrun() == 1) return; // overrun allowed, everything is fine
+            
+            // check whether budget is about to overrun:
+            BudgetInfoVo budgetInfo = budgetsEjb.getBudgetInfo(budget.getId());
+            int usedMinutes = budgetInfo.getBookedMinutesRecursive();
+            // subtract old value in DB if editing:
+            if (booking.getId() != null) usedMinutes -= em.find(Booking.class, booking.getId()).getMinutes();
+            
+            // now check whether inserted or edited value will fit into the remaining budget:
+            if (usedMinutes + booking.getMinutes() > Math.abs(budgetInfo.getBudget().getMinutes()))
+                throw new IllegalStateException("Sorry, the remaining budget is insufficient and budget overrun is not allowed. Please contact your project manager to resolve this issue.");
+        }
 
 	@Override
 	@RolesAllowed({"admin", "user"})

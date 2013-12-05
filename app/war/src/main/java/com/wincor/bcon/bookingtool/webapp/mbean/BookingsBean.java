@@ -83,9 +83,13 @@ public class BookingsBean implements Serializable {
         }
 	
 	public void save() {
+            try {
 		current.setBookingTemplateId(currentTemplate.getId());
 		bookingEjb.saveBooking(current);
 		newBooking();
+            } catch (Exception ex) {
+                WebUtils.addFacesMessage(ex);
+            }
 	}
 	
 	public void edit(Booking v) {

@@ -197,6 +197,14 @@ public class BudgetsBean implements Serializable {
 		currentBudget.setProjectId(lastUsedProject);
 	}
         
+        public boolean isAllowOverrun() {
+            return currentBudget.getAllowOverrun() == 1;
+        }
+        
+        public void setAllowOverrun(boolean allowOverrun) {
+            currentBudget.setAllowOverrun(allowOverrun ? (byte)1 : (byte)0);
+        }
+        
         public static class BudgetVoComparator implements Comparator<BudgetInfoVo>
         {
             @Override

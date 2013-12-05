@@ -53,6 +53,10 @@ public class Budget implements Serializable {
 	@NotNull
 	private Integer projectId;
 
+	@Column(name="allow_overrun")
+	@NotNull
+	private byte allowOverrun;
+
 	public Budget() {
 	}
 
@@ -95,6 +99,14 @@ public class Budget implements Serializable {
 	public void setProjectId(Integer projectId) {
 		this.projectId = projectId;
 	}
+
+        public byte getAllowOverrun() {
+                return allowOverrun;
+        }
+
+        public void setAllowOverrun(byte allowOverrun) {
+                this.allowOverrun = allowOverrun;
+        }
 
 	@Override
     public int hashCode() {

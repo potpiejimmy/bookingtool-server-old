@@ -85,6 +85,12 @@
                                                            value="#{bookingsBean.currentBudget.bookedMinutesRecursive*100/(bookingsBean.currentBudget.budget.minutes ge 0 ? bookingsBean.currentBudget.budget.minutes : -bookingsBean.currentBudget.budget.minutes)}"/>
                                         </h:panelGroup>
 					
+					<h:outputText value="Budget Left:"/>
+                                        <h:panelGroup>
+                                            <h:outputText rendered="#{bookingsBean.currentBudget ne null}"
+                                                          value="#{bookingsBean.getFormattedBookingTime((bookingsBean.currentBudget.budget.minutes ge 0 ? bookingsBean.currentBudget.budget.minutes : -bookingsBean.currentBudget.budget.minutes) - bookingsBean.currentBudget.bookedMinutesRecursive)}"/>
+                                        </h:panelGroup>
+					
 					<h:outputText value="PSP:"/>
 					<h:outputText id="psp" value="#{bookingsBean.currentTemplate.psp}"/>
 					
