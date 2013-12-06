@@ -136,4 +136,11 @@ public interface BudgetsEJBLocal {
          */
         public boolean isDescendantOf(int parentBudgetId, int budgetId);
 
+        /**
+         * Calculates the budget prognosis and returns the offset to the
+         * budget amount.
+         * @param budget a budget
+         * @return the budget prognosis offset
+         */
+        public int getBudgetPrognosisOffset(BudgetInfoVo budget);
 }

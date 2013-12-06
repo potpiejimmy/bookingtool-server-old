@@ -208,4 +208,12 @@ public class BudgetsEJB implements BudgetsEJBLocal {
             }
             return false;
         }
+        
+        @Override
+        public int getBudgetPrognosisOffset(BudgetInfoVo budget) {
+            if (budget.getBudget().getWorkProgress() == null ||
+                budget.getBudget().getWorkProgress() == 0) return 0;
+            int prognosisMinutes = budget.getBookedMinutesRecursive() * 100 / budget.getBudget().getWorkProgress();
+            return prognosisMinutes - Math.abs(budget.getBudget().getMinutes());
+        }
 }

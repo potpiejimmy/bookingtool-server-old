@@ -27,6 +27,7 @@ CREATE  TABLE IF NOT EXISTS `budget` (
   `project_id` INT NOT NULL ,
   `parent_id` INT NULL ,
   `allow_overrun` TINYINT NOT NULL DEFAULT 0 ,
+  `work_progress` INT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_budget_project1_idx` (`project_id` ASC) ,
   INDEX `fk_budget_budget1_idx` (`parent_id` ASC) ,

@@ -57,6 +57,9 @@ public class Budget implements Serializable {
 	@NotNull
 	private byte allowOverrun;
 
+	@Column(name="work_progress")
+	private Integer workProgress;
+
 	public Budget() {
 	}
 
@@ -106,6 +109,14 @@ public class Budget implements Serializable {
 
         public void setAllowOverrun(byte allowOverrun) {
                 this.allowOverrun = allowOverrun;
+        }
+
+        public Integer getWorkProgress() {
+            return workProgress;
+        }
+
+        public void setWorkProgress(Integer workProgress) {
+            this.workProgress = workProgress;
         }
 
 	@Override

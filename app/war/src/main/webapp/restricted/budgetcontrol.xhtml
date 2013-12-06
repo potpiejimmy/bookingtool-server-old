@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="#{request.isUserInRole('admin') ? 6 : 3}" />
+
+        <ui:define name="pagetitle">Budget Control</ui:define>
+        
+        <ui:define name="body">
+
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+            </f:metadata>
+
+                <h:form id="projectform">
+
+                        <p:panelGrid columns="2">
+                                <h:outputText value="Select Project:"/>
+                                <h:panelGroup>
+                                    <p:selectOneMenu value="#{budgetControlBean.projectId}" onchange="this.form.submit()">
+                                            <f:selectItems value="#{budgetControlBean.projectItems}"/>
+                                            <f:validateLongRange minimum="1"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
+                        </p:panelGrid>
+
+                </h:form>
+
+                <p/>
+
+                <h:form id="viewform">
+
+                        <p:dataTable id="outputTable" value="#{budgetControlBean.rows}" var="b"
+                                     editable="true" editMode="cell">
+                                <p:column headerText="Name">
+                                    <h:outputText value="#{budgetsBean.getFullBudgetName(b.budget)}"/>
+                                </p:column>
+                                <p:column headerText="Budget">
+                                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.budget.minutes)}"/>
+                                </p:column>
+                                <p:column headerText="Used">
+                                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.bookedMinutesRecursive)}"/>
+                                </p:column>
+                                <p:column headerText="Used [%]">
+                                        <p:progressBar rendered="#{b.budget.minutes ne 0}"
+                                                       labelTemplate="{value}%"
+                                                       value="#{b.bookedMinutesRecursive*100/(b.budget.minutes ge 0 ? b.budget.minutes : -b.budget.minutes)}"/>
+                                </p:column>
+                                <p:column headerText="Edit Work Progress" style="width:64px;" rendered="#{request.isUserInRole('admin')}">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{b.budget.workProgress}%" rendered="#{b.budget.workProgress ne null and b.budget.workProgress gt 0}">
+                                                <f:convertNumber locale="de_DE"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputText value="#{b.budget.workProgress}" style="text-align: right;" size="2">
+                                                <f:convertNumber locale="de_DE"/>
+                                            </p:inputText>
+                                        </f:facet>  
+                                    </p:cellEditor>
+                                </p:column>
+                                <p:column headerText="Work Progress [%]">
+                                        <p:progressBar rendered="#{b.budget.workProgress ne null and b.budget.workProgress gt 0}"
+                                                       labelTemplate="{value}%"
+                                                       value="#{b.budget.workProgress}"/>
+                                </p:column>
+                                <p:column headerText="Prognosis">
+                                    <h:outputText value="#{budgetControlBean.getFormattedBudgetOffset(budgetControlBean.getBudgetPrognosisOffset(b))}"
+                                                  style="#{budgetControlBean.getBudgetPrognosisOffset(b) gt 0 ? 'color:red;' : 'color:green;'}"/>
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{budgetControlBean.formattedSumBudgetOffset}"
+                                                      style="#{budgetControlBean.sumBudgetOffset gt 0 ? 'color:red;' : 'color:green;'}"/>
+                                    </f:facet>
+                                </p:column>
+                        </p:dataTable>
+                    <p>
+                        <p:commandButton id="hiddenSubmit" style="display: none;" update="outputTable"/>
+                        <p:commandButton value="Save" action="#{budgetControlBean.save}" ajax="false" rendered="#{request.isUserInRole('admin') and budgetControlBean.rows.size() gt 0}"/>
+                    </p>
+                    <p:defaultCommand target="hiddenSubmit" />
+                    
+                </h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+
