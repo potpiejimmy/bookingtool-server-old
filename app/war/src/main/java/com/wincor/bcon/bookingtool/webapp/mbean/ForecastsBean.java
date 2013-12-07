@@ -45,6 +45,7 @@ public class ForecastsBean implements Serializable, Converter {
     private DualListModel<BudgetPlan> assignedBudgetPlans = new DualListModel<BudgetPlan>();
     
     private boolean showDetails = false;
+    private boolean showIfrs = false;
 
     public void clear() {
         current = null;
@@ -91,6 +92,15 @@ public class ForecastsBean implements Serializable, Converter {
 
     public void setCentsPerHour(Float centsPerHour) {
         current.setCentsPerHour(Math.round(centsPerHour*100));
+    }
+	
+    public Float getCentsPerHourIfrs() {
+        if (current.getCentsPerHourIfrs()==null) return null;
+        return ((float)current.getCentsPerHourIfrs())/100;
+    }
+
+    public void setCentsPerHourIfrs(Float centsPerHourIfrs) {
+        current.setCentsPerHourIfrs(Math.round(centsPerHourIfrs*100));
     }
 	
     public void save() {
@@ -181,19 +191,23 @@ public class ForecastsBean implements Serializable, Converter {
         return result;
     }
 
+    protected Float minutesToEuro(int minutes) {
+        return ((float)minutes)/60 * (showIfrs ? current.getCentsPerHourIfrs() : current.getCentsPerHour()) / 100;
+    }
+    
     public Float getColumnSumEurosPlanned(int month) {
-        return ((float)getColumnSumMinutesPlanned(month))/60 * current.getCentsPerHour() / 100;
+        return minutesToEuro(getColumnSumMinutesPlanned(month));
     }
 
     public Float getTotalSumEurosPlanned() {
         int sumMinutes = 0;
         for (int month : getMonthColumns())
             sumMinutes += getColumnSumMinutesPlanned(month);
-        return ((float)sumMinutes)/60 * current.getCentsPerHour() / 100;
+        return minutesToEuro(sumMinutes);
     }
 
     public Float getColumnSumEurosBooked(int month) {
-        return ((float)getColumnSumMinutesBooked(month))/60 * current.getCentsPerHour() / 100;
+        return minutesToEuro(getColumnSumMinutesBooked(month));
     }
 
     public Float getTotalSumEurosBooked() {
@@ -201,7 +215,7 @@ public class ForecastsBean implements Serializable, Converter {
         for (int month : getMonthColumns())
             if (month <= getCurrentMonth())
                 sumMinutes += getColumnSumMinutesBooked(month);
-        return ((float)sumMinutes)/60 * current.getCentsPerHour() / 100;
+        return minutesToEuro(sumMinutes);
     }
 
     public Float getColumnSumEurosDiff(int month) {
@@ -213,7 +227,7 @@ public class ForecastsBean implements Serializable, Converter {
         for (int month : getMonthColumns())
             if (month <= getCurrentMonth())
                 diffMinutes += getColumnSumMinutesPlanned(month) - getColumnSumMinutesBooked(month);
-        return ((float)diffMinutes)/60 * current.getCentsPerHour() / 100;
+        return minutesToEuro(diffMinutes);
     }
 
     public int getCurrentMonth() {
@@ -228,6 +242,14 @@ public class ForecastsBean implements Serializable, Converter {
     public void setShowDetails(boolean showDetails) {
         this.showDetails = showDetails;
         this.rows = null; // reset rows
+    }
+
+    public boolean isShowIfrs() {
+        return showIfrs;
+    }
+
+    public void setShowIfrs(boolean showIfrs) {
+        this.showIfrs = showIfrs;
     }
 
     @Override

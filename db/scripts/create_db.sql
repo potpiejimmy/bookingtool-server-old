@@ -176,6 +176,7 @@ CREATE  TABLE IF NOT EXISTS `forecast` (
   `fiscal_year` INT NOT NULL ,
   `fc_budget_cents` INT NOT NULL ,
   `cents_per_hour` INT NOT NULL ,
+  `cents_per_hour_ifrs` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 

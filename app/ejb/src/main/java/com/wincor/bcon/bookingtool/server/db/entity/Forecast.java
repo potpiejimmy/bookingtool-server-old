@@ -44,6 +44,10 @@ public class Forecast implements Serializable {
 	@NotNull
 	private Integer centsPerHour;
 
+	@Column(name="cents_per_hour_ifrs")
+	@NotNull
+	private Integer centsPerHourIfrs;
+
 	public Forecast() {
 	}
 
@@ -85,6 +89,14 @@ public class Forecast implements Serializable {
 
     public void setCentsPerHour(Integer centsPerHour) {
         this.centsPerHour = centsPerHour;
+    }
+
+    public Integer getCentsPerHourIfrs() {
+        return centsPerHourIfrs;
+    }
+
+    public void setCentsPerHourIfrs(Integer centsPerHourIfrs) {
+        this.centsPerHourIfrs = centsPerHourIfrs;
     }
 	
 	@Override
