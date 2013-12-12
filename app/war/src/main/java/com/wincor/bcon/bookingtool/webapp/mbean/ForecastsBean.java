@@ -21,6 +21,7 @@ import java.util.Calendar;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.inject.Inject;
 import org.primefaces.model.DualListModel;
 
 @Named
@@ -37,6 +38,9 @@ public class ForecastsBean implements Serializable, Converter {
 
     @EJB
     private BudgetPlansEJBLocal budgetPlansEjb;
+    
+    @Inject
+    private BudgetsBean budgetsBean;
 
     private Forecast current = null;
     
@@ -222,6 +226,10 @@ public class ForecastsBean implements Serializable, Converter {
         return getColumnSumEurosPlanned(month) - getColumnSumEurosBooked(month);
     }
     
+    public Float getColumnSumEurosDiffFcBudget(int month) {
+        return ((float)current.getFcBudgetCents())/1200 - getColumnSumEurosBooked(month);
+    }
+    
     public Float getTotalSumEurosDiff() {
         int diffMinutes = 0;
         for (int month : getMonthColumns())
@@ -251,6 +259,12 @@ public class ForecastsBean implements Serializable, Converter {
     public void setShowIfrs(boolean showIfrs) {
         this.showIfrs = showIfrs;
     }
+
+    public String getFormattedBudgetOffset(int minutes) {
+        if (minutes == 0) return "\u00B10";
+        return (minutes > 0 ? "+" : "-") + budgetsBean.getFormattedBudgetTime(minutes);
+    }
+    
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {

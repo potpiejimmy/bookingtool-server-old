@@ -27,7 +27,7 @@ public class ExcelExportBean implements Serializable {
 	private ExcelExportEJBLocal myExcelExportEJB; 
 	
 	private HSSFWorkbook wb = null;
-	private Integer weeksToExport = 2;
+	private Integer weeksToExport = 1;
 	
         public String getCurrentUserName() {
             return WebUtils.getCurrentPerson();
