@@ -178,7 +178,7 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	}
 	
 	protected BudgetInfoVo calculateBudget(BudgetInfoVo budget, TimePeriod period) {
-		List<BudgetInfoVo> childBudgets = getBudgetInfosForParent(budget.getBudget().getProjectId(), budget.getBudget().getId(), period);
+		List<Budget> childBudgets = getBudgetsForParent(budget.getBudget().getId());
 		if (childBudgets.isEmpty()) {
 			// leaf budget
 			//change prefix if budget was a root in his previous life
@@ -190,8 +190,8 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 		
 		int sum = 0;
 		int sumBookedRecursive = budget.getBookedMinutes();
-		for (BudgetInfoVo b : childBudgets) {
-			BudgetInfoVo child = calculateBudget(b, period); 
+		for (Budget b : childBudgets) {
+			BudgetInfoVo child = calculateBudget(toInfoVo(b, period), period); 
 			sum += Math.abs(child.getBudget().getMinutes());
 			sumBookedRecursive += child.getBookedMinutesRecursive();
 		}
