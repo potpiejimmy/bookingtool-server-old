@@ -34,6 +34,8 @@ public class BudgetsBean implements Serializable {
 	private int currentBudgetHours = 0; // for editing Budget in hours
 	
 	private int parentFilter = 0;
+        
+        private List<BudgetInfoVo> currentRows = null;
 
 	public void clear() {
 		newBudget();
@@ -60,6 +62,7 @@ public class BudgetsBean implements Serializable {
 
 	public void setCurrentProjectId(int currentProjectId) {
 		getCurrentBudget().setProjectId(currentProjectId);
+                currentRows = null; // reset row data if changing project
 		parentFilter = 0; // reset filter if changing project
 		newBudget(); // and reset input fields
 	}
@@ -73,15 +76,17 @@ public class BudgetsBean implements Serializable {
 	}
 	
 	public List<BudgetInfoVo> getBudgets() {
+            if (currentRows == null) {
 		if (parentFilter < 0) {
-			List<BudgetInfoVo> budgets = ejb.getBudgetInfos(currentBudget.getProjectId());
+			currentRows = ejb.getBudgetInfos(currentBudget.getProjectId());
                         // for the full list of budgets, sort by full budget name:
-                        for (BudgetInfoVo b : budgets) b.setFullBudgetName(getFullBudgetName(b.getBudget()));
-                        Collections.sort(budgets, new BudgetVoComparator());
-                        return budgets;
+                        for (BudgetInfoVo b : currentRows) b.setFullBudgetName(getFullBudgetName(b.getBudget()));
+                        Collections.sort(currentRows, new BudgetVoComparator());
                 } else {
-			return ejb.getBudgetInfosForParent(currentBudget.getProjectId(), parentFilter == 0 ? null : parentFilter);
+			currentRows = ejb.getBudgetInfosForParent(currentBudget.getProjectId(), parentFilter == 0 ? null : parentFilter);
                 }
+            }
+            return currentRows;
 	}
 	
 	public List<SelectItem> getBudgetFilterItems() {
@@ -130,6 +135,7 @@ public class BudgetsBean implements Serializable {
 	public void setParentFilter(int parentFilter) {
 		this.parentFilter = parentFilter;
 		currentBudget.setParentId(parentFilter);
+                currentRows = null; // reset row data if changing filter
 	}
 	
 	public String getFullBudgetNameForId(Integer budgetId) {
@@ -153,6 +159,7 @@ public class BudgetsBean implements Serializable {
 				currentBudget.setParentId(null);
 			
 			ejb.saveBudget(currentBudget);
+                        currentRows = null; // reset row data on save
 			newBudget();
 		} catch (Exception ex) {
 			WebUtils.addFacesMessage(ex);
@@ -167,6 +174,7 @@ public class BudgetsBean implements Serializable {
 	public void delete(Budget b) {
 		try {
 			ejb.deleteBudget(b.getId());
+                        currentRows = null; // reset row data on delete
 		} catch (Exception ex) {
 			WebUtils.addFacesMessage(ex);
 		}

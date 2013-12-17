@@ -203,23 +203,31 @@ public class ForecastsBean implements Serializable, Converter {
         return minutesToEuro(getColumnSumMinutesPlanned(month));
     }
 
-    public Float getTotalSumEurosPlanned() {
+    public int getTotalSumMinutesPlanned() {
         int sumMinutes = 0;
         for (int month : getMonthColumns())
             sumMinutes += getColumnSumMinutesPlanned(month);
-        return minutesToEuro(sumMinutes);
+        return sumMinutes;
+    }
+
+    public Float getTotalSumEurosPlanned() {
+        return minutesToEuro(getTotalSumMinutesPlanned());
     }
 
     public Float getColumnSumEurosBooked(int month) {
         return minutesToEuro(getColumnSumMinutesBooked(month));
     }
 
-    public Float getTotalSumEurosBooked() {
+    public int getTotalSumMinutesBooked() {
         int sumMinutes = 0;
         for (int month : getMonthColumns())
             if (month <= getCurrentMonth())
                 sumMinutes += getColumnSumMinutesBooked(month);
-        return minutesToEuro(sumMinutes);
+        return sumMinutes;
+    }
+
+    public Float getTotalSumEurosBooked() {
+        return minutesToEuro(getTotalSumMinutesBooked());
     }
 
     public Float getColumnSumEurosDiff(int month) {
@@ -233,9 +241,20 @@ public class ForecastsBean implements Serializable, Converter {
     public Float getTotalSumEurosDiff() {
         int diffMinutes = 0;
         for (int month : getMonthColumns())
-            if (month <= getCurrentMonth())
+            if (month < getCurrentMonth())
                 diffMinutes += getColumnSumMinutesPlanned(month) - getColumnSumMinutesBooked(month);
         return minutesToEuro(diffMinutes);
+    }
+
+    public Float getTotalSumEurosDiffFcBudget() {
+        int bookedSoFar = 0;
+        int numberOfMonths = 0;
+        for (int month : getMonthColumns())
+            if (month < getCurrentMonth()) {
+                bookedSoFar += getColumnSumMinutesBooked(month);
+                numberOfMonths++;
+            }
+        return ((float)current.getFcBudgetCents())*numberOfMonths/1200 - minutesToEuro(bookedSoFar);
     }
 
     public int getCurrentMonth() {
