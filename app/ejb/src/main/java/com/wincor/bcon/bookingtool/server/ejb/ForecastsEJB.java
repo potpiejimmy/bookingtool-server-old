@@ -16,6 +16,7 @@ import com.wincor.bcon.bookingtool.server.vo.ForecastInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -34,11 +35,13 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     private BudgetPlansEJBLocal budgetPlansEjb;
     
     @Override
+    @RolesAllowed({"admin","user"})
     public List<Forecast> getForecasts() {
         return em.createNamedQuery("Forecast.findAll", Forecast.class).getResultList();
     }
 
     @Override
+    @RolesAllowed({"admin","user"})
     public Forecast saveForecast(Forecast forecast, List<BudgetPlan> assignedBudgetPlans) {
         if (forecast.getId() == null) {
             em.persist(forecast);
@@ -63,6 +66,7 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     }
 
     @Override
+    @RolesAllowed({"admin","user"})
     public void deleteForecast(int forecastId) {
         // delete existing assignments
         em.createNamedQuery("ForecastBudgetPlan.deleteByForecastId").setParameter("forecastId", forecastId).executeUpdate();

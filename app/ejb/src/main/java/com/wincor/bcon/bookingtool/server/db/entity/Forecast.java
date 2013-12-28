@@ -18,7 +18,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name="forecast")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Forecast.findAll", query = "SELECT f FROM Forecast f ORDER BY f.name")})
+    @NamedQuery(name = "Forecast.findAll", query = "SELECT f FROM Forecast f ORDER BY f.name"),
+    @NamedQuery(name = "Forecast.findByDomainId", query = "SELECT f FROM Forecast f WHERE f.domainId = :domainId ORDER BY f.name")})
 public class Forecast implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -47,6 +48,10 @@ public class Forecast implements Serializable {
 	@Column(name="cents_per_hour_ifrs")
 	@NotNull
 	private Integer centsPerHourIfrs;
+
+	@Column(name="domain_id")
+	@NotNull
+	private Integer domainId;
 
 	public Forecast() {
 	}
@@ -99,7 +104,15 @@ public class Forecast implements Serializable {
         this.centsPerHourIfrs = centsPerHourIfrs;
     }
 	
-	@Override
+    public Integer getDomainId() {
+        return domainId;
+    }
+
+    public void setDomainId(Integer domainId) {
+        this.domainId = domainId;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

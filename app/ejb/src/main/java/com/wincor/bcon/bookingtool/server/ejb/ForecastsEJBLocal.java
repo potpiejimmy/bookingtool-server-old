@@ -10,10 +10,12 @@ import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
 import java.util.List;
+import javax.ejb.Local;
 
 /**
  * Forecast enterprise java bean
  */
+@Local
 public interface ForecastsEJBLocal {
     
     /**

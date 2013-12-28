@@ -16,17 +16,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
- * The persistent class for the project database table.
+ * The persistent class for the domain database table.
  * 
  */
 @Entity
-@Table(name="project")
+@Table(name="domain")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Project.findAll", query = "SELECT p FROM Project p ORDER BY p.name"),
-    @NamedQuery(name = "Project.findByName", query = "SELECT p FROM Project p WHERE p.name = :name"),
-    @NamedQuery(name = "Project.findByDomainId", query = "SELECT p FROM Project p WHERE p.domainId = :domainId")})
-public class Project implements Serializable {
+    @NamedQuery(name = "Domain.findAll", query = "SELECT p FROM Domain p ORDER BY p.name"),
+    @NamedQuery(name = "Domain.findByName", query = "SELECT p FROM Domain p WHERE p.name = :name")})
+public class Domain implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -39,11 +38,7 @@ public class Project implements Serializable {
 	@Size(min = 1, max=64)
 	private String name;
 
-	@Column(name="domain_id")
-	@NotNull
-	private Integer domainId;
-
-	public Project() {
+	public Domain() {
 	}
 
 	public Integer getId() {
@@ -62,14 +57,6 @@ public class Project implements Serializable {
 		this.name = name;
 	}
 
-    public Integer getDomainId() {
-        return domainId;
-    }
-
-    public void setDomainId(Integer domainId) {
-        this.domainId = domainId;
-    }
-
 	@Override
     public int hashCode() {
         int hash = 0;
@@ -80,10 +67,10 @@ public class Project implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Project)) {
+        if (!(object instanceof Domain)) {
             return false;
         }
-        Project other = (Project) object;
+        Domain other = (Domain) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
