@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="2" />
+
+        <ui:define name="pagetitle">Domains Administration</ui:define>
+        
+        <ui:define name="body">
+        
+                    <f:metadata>
+                        <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+                    </f:metadata>
+                
+                        <h:form id="editform" rendered="#{request.isUserInRole('superuser') or domainsBean.currentDomain.id ne null}">
+			
+				<p:panelGrid columns="2">
+					<h:outputText value="Domain ID:"/>
+					<h:outputText value="#{domainsBean.currentDomain.id eq null ? '&lt;New&gt;' : domainsBean.currentDomain.id}"/>
+					<h:outputText value="Domain Name:"/>
+					<h:panelGroup>
+						<p:inputText id="domain" value="#{domainsBean.currentDomain.name}"/>
+						<p:message for="domain" display="text"/>
+					</h:panelGroup>
+				</p:panelGrid>
+				
+                            <p>
+                                <p:panel>
+                                    <h3>Domain users:</h3>
+                                    <p:pickList id="assignedUsers" value="#{domainsBean.assignedUsers}" var="item"
+                                                itemLabel="#{item}"
+                                                itemValue="#{item}"/>
+                                    <p:message for="assignedUsers"/>
+                                </p:panel>
+                            </p>
+                            
+				<p:commandButton value="#{domainsBean.currentDomain.id eq null ? 'Create' : 'Save'}" action="#{domainsBean.save}" ajax="false"/>
+				<p:commandButton rendered="#{domainsBean.currentDomain.id ne null}" value="Cancel" action="#{domainsBean.clear}" ajax="false"/>
+			
+			</h:form>        
+			
+			<hr/>
+			
+			<h:form id="viewform">
+			
+				<p:dataTable value="#{domainsBean.domains}" var="p">
+					<p:column headerText="ID">
+						<h:outputText value="#{p.id}"/>
+					</p:column>
+					<p:column headerText="Name">
+						<h:outputText value="#{p.name}"/>
+					</p:column>
+					<p:column headerText="Domain Users">
+                                                <h:outputText value="#{domainsBean.getAssignedUsersAsString(p)}"/>
+					</p:column>
+					<p:column headerText="Actions">
+	                    <p:commandLink value="Edit" action="#{domainsBean.edit(p)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>
+                            <p:outputPanel rendered="#{request.isUserInRole('superuser')}">, 
+                                <p:commandLink value="Delete" action="#{domainsBean.delete(p)}" ajax="false"/>
+                            </p:outputPanel>
+					</p:column>
+				</p:dataTable>
+			
+			</h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

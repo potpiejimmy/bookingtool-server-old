@@ -8,7 +8,6 @@ package com.wincor.bcon.bookingtool.server.ejb;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import com.wincor.bcon.bookingtool.server.db.entity.DomainUser;
-import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
 import com.wincor.bcon.bookingtool.server.db.entity.User;
 import java.util.ArrayList;
 import java.util.List;
