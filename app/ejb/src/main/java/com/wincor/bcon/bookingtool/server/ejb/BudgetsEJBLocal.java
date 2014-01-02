@@ -13,7 +13,7 @@ import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 public interface BudgetsEJBLocal {
 	
 	/**
-	 * Returns all projects in the "project" table
+	 * Returns all projects that are visible to the current user
 	 * @return list of projects
 	 */
 	public List<Project> getProjects();

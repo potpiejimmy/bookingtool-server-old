@@ -1,5 +1,6 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
+import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import java.io.Serializable;
 import java.util.List;
 
@@ -9,7 +10,10 @@ import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.DomainsEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
+import java.util.ArrayList;
+import javax.faces.model.SelectItem;
 
 @Named
 @SessionScoped
@@ -19,6 +23,9 @@ public class ProjectsBean implements Serializable {
 
 	@EJB
 	private BudgetsEJBLocal ejb;
+	
+	@EJB
+	private DomainsEJBLocal domainsEjb;
 	
 	private Project currentProject = new Project();
 
@@ -33,6 +40,18 @@ public class ProjectsBean implements Serializable {
 	public List<Project> getProjects() {
 		return ejb.getProjects();
 	}
+        
+        public List<SelectItem> getDomainItems() {
+		List<Domain> domains = domainsEjb.getDomains();
+		List<SelectItem> result = new ArrayList<SelectItem>(domains.size() + 1);
+                result.add(new SelectItem(0, "<Please choose>"));
+		for (Domain d : domains) {
+			result.add(new SelectItem(d.getId(), d.getName()));
+		}
+		return result;
+	}
+	
+
 	
 	public void save() {
 		ejb.saveProject(currentProject);
