@@ -262,6 +262,16 @@
                             <p:inputText id="forecastName" value="#{forecastsBean.current.name}" size="32" required="true"/>
                             <p:message for="forecastName"/>
                             
+                            <h:outputText value="Domain:"/>
+                            <h:panelGroup style="text-align: left;">
+                                <p:selectOneMenu id="fcDomain" value="#{forecastsBean.current.domainId}">
+                                        <f:selectItems value="#{projectsBean.domainItems}"/>
+                                        <f:validateLongRange minimum="1"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel value="Bitte mindestens eine Domain anlegen bzw zuweisen." rendered="#{projectsBean.domainItems.size() eq 1}" styleClass="ui-message-error ui-widget"/>
+                            </h:panelGroup>
+                            <p:message for="fcDomain"/>
+
                             <h:outputText value="Fiscal Year:"/>
                             <p:inputText id="fiscalYear" style="text-align: right;" value="#{forecastsBean.current.fiscalYear}" size="4" required="true">
                                 <f:validateLongRange minimum="2000" maximum="3000"/>

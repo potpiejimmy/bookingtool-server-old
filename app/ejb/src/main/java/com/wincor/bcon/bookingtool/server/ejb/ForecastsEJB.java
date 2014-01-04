@@ -8,6 +8,7 @@ package com.wincor.bcon.bookingtool.server.ejb;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
+import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
 import com.wincor.bcon.bookingtool.server.db.entity.ForecastBudgetPlan;
 import com.wincor.bcon.bookingtool.server.util.Utils;
@@ -29,6 +30,9 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     private EntityManager em;
     
     @EJB
+    private DomainsEJBLocal domainsEjb;
+    
+    @EJB
     private BudgetsEJBLocal budgetsEjb;
     
     @EJB
@@ -37,7 +41,10 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     @Override
     @RolesAllowed({"admin","user"})
     public List<Forecast> getForecasts() {
-        return em.createNamedQuery("Forecast.findAll", Forecast.class).getResultList();
+        List<Forecast> result = new ArrayList<Forecast>();
+        for (Domain domain : domainsEjb.getDomains())
+            result.addAll(em.createNamedQuery("Forecast.findByDomainId", Forecast.class).setParameter("domainId", domain.getId()).getResultList());
+        return result;
     }
 
     @Override

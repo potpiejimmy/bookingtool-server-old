@@ -9,7 +9,9 @@ package com.wincor.bcon.bookingtool.server.ejb;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlanItem;
+import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -23,6 +25,9 @@ public class BudgetPlansEJB implements BudgetPlansEJBLocal {
     private EntityManager em;
     
     @EJB
+    private DomainsEJBLocal domainsEjb;
+    
+    @EJB
     private BudgetsEJBLocal budgetsEjb;
 
     @Override
@@ -32,7 +37,10 @@ public class BudgetPlansEJB implements BudgetPlansEJBLocal {
     
     @Override
     public List<BudgetPlan> getBudgetPlans() {
-        return em.createNamedQuery("BudgetPlan.findAll", BudgetPlan.class).getResultList();
+        List<BudgetPlan> result = new ArrayList<BudgetPlan>();
+        for (Domain domain : domainsEjb.getDomains())
+            result.addAll(em.createNamedQuery("BudgetPlan.findByDomainId", BudgetPlan.class).setParameter("domainId", domain.getId()).getResultList());
+        return result;
     }
     
     @Override

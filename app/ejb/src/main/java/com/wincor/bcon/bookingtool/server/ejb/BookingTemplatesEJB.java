@@ -9,13 +9,19 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
+import com.wincor.bcon.bookingtool.server.db.entity.Domain;
+import java.util.ArrayList;
+import javax.ejb.EJB;
 
 @Stateless
 public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
 
 	@PersistenceContext(unitName = "EJBsPU")
 	EntityManager em;
-	
+
+        @EJB
+        private DomainsEJBLocal domainsEjb;
+        
 	@Override
 	@RolesAllowed({"admin", "user"})
 	public List<BookingTemplate> getBookingTemplates() {
@@ -59,11 +65,14 @@ public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
 	@Override
 	@RolesAllowed({"admin", "user"})
 	public List<BookingTemplate> findBookingTemplates(String searchString) {
-		
-		TypedQuery<BookingTemplate> tq = em.createNamedQuery("BookingTemplate.findBySearchString", BookingTemplate.class);
-		tq.setParameter("searchString", "%"+searchString.replace("*", "%").replace(" ", "%") +"%");
-		tq.setParameter("active", (byte)1);
-		
-		return tq.getResultList();
+		List<BookingTemplate> result = new ArrayList<BookingTemplate>();
+                for (Domain domain : domainsEjb.getDomains()) {
+                    TypedQuery<BookingTemplate> tq = em.createNamedQuery("BookingTemplate.findBySearchString", BookingTemplate.class);
+                    tq.setParameter("domainId", domain.getId());
+                    tq.setParameter("searchString", "%"+searchString.replace("*", "%").replace(" ", "%") +"%");
+                    tq.setParameter("active", (byte)1);
+                    result.addAll(tq.getResultList());
+                }		
+		return result;
 	}
 }
