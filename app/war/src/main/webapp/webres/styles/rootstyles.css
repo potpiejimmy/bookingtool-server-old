@@ -17,7 +17,7 @@ html {
 #root_header {
     background-color: #fff;
     font-family: Arial;
-    font-size: 12pt;
+    font-size: 13pt;
     padding: 5px;
     color: black;
     height: 42px;
@@ -35,6 +35,10 @@ html {
 
 #root_footer {
     font-size: 10pt;
+}
+
+.ui-widget, .ui-widget .ui-widget {
+    font-size: 85%;
 }
 
 .ui-picklist .ui-picklist-list { 

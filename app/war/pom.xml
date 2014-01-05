@@ -41,7 +41,7 @@
         </dependency>
         <dependency>
             <groupId>org.primefaces.themes</groupId>
-            <artifactId>bluesky</artifactId>
+            <artifactId>redmond</artifactId>
             <version>1.0.10</version>
         </dependency>
 		<!-- For primefaces enhanced file upload -->
