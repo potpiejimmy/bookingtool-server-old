@@ -57,7 +57,7 @@
 						<h:outputText value="#{p.name}"/>
 					</p:column>
 					<p:column headerText="Domain Users">
-                                                <h:outputText value="#{domainsBean.getAssignedUsersAsString(p)}"/>
+                                            <h:outputText value="#{domainsBean.getAssignedUsersAsString(p)}" escape="false"/>
 					</p:column>
 					<p:column headerText="Actions">
 	                    <p:commandLink value="Edit" action="#{domainsBean.edit(p)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>

@@ -54,6 +54,9 @@
 					<p:column headerText="Name">
 						<h:outputText value="#{p.name}"/>
 					</p:column>
+					<p:column headerText="Domain">
+						<h:outputText value="#{projectsBean.getDomain(p.domainId).name}"/>
+					</p:column>
 					<p:column headerText="Actions">
 	                    <p:commandLink value="Edit" action="#{projectsBean.edit(p)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,  
 	                    <p:commandLink value="Delete" action="#{projectsBean.delete(p)}" ajax="false"/>

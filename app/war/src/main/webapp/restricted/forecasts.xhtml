@@ -74,12 +74,11 @@
                     </h:panelGroup>
 
                     <p:dataTable value="#{forecastsBean.forecastRows}" var="vo"
-                                 rowIndexVar="i"
-                                 rowStyleClass="#{vo.summaryRow ? 'rowhighlight' : null}">
-                        <p:column headerText="Budget Plan">
+                                 rowIndexVar="i">
+                        <p:column styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" headerText="Budget Plan">
                             <h:outputText value="#{forecastsBean.getBudgetDisplayName(vo.budgetInfo.budget)}"/>
                         </p:column>
-                        <p:columns value="#{forecastsBean.monthColumns}" var="month" style="width:80px;text-align:right;">
+                        <p:columns styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" value="#{forecastsBean.monthColumns}" var="month" style="width:80px;text-align:right;">
                             <f:facet name="header">
                                 <h:outputText value="#{budgetPlansBean.formatPeriodName(month, month%100 eq 10 or month%100 eq 1)}"/>
                             </f:facet>

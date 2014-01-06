@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name="domain_user")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "DomainUser.findByDomainId", query = "SELECT f FROM DomainUser f WHERE f.domainId=:domainId"),
+    @NamedQuery(name = "DomainUser.findByDomainId", query = "SELECT f FROM DomainUser f WHERE f.domainId=:domainId ORDER BY f.userName"),
     @NamedQuery(name = "DomainUser.findByUserName", query = "SELECT f FROM DomainUser f WHERE f.userName=:userName"),
     @NamedQuery(name = "DomainUser.deleteByDomainId", query = "DELETE FROM DomainUser f WHERE f.domainId=:domainId")})
 public class DomainUser implements Serializable {

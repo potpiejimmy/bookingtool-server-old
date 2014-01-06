@@ -25,6 +25,13 @@ public interface DomainsEJBLocal {
     public List<Domain> getDomains();
     
     /**
+     * Get the domain for the given ID
+     * @param domainId a domain ID
+     * @return domain
+     */
+    public Domain getDomain(int domainId);
+    
+    /**
      * Saves a domain.
      * @param domain a domain
      * @param assignedUsers list of assigned user names

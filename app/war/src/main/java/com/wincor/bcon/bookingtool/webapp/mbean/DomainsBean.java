@@ -55,9 +55,14 @@ public class DomainsBean implements Serializable {
 
         public String getAssignedUsersAsString(Domain domain) {
             StringBuilder stb = new StringBuilder();
+            int i = 0;
             for (String user : ejb.getAssignedUsers(domain.getId())) {
-                if (stb.length() > 0) stb.append(", ");
-                stb.append(user);
+                if (i > 0) {
+                    stb.append(", ");
+                    if (i%5 == 0) stb.append("<br/>");
+                }
+                stb.append(user.replaceAll("<", "&lt;").replaceAll(">", "&gt;"));
+                i++;
             }
             return stb.toString();
         }

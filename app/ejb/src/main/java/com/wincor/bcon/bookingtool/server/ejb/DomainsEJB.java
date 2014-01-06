@@ -41,6 +41,12 @@ public class DomainsEJB implements DomainsEJBLocal {
             return result;
         }
     }
+    
+    @Override
+    @RolesAllowed({"superuser","admin","user"})
+    public Domain getDomain(int domainId) {
+        return em.find(Domain.class, domainId);
+    }
 
     @Override
     @RolesAllowed({"superuser","admin"})

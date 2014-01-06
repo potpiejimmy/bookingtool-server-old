@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Project.findAll", query = "SELECT p FROM Project p ORDER BY p.name"),
     @NamedQuery(name = "Project.findByName", query = "SELECT p FROM Project p WHERE p.name = :name"),
-    @NamedQuery(name = "Project.findByDomainId", query = "SELECT p FROM Project p WHERE p.domainId = :domainId")})
+    @NamedQuery(name = "Project.findByDomainId", query = "SELECT p FROM Project p WHERE p.domainId = :domainId ORDER BY p.name")})
 public class Project implements Serializable {
 	private static final long serialVersionUID = 1L;
 

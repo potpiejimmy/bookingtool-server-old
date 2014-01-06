@@ -51,7 +51,9 @@ public class ProjectsBean implements Serializable {
 		return result;
 	}
 	
-
+	public Domain getDomain(Integer domainId) {
+		return domainsEjb.getDomain(domainId);
+	}
 	
 	public void save() {
 		ejb.saveProject(currentProject);
