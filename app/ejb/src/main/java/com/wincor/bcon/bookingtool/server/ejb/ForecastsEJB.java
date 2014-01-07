@@ -14,6 +14,8 @@ import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -28,6 +30,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 
 @Stateless
 public class ForecastsEJB implements ForecastsEJBLocal {
@@ -153,14 +156,13 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     /**
      * Extends the forecast summary with aggregated sums for the sales report
      * @param forecastId a forecast ID
+     * @param cal report current month
      * @return info row object
      */
-    protected ForecastInfoRowVo getForecastInfoReportSummary(int forecastId) {
+    protected ForecastInfoRowVo getForecastInfoReportSummary(int forecastId, Calendar cal) {
         Forecast forecast = em.find(Forecast.class, forecastId);
         ForecastInfoRowVo summaryRow = getForecastInfoSummaryRow(forecastId);
         // summary row contains sums for all months of the year.
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, -1); // last month
         List<Integer> fiscalYearMonths = getMonthsForFiscalYear(forecast.getFiscalYear());
         int currentMonth = cal.get(Calendar.YEAR) * 100 + cal.get(Calendar.MONTH)+1;
         int currentMonthIndex = fiscalYearMonths.size(); // after last fiscal year month
@@ -202,6 +204,18 @@ public class ForecastsEJB implements ForecastsEJBLocal {
 
     @Override
     public HSSFWorkbook createSalesReport(int forecastId) {
+        Calendar reportCurrentMonth = Calendar.getInstance();
+        reportCurrentMonth.add(Calendar.MONTH, -1); // last month is the report's current month
+        final DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMMMMM");
+        
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(reportCurrentMonth.getTimeInMillis());
+        String currentMonth = MONTH_FORMATTER.format(cal.getTime());
+        cal.add(Calendar.MONTH, 1);
+        String currentMonthPlus1 = MONTH_FORMATTER.format(cal.getTime());
+        cal.add(Calendar.MONTH, 1);
+        String currentMonthPlus2 = MONTH_FORMATTER.format(cal.getTime());
+
         HSSFWorkbook wb = new HSSFWorkbook();
         HSSFSheet sheet = wb.createSheet();
 
@@ -209,6 +223,8 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         headerStyle.setWrapText(true);
         headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
         headerStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
+        headerStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
+        headerStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
 
         int rowIndex = 0;
         HSSFRow row;
@@ -265,13 +281,13 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         cell.setCellValue(new HSSFRichTextString("YTD\nw/o curr.\nmonth"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Curr. month"));
+        cell.setCellValue(new HSSFRichTextString("Curr. month\n\n"+currentMonth));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Month + 1"));
+        cell.setCellValue(new HSSFRichTextString("Month + 1\n\n"+currentMonthPlus1));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Month + 2"));
+        cell.setCellValue(new HSSFRichTextString("Month + 2\n\n"+currentMonthPlus2));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
         cell.setCellValue(new HSSFRichTextString("Month + 3\nuntil project\nend"));
@@ -355,29 +371,28 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         cell.setCellValue(new HSSFRichTextString("(%)"));
         cell.setCellStyle(headerStyle);
         
-        ForecastInfoRowVo summaryData = getForecastInfoReportSummary(forecastId);
+        ForecastInfoRowVo summaryData = getForecastInfoReportSummary(forecastId, reportCurrentMonth);
 
         sheet.createRow(rowIndex++);
         
-        row = sheet.createRow(rowIndex++);
-        addSalesReportRow(row, forecastId, summaryData, REPORT_ROW_SALES_XLE);
+        addSalesReportRow(sheet, rowIndex++, forecastId, summaryData, REPORT_ROW_SALES_XLE);
 
         sheet.createRow(rowIndex++);
         
-        row = sheet.createRow(rowIndex++);
-        addSalesReportRow(row, forecastId, summaryData, REPORT_ROW_SALES_IFRS);
+        addSalesReportRow(sheet, rowIndex++, forecastId, summaryData, REPORT_ROW_SALES_IFRS);
         
         sheet.createRow(rowIndex++);
         
-        row = sheet.createRow(rowIndex++);
-        addSalesReportRow(row, forecastId, summaryData, REPORT_ROW_EFFORTS);
+        addSalesReportRow(sheet, rowIndex++, forecastId, summaryData, REPORT_ROW_EFFORTS);
         
         sheet.autoSizeColumn(0);
                         
         return wb;
     }
     
-    protected void addSalesReportRow(HSSFRow row, int forecastId, ForecastInfoRowVo summaryData, int rowType) {
+    protected void addSalesReportRow(HSSFSheet sheet, int rowIndex, int forecastId, ForecastInfoRowVo summaryData, int rowType) {
+        HSSFRow row = sheet.createRow(rowIndex);
+        
         Forecast forecast = em.find(Forecast.class, forecastId);
         int colIndex = 0;
         
@@ -405,7 +420,7 @@ public class ForecastsEJB implements ForecastsEJBLocal {
                 cell.setCellValue((long)forecast.getFcBudgetCents() * forecast.getCentsPerHourIfrs() / forecast.getCentsPerHour() / 100);
                 break;
             case REPORT_ROW_EFFORTS:
-                cell.setCellValue(0);
+                cell.setCellValue(new HSSFRichTextString(""));
                 break;
         }
 
@@ -437,6 +452,10 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         cell = row.createCell(colIndex++);
         value = summaryData.getMonths().get(REPORT_COLUMN_CURRENT_MONTH_PLUS_3_UNTIL_END).getPlannedMinutes(); // planned
         addSalesReportColumn(forecast, cell, value, rowType);
+
+        // Total
+        cell = row.createCell(colIndex++);
+        cell.setCellFormula("SUM("+(char)('A'+colIndex-7)+(rowIndex+1)+":"+(char)('A'+colIndex-2)+(rowIndex+1)+")");
     }
     
     protected static void addSalesReportColumn(Forecast forecast, HSSFCell cell, int value, int rowType) {
