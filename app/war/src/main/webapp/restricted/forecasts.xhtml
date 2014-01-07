@@ -46,10 +46,20 @@
                                            onIcon="ui-icon-check">  
                         <p:ajax update=":forecastviewform"/>
                     </p:selectBooleanButton>  
+                    
                     <p:selectBooleanButton value="#{forecastsBean.showIfrs}"
                                            onLabel="Show XLE Billing" offLabel="Show IFRS Billing">  
                         <p:ajax update=":forecastviewform"/>
                     </p:selectBooleanButton>  
+                    
+                    <p:commandButton id="downloadSalesReport"
+                                     value="Sales Report"
+                                     ajax="false"
+                                     onclick="PrimeFaces.monitorDownload(start, stop)"
+                                     icon="ui-icon-arrowthick-1-s">
+                        <p:fileDownload value="#{forecastsBean.salesReport}" />  
+                    </p:commandButton>
+                    
                     <p:ajaxStatus style="width:16px;height:16px;" id="ajaxStatusPanel">  
                         <f:facet name="start">  
                             <h:graphicImage value="/webres/img/ajax-loader.gif" />  

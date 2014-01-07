@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.inject.Inject;
 import org.primefaces.model.DualListModel;
+import org.primefaces.model.StreamedContent;
 
 @Named
 @SessionScoped
@@ -284,6 +285,9 @@ public class ForecastsBean implements Serializable, Converter {
         return (minutes > 0 ? "+" : "-") + budgetsBean.getFormattedBudgetTime(minutes);
     }
     
+    public StreamedContent getSalesReport() {
+        return ExcelExportBean.streamForWorkbook(ejb.createSalesReport(current.getId()), "sales_report");
+    }
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {

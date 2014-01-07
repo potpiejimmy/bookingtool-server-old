@@ -47,4 +47,9 @@ public class ForecastInfoVo implements java.io.Serializable {
     public void setBookedMinutes(int bookedMinutes) {
         this.bookedMinutes = bookedMinutes;
     }
+    
+    public void add(ForecastInfoVo vo) {
+        this.plannedMinutes += vo.getPlannedMinutes();
+        this.bookedMinutes += vo.getBookedMinutes();
+    }
 }
