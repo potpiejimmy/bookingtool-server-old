@@ -121,13 +121,19 @@ public class AdminFIBean implements Serializable {
 	protected void newVo() {
 		String lastPsp = "E-122618-02-14";
 		String lastPspName = "CP_PC/E FI Release -14.1.0";
+                int lastParentBudgetId = 0;
+                int lastSpecBudgetId = 0;
 		if (current != null) {
 			lastPsp = current.getPspTemplate();
 			lastPspName = current.getPspNameTemplate();
+                        lastParentBudgetId = current.getParentBudgetId();
+                        lastSpecBudgetId = current.getSpecBudgetId();
 		}
 		current = new AutoCreateInfoVo();
 		current.setPspTemplate(lastPsp);
 		current.setPspNameTemplate(lastPspName);
+                current.setParentBudgetId(lastParentBudgetId);
+                current.setSpecBudgetId(lastSpecBudgetId);
 	}
 	
 	public Boolean getBudgetAvailable() {

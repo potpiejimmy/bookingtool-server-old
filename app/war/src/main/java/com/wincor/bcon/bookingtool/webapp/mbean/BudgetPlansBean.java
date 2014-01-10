@@ -76,7 +76,7 @@ public class BudgetPlansBean implements Serializable {
     }
     
     public List<BudgetPlan> getBudgetPlans() {
-        return ejb.getBudgetPlans();
+        return ejb.getBudgetPlansForProject(currentProjectId);
     }
 
     public int getCurrentProjectId() {
@@ -167,7 +167,7 @@ public class BudgetPlansBean implements Serializable {
             currentBudgetPlanEnd = periodIntToString(currentBudgetPlan.getPlanEnd());
             currentProjectId = budgetsEjb.getBudget(currentBudgetPlan.getBudgetId()).getProjectId();
             
-            List<Budget> leafBudgets = budgetsEjb.getLeafBudgets(currentBudgetPlan.getBudgetId());
+            List<Budget> leafBudgets = budgetsEjb.getLeafBudgetsForParent(currentBudgetPlan.getBudgetId());
             planData = new ArrayList<BudgetPlanVo>(leafBudgets.size());
             for (Budget bu : leafBudgets) {
                 BudgetPlanVo vo = new BudgetPlanVo(bu);

@@ -73,7 +73,16 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 
         @Override
 	@RolesAllowed({"admin","user"})
-        public List<Budget> getLeafBudgets(int parentId) {
+        public List<Budget> getLeafBudgets(int projectId) {
+            List<Budget> result = new ArrayList<Budget>();
+            for (Budget budget : em.createNamedQuery("Budget.findRoots", Budget.class).setParameter("projectId", projectId).getResultList())
+                iterateLeafBudgets(result, budget);
+            return result;
+        }
+        
+        @Override
+	@RolesAllowed({"admin","user"})
+        public List<Budget> getLeafBudgetsForParent(int parentId) {
             List<Budget> result = new ArrayList<Budget>();
             iterateLeafBudgets(result, getBudget(parentId));
             return result;
@@ -111,6 +120,12 @@ public class BudgetsEJB implements BudgetsEJBLocal {
                 return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findRoots", Budget.class).setParameter("projectId", projectId).getResultList(), period), period);
             else
                 return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByParentId", Budget.class).setParameter("parentId", parentId).getResultList(), period), period);
+	}
+
+	@Override
+	@RolesAllowed({"admin","user"})
+	public List<BudgetInfoVo> getLeafBudgetInfos(int projectId) {
+            return calculateBudgets(toInfoVos(getLeafBudgets(projectId)), null);
 	}
 
 	@Override

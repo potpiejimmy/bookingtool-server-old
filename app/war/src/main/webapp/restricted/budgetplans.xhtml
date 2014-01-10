@@ -18,6 +18,22 @@
                 <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
             </f:metadata>
                 
+            <h:form id="projectform" rendered="#{budgetPlansBean.currentBudgetPlan eq null}">
+
+                    <p:panelGrid columns="2">
+                            <h:outputText value="Select Project:"/>
+                            <h:panelGroup>
+                                <p:selectOneMenu value="#{budgetPlansBean.currentProjectId}" onchange="this.form.submit()">
+                                        <f:selectItems value="#{budgetPlansBean.projectItems}"/>
+                                        <f:validateLongRange minimum="1"/>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                    </p:panelGrid>
+
+            </h:form>
+
+            <p/>
+
             <h:form id="viewform" rendered="#{budgetPlansBean.currentBudgetPlan eq null}">
                 
                 <p:dataTable id="plans" var="plan" value="#{budgetPlansBean.budgetPlans}">

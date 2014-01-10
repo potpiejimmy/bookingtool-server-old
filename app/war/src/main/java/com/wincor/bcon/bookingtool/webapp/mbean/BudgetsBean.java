@@ -33,7 +33,7 @@ public class BudgetsBean implements Serializable {
 	private Budget currentBudget = null;
 	private int currentBudgetHours = 0; // for editing Budget in hours
 	
-	private int parentFilter = 0;
+	private int parentFilter = -2;
         
         private List<BudgetInfoVo> currentRows = null;
 
@@ -63,7 +63,7 @@ public class BudgetsBean implements Serializable {
 	public void setCurrentProjectId(int currentProjectId) {
 		getCurrentBudget().setProjectId(currentProjectId);
                 currentRows = null; // reset row data if changing project
-		parentFilter = 0; // reset filter if changing project
+		parentFilter = -2; // reset filter if changing project
 		newBudget(); // and reset input fields
 	}
 
@@ -77,9 +77,12 @@ public class BudgetsBean implements Serializable {
 	
 	public List<BudgetInfoVo> getBudgets() {
             if (currentRows == null) {
-		if (parentFilter < 0) {
-			currentRows = ejb.getBudgetInfos(currentBudget.getProjectId());
-                        // for the full list of budgets, sort by full budget name:
+		if (parentFilter < 0) { // special filter
+			if (parentFilter == -1) // complete list
+                            currentRows = ejb.getBudgetInfos(currentBudget.getProjectId());
+                        else /* parentFilter == -2 */ // all leaf budgets
+                            currentRows = ejb.getLeafBudgetInfos(currentBudget.getProjectId());
+                        // for the full list of budgets or the leaf budgets, sort by full budget name:
                         for (BudgetInfoVo b : currentRows) b.setFullBudgetName(getFullBudgetName(b.getBudget()));
                         Collections.sort(currentRows, new BudgetVoComparator());
                 } else {
@@ -92,8 +95,9 @@ public class BudgetsBean implements Serializable {
 	public List<SelectItem> getBudgetFilterItems() {
 		List<Budget> budgets = ejb.getBudgets(currentBudget.getProjectId());
 		List<SelectItem> result = new ArrayList<SelectItem>(budgets.size() + 2);
-		result.add(new SelectItem(-1, "<Show all>"));
 		result.add(new SelectItem(0, "<Root budgets>"));
+		result.add(new SelectItem(-1, "<Show all>"));
+		result.add(new SelectItem(-2, "<Leaf budgets>"));
 		for (Budget b : budgets) {
 			result.add(new SelectItem(b.getId(), getFullBudgetName(b)));
 		}
@@ -144,7 +148,7 @@ public class BudgetsBean implements Serializable {
         
 	public String getFullBudgetName(Budget b) {
 		StringBuilder stb = new StringBuilder(b.getName());
-		while (b.getParentId() != null) {
+		while (b.getParentId() != null && b.getParentId() > 0) {
 			b = ejb.getBudget(b.getParentId());
 			stb.insert(0, b.getName() + " \u25B6 ");
 		}

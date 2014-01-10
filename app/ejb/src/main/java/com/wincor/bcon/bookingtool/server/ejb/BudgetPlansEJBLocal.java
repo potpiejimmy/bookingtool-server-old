@@ -31,6 +31,13 @@ public interface BudgetPlansEJBLocal {
     public List<BudgetPlan> getBudgetPlans();
     
     /**
+     * Get the list of budget plans for a given project
+     * @param projectId a project ID
+     * @return list of budget plans
+     */
+    public List<BudgetPlan> getBudgetPlansForProject(int projectId);
+    
+    /**
      * Inserts or updates a budget plan
      * @param plan a budget plan
      * @return the budget plan (holding the new ID if inserted)

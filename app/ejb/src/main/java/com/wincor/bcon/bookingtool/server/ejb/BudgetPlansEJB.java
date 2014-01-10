@@ -13,6 +13,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -44,6 +45,12 @@ public class BudgetPlansEJB implements BudgetPlansEJBLocal {
     }
     
     @Override
+    public List<BudgetPlan> getBudgetPlansForProject(int projectId) {
+        return em.createNamedQuery("BudgetPlan.findByProjectId", BudgetPlan.class).setParameter("projectId", projectId).getResultList();
+    }
+    
+    @Override
+    @RolesAllowed("admin")
     public BudgetPlan saveBudgetPlan(BudgetPlan plan) {
         if (plan.getId() == null) {
             // check whether there is not already a budget plan for the given
@@ -73,7 +80,7 @@ public class BudgetPlansEJB implements BudgetPlansEJBLocal {
         int sum = 0;
         BudgetPlan plan = em.find(BudgetPlan.class, budgetPlanId);
         BudgetInfoVo planParentBudget = budgetsEjb.getBudgetInfo(plan.getBudgetId());
-        for (Budget b : budgetsEjb.getLeafBudgets(planParentBudget.getBudget().getId())) {
+        for (Budget b : budgetsEjb.getLeafBudgetsForParent(planParentBudget.getBudget().getId())) {
             for (BudgetPlanItem i : getBudgetPlanItems(b.getId())) {
                 sum += i.getMinutes();
             }
@@ -101,7 +108,7 @@ public class BudgetPlansEJB implements BudgetPlansEJBLocal {
     @Override
     public int getPlannedMinutesForPeriod(int parentBudgetId, int period) {
         int sum = 0;
-        for (Budget b : budgetsEjb.getLeafBudgets(parentBudgetId)) {
+        for (Budget b : budgetsEjb.getLeafBudgetsForParent(parentBudgetId)) {
             BudgetPlanItem item = getBudgetPlanItem(b.getId(), period);
             if (item != null) sum += item.getMinutes();
         }

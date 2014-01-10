@@ -159,7 +159,7 @@ public class ForecastsBean implements Serializable, Converter {
             if (showDetails) {
                 // detail view: iterate over all leaf budgets:
                 parentRow.setSummaryRow(true);
-                for (Budget b : budgetsEjb.getLeafBudgets(p.getBudgetId())) {
+                for (Budget b : budgetsEjb.getLeafBudgetsForParent(p.getBudgetId())) {
                     ForecastInfoRowVo row = ejb.getForecastInfoForBudget(current.getId(), b.getId());
                     rows.add(row);
                     // subtract planned and booked from parent for the detail view:

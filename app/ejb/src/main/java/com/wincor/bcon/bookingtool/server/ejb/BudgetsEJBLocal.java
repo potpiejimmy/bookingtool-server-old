@@ -54,13 +54,22 @@ public interface BudgetsEJBLocal {
 	public List<Budget> getBudgetsForParent(int parentId);
 	
 	/**
+	 * Returns the list of all leaf budgets (recursively) found for the given
+         * project
+	 * 
+	 * @param projectId a project ID
+	 * @return list of leaf budgets (recursively)
+	 */
+        public List<Budget> getLeafBudgets(int projectId);
+        
+	/**
 	 * Returns the list of leaf budgets (recursively) found for the given
          * parent budget ID.
 	 * 
 	 * @param parentId a budget ID
 	 * @return list of leaf budgets (recursively)
 	 */
-	public List<Budget> getLeafBudgets(int parentId);
+	public List<Budget> getLeafBudgetsForParent(int parentId);
 	
 	/**
 	 * Returns the list of all budgets found in the "budget" table
@@ -93,6 +102,14 @@ public interface BudgetsEJBLocal {
 	 */
 	public List<BudgetInfoVo> getBudgetInfosForParent(int projectId, Integer parentId, TimePeriod period);
 	
+	/**
+	 * Returns the list of all leaf budgets found in the "budget" table
+	 * for the given project
+	 * @param projectId a project ID
+	 * @return list of leaf budgets
+	 */
+	public List<BudgetInfoVo> getLeafBudgetInfos(int projectId);
+
 	/**
 	 * Returns the budget with the given ID
 	 * @param budgetId a budget ID
