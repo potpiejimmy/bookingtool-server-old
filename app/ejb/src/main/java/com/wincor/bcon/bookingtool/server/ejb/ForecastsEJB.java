@@ -414,13 +414,13 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         cell = row.createCell(colIndex++);
         switch (rowType) {
             case REPORT_ROW_SALES_XLE:
-                cell.setCellValue(forecast.getFcBudgetCents() / 100);
+                cell.setCellValue(-forecast.getFcBudgetCents() / 100);
                 break;
             case REPORT_ROW_SALES_IFRS:
-                cell.setCellValue((long)forecast.getFcBudgetCents() * forecast.getCentsPerHourIfrs() / forecast.getCentsPerHour() / 100);
+                cell.setCellValue(-(long)forecast.getFcBudgetCents() * forecast.getCentsPerHourIfrs() / forecast.getCentsPerHour() / 100);
                 break;
             case REPORT_ROW_EFFORTS:
-                cell.setCellValue(new HSSFRichTextString(""));
+                cell.setCellValue(forecast.getFcBudgetCents() / forecast.getCentsPerHour() / 8);
                 break;
         }
 
@@ -430,45 +430,65 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         
         // Actual YTD w/o current month
         cell = row.createCell(colIndex++);
-        int value = summaryData.getMonths().get(REPORT_COLUMN_YTD_WO_CURRENT_MONTH).getBookedMinutes(); // booked
+        int value = summaryData.getMonths().get(REPORT_COLUMN_YTD_WO_CURRENT_MONTH).getBookedMinutes(); // actual booked
+        //if (rowType != REPORT_ROW_EFFORTS) value = 0; // Note: ACTUAL FINANCIAL DATA NOT AVAILABLE
         addSalesReportColumn(forecast, cell, value, rowType);
 
-        // Current month
+        // Current month (actual)
         cell = row.createCell(colIndex++);
-        value = summaryData.getMonths().get(REPORT_COLUMN_CURRENT_MONTH).getBookedMinutes(); // booked
+        value = summaryData.getMonths().get(REPORT_COLUMN_CURRENT_MONTH).getBookedMinutes(); // actual booked
+        //if (rowType != REPORT_ROW_EFFORTS) value = 0; // Note: ACTUAL FINANCIAL DATA NOT AVAILABLE
         addSalesReportColumn(forecast, cell, value, rowType);
         
         // Current month + 1
         cell = row.createCell(colIndex++);
         value = summaryData.getMonths().get(REPORT_COLUMN_CURRENT_MONTH_PLUS_1).getPlannedMinutes(); // planned
+        value = roundForecastEffortForReport(value);
         addSalesReportColumn(forecast, cell, value, rowType);
         
         // Current month + 2
         cell = row.createCell(colIndex++);
         value = summaryData.getMonths().get(REPORT_COLUMN_CURRENT_MONTH_PLUS_2).getPlannedMinutes(); // planned
+        value = roundForecastEffortForReport(value);
         addSalesReportColumn(forecast, cell, value, rowType);
         
         // Current month + 3 until end
         cell = row.createCell(colIndex++);
         value = summaryData.getMonths().get(REPORT_COLUMN_CURRENT_MONTH_PLUS_3_UNTIL_END).getPlannedMinutes(); // planned
+        value = roundForecastEffortForReport(value);
         addSalesReportColumn(forecast, cell, value, rowType);
 
         // Total
         cell = row.createCell(colIndex++);
         cell.setCellFormula("SUM("+(char)('A'+colIndex-7)+(rowIndex+1)+":"+(char)('A'+colIndex-2)+(rowIndex+1)+")");
+
+        // Thereof curr. FY
+        cell = row.createCell(colIndex++);
+        cell.setCellFormula(""+(char)('A'+colIndex-2)+(rowIndex+1)+"-"+(char)('A'+colIndex-8)+(rowIndex+1));
+        
+        // Forecast vs. budget
+        cell = row.createCell(colIndex++);
+        cell.setCellFormula(""+(char)('A'+colIndex-3)+(rowIndex+1)+"/"+(char)('A'+colIndex-10)+(rowIndex+1));
     }
     
     protected static void addSalesReportColumn(Forecast forecast, HSSFCell cell, int value, int rowType) {
         switch (rowType) {
             case REPORT_ROW_SALES_XLE:
-                cell.setCellValue(value * forecast.getCentsPerHour() / 6000);
+                cell.setCellValue(-Math.round((double)value * forecast.getCentsPerHour() / 6000));
                 break;
             case REPORT_ROW_SALES_IFRS:
-                cell.setCellValue(value * forecast.getCentsPerHourIfrs() / 6000);
+                cell.setCellValue(-Math.round((double)value * forecast.getCentsPerHourIfrs() / 6000));
                 break;
             case REPORT_ROW_EFFORTS:
                 cell.setCellValue(((float)(Math.round(((float)(value * 100)) / 480)))/100);
                 break;
         }
+    }
+    
+    protected static int roundForecastEffortForReport(int minutes) {
+        int modulo = minutes % 240; // half day modulo
+        if (modulo < 120) minutes -= modulo; // floor
+        else minutes += 240-modulo; // ceiling
+        return minutes;
     }
 }
