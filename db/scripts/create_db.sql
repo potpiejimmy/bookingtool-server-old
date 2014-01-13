@@ -254,6 +254,29 @@ CREATE TABLE IF NOT EXISTS `domain_user` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `project_manager`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `project_manager` ;
+
+CREATE TABLE IF NOT EXISTS `project_manager` (
+  `project_id` INT NOT NULL,
+  `user_name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`project_id`, `user_name`),
+  INDEX `fk_project_user_user1_idx` (`user_name` ASC),
+  CONSTRAINT `fk_project_user_project1`
+    FOREIGN KEY (`project_id`)
+    REFERENCES `project` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_project_user_user1`
+    FOREIGN KEY (`user_name`)
+    REFERENCES `user` (`name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

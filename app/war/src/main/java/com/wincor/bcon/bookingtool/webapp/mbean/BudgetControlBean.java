@@ -8,6 +8,7 @@ package com.wincor.bcon.bookingtool.webapp.mbean;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +28,9 @@ public class BudgetControlBean implements java.io.Serializable {
     @EJB
     private BudgetsEJBLocal ejb;
     
+    @EJB
+    private ProjectsEJBLocal projectsEjb;
+    
     @Inject
     private BudgetsBean budgetsBean;
     
@@ -35,7 +39,7 @@ public class BudgetControlBean implements java.io.Serializable {
     private List<BudgetInfoVo> rows = null;
 
     public List<SelectItem> getProjectItems() {
-            List<Project> projects = ejb.getProjects();
+            List<Project> projects = projectsEjb.getProjects();
             List<SelectItem> result = new ArrayList<SelectItem>(projects.size() + 1);
             result.add(new SelectItem(0, "<Please choose>"));
             for (Project p : projects) {

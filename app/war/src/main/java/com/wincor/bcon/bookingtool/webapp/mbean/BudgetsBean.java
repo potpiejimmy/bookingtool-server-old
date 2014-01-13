@@ -13,6 +13,7 @@ import javax.inject.Named;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.Collections;
@@ -28,6 +29,9 @@ public class BudgetsBean implements Serializable {
 	@EJB
 	private BudgetsEJBLocal ejb;
 
+        @EJB
+        private ProjectsEJBLocal projectsEjb;
+    
         private NumberFormat budgetTimeFormatter = NumberFormat.getNumberInstance(Locale.GERMANY);
         
 	private Budget currentBudget = null;
@@ -47,7 +51,7 @@ public class BudgetsBean implements Serializable {
 	}
 	
 	public List<SelectItem> getProjectItems() {
-		List<Project> projects = ejb.getProjects();
+		List<Project> projects = projectsEjb.getProjects();
 		List<SelectItem> result = new ArrayList<SelectItem>(projects.size() + 1);
                 result.add(new SelectItem(0, "<Please choose>"));
 		for (Project p : projects) {
@@ -68,7 +72,7 @@ public class BudgetsBean implements Serializable {
 	}
 
 	public Project getProject(Integer projectId) {
-		return ejb.getProject(projectId);
+		return projectsEjb.getProject(projectId);
 	}
 	
 	public Budget getBudget(Integer budgetId) {
@@ -194,13 +198,13 @@ public class BudgetsBean implements Serializable {
 		currentBudgetHours = 0;
 		
 		if (lastUsedProject > 0) {
-			if (ejb.getProject(lastUsedProject) == null) /* last project removed? */
+			if (projectsEjb.getProject(lastUsedProject) == null) /* last project removed? */
 				lastUsedProject = 0;
 		}
 		
 		if (lastUsedProject <= 0) {
 			// set the default project (the last one)
-			List<Project> projects = ejb.getProjects();
+			List<Project> projects = projectsEjb.getProjects();
 			if (projects.size() > 0) {
 				lastUsedProject = projects.get(projects.size()-1).getId();
 			}

@@ -15,6 +15,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import javax.faces.context.FacesContext;
 
@@ -25,10 +26,13 @@ public class TemplatesBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private BudgetsEJBLocal budgetsEjb;
-	
-	@EJB
 	private BookingTemplatesEJBLocal ejb;
+	
+        @EJB
+        private ProjectsEJBLocal projectsEjb;
+    
+	@EJB
+	private BudgetsEJBLocal budgetsEjb;
 	
 	@Inject
 	private BudgetsBean budgetsBean;
@@ -67,7 +71,7 @@ public class TemplatesBean implements Serializable {
 	
 	public int getCurrentProjectId() {
 		if (currentProjectId == 0) {
-			List<Project> projects = budgetsEjb.getProjects();
+			List<Project> projects = projectsEjb.getProjects();
 			if (projects.size() > 0)
 				setCurrentProjectId(projects.get(projects.size()-1).getId());
 		}
@@ -81,7 +85,7 @@ public class TemplatesBean implements Serializable {
 	}
 
 	public List<SelectItem> getProjectItems() {
-		List<Project> projects = budgetsEjb.getProjects();
+		List<Project> projects = projectsEjb.getProjects();
 		List<SelectItem> result = new ArrayList<SelectItem>(projects.size());
 		for (Project p : projects) {
 			result.add(new SelectItem(p.getId(), p.getName()));

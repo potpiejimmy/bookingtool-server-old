@@ -5,37 +5,11 @@ import java.util.List;
 import javax.ejb.Local;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
-import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 
 @Local
 public interface BudgetsEJBLocal {
-	
-	/**
-	 * Returns all projects that are visible to the current user
-	 * @return list of projects
-	 */
-	public List<Project> getProjects();
-	
-	/**
-	 * Returns the project with the given ID
-	 * @param projectId a project ID
-	 * @return the project
-	 */
-	public Project getProject(int projectId);
-
-	/**
-	 * Saves or updates the given project
-	 * @param project a project
-	 */
-	public void saveProject(Project project);
-	
-	/**
-	 * Removes the project with the given project ID
-	 * @param projectId a project ID
-	 */
-	public void deleteProject(int projectId);
 	
 	/**
 	 * Returns the list of all budgets found in the "budget" table

@@ -9,8 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
-import com.wincor.bcon.bookingtool.server.db.entity.Domain;
-import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 import javax.ejb.EJB;
@@ -23,42 +21,8 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 	EntityManager em;
         
         @EJB
-        private DomainsEJBLocal domainsEjb;
-        
-        @EJB
         private BookingTemplatesEJBLocal bookingsEjb;
 	
-	@Override
-	@RolesAllowed({"admin","user"})
-	public List<Project> getProjects() {
-            List<Project> result = new ArrayList<Project>();
-            for (Domain domain : domainsEjb.getDomains()) {
-                result.addAll(em.createNamedQuery("Project.findByDomainId", Project.class).setParameter("domainId", domain.getId()).getResultList());
-            }
-            return result;
-	}
-
-	@Override
-	@RolesAllowed({"admin","user"})
-	public Project getProject(int projectId) {
-		return em.find(Project.class, projectId);
-	}
-
-	@Override
-	@RolesAllowed("admin")
-	public void saveProject(Project project) {
-		if (project.getId() != null)
-			em.merge(project);  // update the project
-		else
-			em.persist(project);  // insert a new project
-	}
-
-	@Override
-	@RolesAllowed("admin")
-	public void deleteProject(int projectId) {
-		em.remove(getProject(projectId));
-	}
-
 	@Override
 	@RolesAllowed({"admin","user"})
 	public List<Budget> getBudgets(int projectId) {

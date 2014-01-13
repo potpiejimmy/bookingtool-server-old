@@ -15,6 +15,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.fi.AdminFIEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.AutoCreateInfoVo;
 import com.wincor.bcon.bookingtool.webapp.mbean.BudgetsBean;
@@ -26,6 +27,9 @@ public class AdminFIBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+        @EJB
+        private ProjectsEJBLocal projectsEjb;
+    
 	@EJB
 	private BudgetsEJBLocal budgetsEjb;
 	
@@ -51,7 +55,7 @@ public class AdminFIBean implements Serializable {
 	
 	public int getCurrentProjectId() {
 		if (currentProjectId == 0) {
-			List<Project> projects = budgetsEjb.getProjects();
+			List<Project> projects = projectsEjb.getProjects();
 			if (projects.size() > 0)
 				setCurrentProjectId(projects.get(projects.size()-1).getId());
 		}
@@ -63,7 +67,7 @@ public class AdminFIBean implements Serializable {
 	}
 
 	public List<SelectItem> getProjectItems() {
-		List<Project> projects = budgetsEjb.getProjects();
+		List<Project> projects = projectsEjb.getProjects();
 		List<SelectItem> result = new ArrayList<SelectItem>(projects.size());
 		for (Project p : projects) {
 			result.add(new SelectItem(p.getId(), p.getName()));
