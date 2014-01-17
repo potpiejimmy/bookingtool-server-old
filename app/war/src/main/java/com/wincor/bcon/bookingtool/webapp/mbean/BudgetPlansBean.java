@@ -60,7 +60,7 @@ public class BudgetPlansBean implements Serializable {
     }
 
     public List<SelectItem> getProjectItems() {
-            List<Project> projects = projectsEjb.getProjects();
+            List<Project> projects = projectsEjb.getManagedProjects();
             List<SelectItem> result = new ArrayList<SelectItem>(projects.size()+1);
             result.add(new SelectItem(0, "<Please choose>"));
             for (Project p : projects) {

@@ -57,4 +57,11 @@ public interface DomainsEJBLocal {
      * @return list of user names
      */
     public List<String> getAssignedUsers(int domainId);
+    
+    /**
+     * Returns the list of all assigned user names for the given domain which have the role 'admin'
+     * @param domainId a domain ID
+     * @return list of user names
+     */
+    public List<String> getAssignedUsersWithAdminRole(int domainId);
 }

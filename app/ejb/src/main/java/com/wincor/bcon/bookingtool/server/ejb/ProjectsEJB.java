@@ -9,7 +9,6 @@ package com.wincor.bcon.bookingtool.server.ejb;
 import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.db.entity.ProjectManager;
-import com.wincor.bcon.bookingtool.server.db.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
@@ -64,15 +63,24 @@ public class ProjectsEJB implements ProjectsEJBLocal {
     }
 
     @Override
-    @RolesAllowed({"superuser","admin"})
+    @RolesAllowed({"admin"})
     public Project saveProject(Project project, List<String> assignedManagers) {
+        if (!ctx.isCallerInRole("superuser") &&
+            !assignedManagers.contains(ctx.getCallerPrincipal().getName()))
+            assignedManagers.add(ctx.getCallerPrincipal().getName()); // must at least have myself as manager for non superuser
+        
         if (project.getId() == null) {
             em.persist(project);
             em.flush();
         } else {
+            if (!ctx.isCallerInRole("superuser") &&
+                !getAssignedManagers(project.getId()).contains(ctx.getCallerPrincipal().getName()))
+                throw new IllegalArgumentException("Sorry, cannot modify a project that you are not managing.");
+            
             em.merge(project);
             // delete existing assignments
-            em.createNamedQuery("ProjectManager.deleteByProjectId").setParameter("projectId", project.getId()).executeUpdate();
+            for (ProjectManager user : em.createNamedQuery("ProjectManager.findByProjectId", ProjectManager.class).setParameter("projectId", project.getId()).getResultList())
+                em.remove(user);
         }
         
         // save manager assignments:
@@ -87,22 +95,13 @@ public class ProjectsEJB implements ProjectsEJBLocal {
     }
     
     @Override
-    @RolesAllowed({"superuser"})
+    @RolesAllowed({"admin"})
     public void deleteProject(int projectId) {
         // delete existing user assignments
         em.createNamedQuery("ProjectManager.deleteByProjectId").setParameter("projectId", projectId).executeUpdate();
         em.remove(em.find(Project.class, projectId));
     }
    
-    @Override
-    @RolesAllowed({"admin"})
-    public List<String> getAllUsers() {
-        List<User> users = em.createNamedQuery("User.findAll", User.class).getResultList();
-        List<String> result = new ArrayList<String>(users.size());
-        for (User u : users) result.add(u.getName());
-        return result;
-    }
-    
     @Override
     @RolesAllowed({"admin"})
     public List<String> getAssignedManagers(int projectId) {

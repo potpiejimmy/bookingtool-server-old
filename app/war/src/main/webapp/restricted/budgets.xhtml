@@ -35,7 +35,7 @@
 
 			<p/>
 
-			<h:form id="editform" rendered="#{request.isUserInRole('admin')}">
+                        <h:form id="editform" rendered="#{budgetsBean.editingAllowed}">
 
 				<p:panelGrid columns="3">
 					<h:outputText value="Budget ID:"/>
@@ -112,7 +112,7 @@
 					</p:column>
 					<p:column headerText="Templates" style="width:32px;">
 						<h:outputLink rendered="#{b.numberOfTemplates gt 0}"
-                                                              disabled="#{not request.isUserInRole('admin')}"
+                                                              disabled="#{not budgetsBean.editingAllowed}"
                                                               value="templates.xhtml?filter=#{b.budget.id}">
 						    <h:outputText value="#{b.numberOfTemplates}"/>
 						</h:outputLink>
@@ -120,7 +120,7 @@
 					<p:column headerText="Bookings">
 						<p:commandLink ajax="false"
 						               rendered="#{b.bookedMinutes gt 0}"
-                                                               disabled="#{not request.isUserInRole('admin')}">
+                                                               disabled="#{not budgetsBean.editingAllowed}">
 						    <h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.bookedMinutes)}"/>
 						    <p:fileDownload value="#{excelExportBean.getExcelListForBudget(b.budget.id)}" />
 						</p:commandLink>
@@ -128,7 +128,7 @@
 					<p:column headerText="Project">
 						<h:outputText value="#{budgetsBean.getProject(b.budget.projectId).name}"/>
 					</p:column>
-					<p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
+					<p:column headerText="Actions" rendered="#{budgetsBean.editingAllowed}">
 	                    <h:commandLink value="Edit" action="#{budgetsBean.edit(b.budget)}">
                                 <p:resetInput target=":editform"/>
                             </h:commandLink>,  

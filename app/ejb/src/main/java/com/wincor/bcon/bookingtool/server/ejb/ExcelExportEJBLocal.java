@@ -9,7 +9,7 @@ public interface ExcelExportEJBLocal {
 
 	public HSSFWorkbook getExcelForName(String person, Integer weeksToExport);
 
-	public HSSFWorkbook getExcelForAdmin();
+	public HSSFWorkbook getExcelForAdmin(Integer monthsToExport);
 
 	public HSSFWorkbook getExcelForBudget(int budgetId);
 

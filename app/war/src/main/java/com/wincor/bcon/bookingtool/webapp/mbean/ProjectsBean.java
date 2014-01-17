@@ -14,6 +14,7 @@ import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import javax.faces.model.SelectItem;
+import org.primefaces.model.DualListModel;
 
 @Named
 @SessionScoped
@@ -27,16 +28,58 @@ public class ProjectsBean implements Serializable {
 	@EJB
 	private DomainsEJBLocal domainsEjb;
 	
-	private Project currentProject = new Project();
+	private Project currentProject = null;
 
+        private DualListModel<String> assignedManagers = new DualListModel<String>();
+    
 	public void clear() {
-		currentProject = new Project();
+		newProject();
 	}
 
+        public void newProject() {
+		currentProject = new Project();
+                updateManagersPickList();
+        }
+        
+        public void updateManagersPickList() {
+                List<String> users = currentProject.getDomainId() != null ?
+                        new ArrayList<String>(domainsEjb.getAssignedUsersWithAdminRole(currentProject.getDomainId())) :
+                        new ArrayList<String>();
+                List<String> managers = new ArrayList<String>();
+                if (currentProject.getId() != null) {
+                    managers.addAll(ejb.getAssignedManagers(currentProject.getId()));
+                } else {
+                    managers.add(WebUtils.getCurrentPerson()); // add myself as default mgr
+                }
+                users.removeAll(managers);
+                assignedManagers.setSource(users);
+                assignedManagers.setTarget(managers);
+        }
+        
+        public boolean isProjectManagedByMe(Project p) {
+            return (WebUtils.getHttpServletRequest().isUserInRole("superuser") ||
+                    ejb.getAssignedManagers(p.getId()).contains(WebUtils.getCurrentPerson()));
+        }
+
 	public Project getCurrentProject() {
+                if (currentProject == null) newProject();
 		return currentProject;
 	}
 	
+        public DualListModel<String> getAssignedManagers() {
+                if (currentProject == null) newProject();
+                return assignedManagers;
+        }
+
+        public void setAssignedManagers(DualListModel<String> assignedManagers) {
+                this.assignedManagers = assignedManagers;
+        }
+
+        public String getAssignedManagerList(Integer projectId) {
+                String mgrList = ejb.getAssignedManagers(projectId).toString(); 
+                return mgrList.substring(1, mgrList.indexOf(']'));
+        }
+
 	public List<Project> getProjects() {
 		return ejb.getProjects();
 	}
@@ -56,12 +99,13 @@ public class ProjectsBean implements Serializable {
 	}
 	
 	public void save() {
-		ejb.saveProject(currentProject, new ArrayList<String>());
-		currentProject = new Project();
+		ejb.saveProject(currentProject, assignedManagers.getTarget());
+		newProject();
 	}
 	
 	public void edit(Project p) {
 		currentProject = p;
+                updateManagersPickList();
 	}
 	
 	public void delete(Project p) {

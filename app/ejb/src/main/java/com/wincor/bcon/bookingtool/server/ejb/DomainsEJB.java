@@ -6,17 +6,19 @@
 
 package com.wincor.bcon.bookingtool.server.ejb;
 
-import com.wincor.bcon.bookingtool.server.db.entity.Domain;
-import com.wincor.bcon.bookingtool.server.db.entity.DomainUser;
-import com.wincor.bcon.bookingtool.server.db.entity.User;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import com.wincor.bcon.bookingtool.server.db.entity.Domain;
+import com.wincor.bcon.bookingtool.server.db.entity.DomainUser;
+import com.wincor.bcon.bookingtool.server.db.entity.User;
 
 /**
  * Domains EJB
@@ -59,7 +61,8 @@ public class DomainsEJB implements DomainsEJBLocal {
         } else {
             em.merge(domain);
             // delete existing assignments
-            em.createNamedQuery("DomainUser.deleteByDomainId").setParameter("domainId", domain.getId()).executeUpdate();
+            for (DomainUser user : em.createNamedQuery("DomainUser.findByDomainId", DomainUser.class).setParameter("domainId", domain.getId()).getResultList())
+                em.remove(user);
         }
         
         // save user assignments:
@@ -94,6 +97,15 @@ public class DomainsEJB implements DomainsEJBLocal {
     @RolesAllowed({"admin"})
     public List<String> getAssignedUsers(int domainId) {
         List<DomainUser> users = em.createNamedQuery("DomainUser.findByDomainId", DomainUser.class).setParameter("domainId", domainId).getResultList();
+        List<String> result = new ArrayList<String>(users.size());
+        for (DomainUser u : users) result.add(u.getUserName());
+        return result;
+    }
+    
+    @Override
+    @RolesAllowed({"admin"})
+    public List<String> getAssignedUsersWithAdminRole(int domainId) {
+        List<DomainUser> users = em.createNamedQuery("DomainUser.findByDomainIdAndUserRole", DomainUser.class).setParameter("domainId", domainId).setParameter("userRole", "admin").getResultList();
         List<String> result = new ArrayList<String>(users.size());
         for (DomainUser u : users) result.add(u.getUserName());
         return result;

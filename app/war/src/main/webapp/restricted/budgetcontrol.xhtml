@@ -52,7 +52,7 @@
                                                        labelTemplate="{value}%"
                                                        value="#{b.bookedMinutesRecursive*100/(b.budget.minutes ge 0 ? b.budget.minutes : -b.budget.minutes)}"/>
                                 </p:column>
-                                <p:column headerText="Edit Work Progress" style="width:64px;" rendered="#{request.isUserInRole('admin')}">
+                                <p:column headerText="Edit Work Progress" style="width:64px;" rendered="#{budgetControlBean.editingAllowed}">
                                     <p:cellEditor>
                                         <f:facet name="output">
                                             <h:outputText value="#{b.budget.workProgress}%" rendered="#{b.budget.workProgress ne null and b.budget.workProgress gt 0}">
@@ -71,7 +71,7 @@
                                                        labelTemplate="{value}%"
                                                        value="#{b.budget.workProgress}"/>
                                 </p:column>
-                                <p:column headerText="Prognosis">
+                                <p:column headerText="Forecast">
                                     <h:outputText value="#{budgetControlBean.getFormattedBudgetOffset(budgetControlBean.getBudgetPrognosisOffset(b))}"
                                                   style="#{budgetControlBean.getBudgetPrognosisOffset(b) gt 0 ? 'color:red;' : 'color:green;'}"/>
                                     <f:facet name="footer">
@@ -82,7 +82,7 @@
                         </p:dataTable>
                     <p>
                         <p:commandButton id="hiddenSubmit" style="display: none;" update="outputTable"/>
-                        <p:commandButton value="Save" action="#{budgetControlBean.save}" ajax="false" rendered="#{request.isUserInRole('admin') and budgetControlBean.rows.size() gt 0}"/>
+                        <p:commandButton value="Save" action="#{budgetControlBean.save}" ajax="false" rendered="#{budgetControlBean.editingAllowed and budgetControlBean.rows.size() gt 0}"/>
                     </p>
                     <p:defaultCommand target="hiddenSubmit" />
                     

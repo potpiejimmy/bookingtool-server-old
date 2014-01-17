@@ -1,12 +1,16 @@
 package com.wincor.bcon.bookingtool.server.ejb;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
@@ -15,10 +19,6 @@ import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
-import java.util.HashMap;
-import java.util.Map;
-import javax.ejb.EJB;
-import javax.persistence.TemporalType;
 
 @Stateless
 public class BookingsEJB implements BookingsEJBLocal {
@@ -44,9 +44,17 @@ public class BookingsEJB implements BookingsEJBLocal {
 	@Override
 	@RolesAllowed({"admin", "user"})
 	public List<Booking> getBookingsByLastExportDay(String person, Date day) {
-		TypedQuery<Booking> tq = em.createNamedQuery("Booking.findByLastExportDay", Booking.class);
+		TypedQuery<Booking> tq = em.createNamedQuery("Booking.findByLastExportDayForPerson", Booking.class);
 		tq.setParameter("person", person);
 		tq.setParameter("day", day);
+		
+		return tq.getResultList();
+	}
+	
+	@Override
+	@RolesAllowed({"superuser"})
+	public List<Booking> getBookingsByLastExportDayForSuperuser(Date day) {
+		TypedQuery<Booking> tq = em.createNamedQuery("Booking.findByLastExportDayForSuperuser", Booking.class).setParameter("day", day);
 		
 		return tq.getResultList();
 	}

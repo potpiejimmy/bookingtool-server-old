@@ -39,6 +39,8 @@ public class BudgetsBean implements Serializable {
 	
 	private int parentFilter = -2;
         
+        private Boolean editingAllowed = null;
+        
         private List<BudgetInfoVo> currentRows = null;
 
 	public void clear() {
@@ -49,6 +51,15 @@ public class BudgetsBean implements Serializable {
 		if (currentBudget == null) newBudget(); // lazy initialization to enable EJB access
 		return currentBudget;
 	}
+        
+        public boolean isEditingAllowed() {
+            if (editingAllowed == null) {
+                editingAllowed = Boolean.valueOf(
+                        WebUtils.getHttpServletRequest().isUserInRole("admin") &&
+                        projectsEjb.getAssignedManagers(getCurrentProjectId()).contains(WebUtils.getCurrentPerson()));
+            }
+            return editingAllowed;
+        }
 	
 	public List<SelectItem> getProjectItems() {
 		List<Project> projects = projectsEjb.getProjects();
@@ -68,6 +79,7 @@ public class BudgetsBean implements Serializable {
 		getCurrentBudget().setProjectId(currentProjectId);
                 currentRows = null; // reset row data if changing project
 		parentFilter = -2; // reset filter if changing project
+                editingAllowed = null; // reset editing allowed flag
 		newBudget(); // and reset input fields
 	}
 
@@ -147,16 +159,11 @@ public class BudgetsBean implements Serializable {
 	}
 	
 	public String getFullBudgetNameForId(Integer budgetId) {
-            return getFullBudgetName(ejb.getBudget(budgetId));
+            return ejb.getFullBudgetName(budgetId);
         }
         
 	public String getFullBudgetName(Budget b) {
-		StringBuilder stb = new StringBuilder(b.getName());
-		while (b.getParentId() != null && b.getParentId() > 0) {
-			b = ejb.getBudget(b.getParentId());
-			stb.insert(0, b.getName() + " \u25B6 ");
-		}
-		return stb.toString();
+            return ejb.getFullBudgetName(b.getId());
 	}
 
 	public void save() {

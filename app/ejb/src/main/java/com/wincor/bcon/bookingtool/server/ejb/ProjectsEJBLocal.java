@@ -6,10 +6,11 @@
 
 package com.wincor.bcon.bookingtool.server.ejb;
 
-import com.wincor.bcon.bookingtool.server.db.entity.Domain;
-import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import java.util.List;
+
 import javax.ejb.Local;
+
+import com.wincor.bcon.bookingtool.server.db.entity.Project;
 
 /**
  * Projects administration interface
@@ -50,12 +51,6 @@ public interface ProjectsEJBLocal {
      */
     public void deleteProject(int projectId);
    
-    /**
-     * Returns the list of all available user names
-     * @return list of user names
-     */
-    public List<String> getAllUsers();
-    
     /**
      * Returns the list of all assigned project managers for the given project
      * @param projectId a project ID

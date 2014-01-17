@@ -52,6 +52,14 @@
                         <p:ajax update=":forecastviewform"/>
                     </p:selectBooleanButton>  
                     
+                    <p:commandButton id="downloadPlan"
+                                     value="Export Plan Data"
+                                     ajax="false"
+                                     onclick="PrimeFaces.monitorDownload(start, stop)"
+                                     icon="ui-icon-arrowthick-1-s">
+                        <p:fileDownload value="#{forecastsBean.exportPlanData}" />  
+                    </p:commandButton>
+                    
                     <p:commandButton id="downloadSalesReport"
                                      value="Sales Report"
                                      ajax="false"

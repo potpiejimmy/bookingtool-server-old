@@ -40,6 +40,14 @@
 
                     <p:panel header="Export all bookings (Superuser Only)" rendered="#{request.isUserInRole('superuser')}">
                     
+	                    <p:panelGrid columns="2" id="excelByMonths">
+	                    	<p:outputLabel value="Export of last:"/>
+	                    	<h:panelGroup>
+	                    		<p:spinner id="monthsToExport" value="#{excelExportBean.monthsToExport}" size="2" min="0" max="999" maxlength="3"/>
+	                    		<h:outputText value="  Month(s)"/>
+	                    	</h:panelGroup>
+	                    </p:panelGrid>
+	                    
 	                    <p>
 	                    	<p:commandButton id="downloadLinkAdmin" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
 	                    					 icon="ui-icon-arrowthick-1-s">  

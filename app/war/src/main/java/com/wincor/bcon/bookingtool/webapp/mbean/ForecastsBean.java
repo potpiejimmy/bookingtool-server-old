@@ -285,6 +285,10 @@ public class ForecastsBean implements Serializable, Converter {
         return (minutes > 0 ? "+" : "-") + budgetsBean.getFormattedBudgetTime(minutes);
     }
     
+    public StreamedContent getExportPlanData() {
+        return ExcelExportBean.streamForWorkbook(ejb.exportPlanData(current.getId()), "plan_data");
+    }
+
     public StreamedContent getSalesReport() {
         return ExcelExportBean.streamForWorkbook(ejb.createSalesReport(current.getId()), "sales_report");
     }

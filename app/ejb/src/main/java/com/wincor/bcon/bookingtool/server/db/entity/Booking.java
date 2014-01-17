@@ -27,7 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Booking.findAll", query = "SELECT b FROM Booking b ORDER BY b.day DESC, b.person"),
-    @NamedQuery(name = "Booking.findByLastExportDay", query = "SELECT b FROM Booking b WHERE b.person = :person AND b.day >= :day ORDER BY b.day DESC, b.person"),
+    @NamedQuery(name = "Booking.findByLastExportDayForPerson", query = "SELECT b FROM Booking b WHERE b.person = :person AND b.day >= :day ORDER BY b.day DESC, b.person"),
+    @NamedQuery(name = "Booking.findByLastExportDayForSuperuser", query = "SELECT b FROM Booking b WHERE b.day >= :day ORDER BY b.day DESC, b.person"),
     @NamedQuery(name = "Booking.findByDay", query = "SELECT b FROM Booking b WHERE b.day = :day"),
     @NamedQuery(name = "Booking.findByBudgetId", query = "SELECT b FROM Booking b,BookingTemplate t WHERE b.bookingTemplateId=t.id AND t.budgetId=:budgetId ORDER BY b.day DESC, b.person"),
     @NamedQuery(name = "Booking.findByPerson", query = "SELECT b FROM Booking b WHERE b.person = :person ORDER BY b.day DESC"),

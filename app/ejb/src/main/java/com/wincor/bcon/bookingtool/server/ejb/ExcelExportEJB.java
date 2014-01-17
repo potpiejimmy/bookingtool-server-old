@@ -44,8 +44,13 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 		
 	@Override
 	@RolesAllowed({"superuser"})
-	public HSSFWorkbook getExcelForAdmin() {
-		List<Booking> bookingList = bookingEJB.getBookings();
+	public HSSFWorkbook getExcelForAdmin(Integer monthsToExport) {
+		
+		Calendar lastExportDay = Calendar.getInstance();
+		lastExportDay.add(Calendar.MONTH, -monthsToExport);
+		lastExportDay.set(Calendar.DAY_OF_MONTH, 1);
+		
+		List<Booking> bookingList = bookingEJB.getBookingsByLastExportDayForSuperuser(lastExportDay.getTime());
 		return getExcelForBookings(bookingList, true);
 	}
 		

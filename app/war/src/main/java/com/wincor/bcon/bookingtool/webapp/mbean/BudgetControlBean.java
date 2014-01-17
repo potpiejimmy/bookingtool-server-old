@@ -10,6 +10,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
+import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +37,8 @@ public class BudgetControlBean implements java.io.Serializable {
     
     private int projectId = 0;
     
+    private Boolean editingAllowed = null;
+        
     private List<BudgetInfoVo> rows = null;
 
     public List<SelectItem> getProjectItems() {
@@ -54,10 +57,19 @@ public class BudgetControlBean implements java.io.Serializable {
 
     public void setProjectId(int projectId) {
         this.projectId = projectId;
-        // reset row data:
-        this.rows = null;
+        this.editingAllowed = null; // reset editing allowed flag
+        this.rows = null; // reset row data:
     }
 
+    public boolean isEditingAllowed() {
+        if (editingAllowed == null) {
+            editingAllowed = Boolean.valueOf(
+                    WebUtils.getHttpServletRequest().isUserInRole("admin") &&
+                    projectsEjb.getAssignedManagers(getProjectId()).contains(WebUtils.getCurrentPerson()));
+        }
+        return editingAllowed;
+    }
+	
     public List<BudgetInfoVo> getRows() {
         if (rows == null) {
             List<BudgetInfoVo> budgets = ejb.getBudgetInfos(projectId);

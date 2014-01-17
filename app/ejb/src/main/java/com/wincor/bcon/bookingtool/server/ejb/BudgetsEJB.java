@@ -197,6 +197,17 @@ public class BudgetsEJB implements BudgetsEJBLocal {
         }
         
         @Override
+        public String getFullBudgetName(int budgetId) {
+            Budget b = em.find(Budget.class, budgetId);
+            StringBuilder stb = new StringBuilder(b.getName());
+            while (b.getParentId() != null) {
+                    b = em.find(Budget.class, b.getParentId());
+                    stb.insert(0, b.getName() + " \u25B6 ");
+            }
+            return stb.toString();
+	}
+        
+        @Override
         public int getBudgetPrognosisOffset(BudgetInfoVo budget) {
             if (budget.getBudget().getWorkProgress() == null ||
                 budget.getBudget().getWorkProgress() == 0) return 0;

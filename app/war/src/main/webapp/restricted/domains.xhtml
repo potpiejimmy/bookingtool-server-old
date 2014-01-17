@@ -32,10 +32,12 @@
 				
                             <p>
                                 <p:panel>
-                                    <h3>Domain users:</h3>
                                     <p:pickList id="assignedUsers" value="#{domainsBean.assignedUsers}" var="item"
                                                 itemLabel="#{item}"
-                                                itemValue="#{item}"/>
+                                                itemValue="#{item}">
+                                        <f:facet name="sourceCaption">All Users</f:facet>  
+                                        <f:facet name="targetCaption">Domain Users</f:facet>  
+                                    </p:pickList>
                                     <p:message for="assignedUsers"/>
                                 </p:panel>
                             </p>

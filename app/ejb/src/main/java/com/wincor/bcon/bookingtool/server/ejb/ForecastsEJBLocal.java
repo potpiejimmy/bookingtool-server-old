@@ -69,6 +69,13 @@ public interface ForecastsEJBLocal {
     public List<Integer> getMonthsForFiscalYear(int fiscalYear);
     
     /**
+     * Exports detailed plan data to excel
+     * @param forecastId a forecast ID
+     * @return plan data export
+     */
+    public HSSFWorkbook exportPlanData(int forecastId);
+
+    /**
      * Create a special sales report sheet for the given forecast
      * @param forecastId a forecast ID
      * @return sales report sheet

@@ -6,6 +6,7 @@
 
 package com.wincor.bcon.bookingtool.server.ejb;
 
+import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
@@ -151,6 +152,44 @@ public class ForecastsEJB implements ForecastsEJBLocal {
                 summaryRow.getMonths().get(period).add(rows.get(i).getMonths().get(period));
         }
         return summaryRow;
+    }
+    
+    @Override
+    public HSSFWorkbook exportPlanData(int forecastId) {
+        final DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMMMMM");
+        Forecast forecast = em.find(Forecast.class, forecastId);
+        
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        
+        int rowIndex = 0;
+        HSSFRow row; HSSFCell cell;
+        
+        int colIndex = 0;
+        row = sheet.createRow(rowIndex++);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new HSSFRichTextString("Budget"));
+        
+        for (int period : getMonthsForFiscalYear(forecast.getFiscalYear())) {
+            TimePeriod p = Utils.timePeriodForMonth(period / 100, (period % 100)-1);
+            cell = row.createCell(colIndex++);
+            cell.setCellValue(new HSSFRichTextString(MONTH_FORMATTER.format(p.getFrom())));
+        }
+        
+        for (BudgetPlan plan : getAssignedBudgetPlans(forecastId)) {
+            for (Budget leaf : budgetsEjb.getLeafBudgetsForParent(plan.getBudgetId())) {
+                ForecastInfoRowVo data = getForecastInfoForBudget(forecastId, leaf.getId());
+                row = sheet.createRow(rowIndex++); colIndex = 0;
+                cell = row.createCell(colIndex++);
+                cell.setCellValue(new HSSFRichTextString(budgetsEjb.getFullBudgetName(leaf.getId())));
+                for (int period : getMonthsForFiscalYear(forecast.getFiscalYear())) {
+                    cell = row.createCell(colIndex++);
+                    cell.setCellValue(((double)data.getMonths().get(period).getPlannedMinutes())/60); // hours
+                }
+            }
+        }
+        
+        return wb;
     }
     
     /**

@@ -128,6 +128,13 @@ public interface BudgetsEJBLocal {
         public boolean isDescendantOf(int parentBudgetId, int budgetId);
 
         /**
+         * Returns the full path name for the given budget ID
+         * @param budgetId a budget ID
+         * @return full budget path name
+         */
+        public String getFullBudgetName(int budgetId);
+
+        /**
          * Calculates the budget prognosis and returns the offset to the
          * budget amount.
          * @param budget a budget
