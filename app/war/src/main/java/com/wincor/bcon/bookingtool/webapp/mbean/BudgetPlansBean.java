@@ -1,12 +1,16 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
@@ -18,10 +22,6 @@ import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.mbean.vo.BudgetPlanVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import javax.inject.Inject;
 
 @Named
 @SessionScoped
@@ -48,6 +48,7 @@ public class BudgetPlansBean implements Serializable {
     private BudgetPlan currentBudgetPlan = null;
     private String currentBudgetPlanBegin = null;
     private String currentBudgetPlanEnd = null;
+    private BudgetPlan selectedBudgetPlan = null;
     
     private List<BudgetPlanVo> planData = null;
 
@@ -186,10 +187,18 @@ public class BudgetPlansBean implements Serializable {
             vo.getValues().put(item.getPeriod(), ((float)item.getMinutes())/480);
         }
     }
+    
+    public BudgetPlan getSelectedBudgetPlan() {
+    	return selectedBudgetPlan;
+    }
 
-    public void delete(BudgetPlan b) {
+    public void setSelectedBudgetPlan(BudgetPlan selectedBudgetPlan) {
+    	this.selectedBudgetPlan = selectedBudgetPlan;
+    }
+
+    public void deleteSelected() {
         try {
-                ejb.deleteBudgetPlan(b.getId());
+                ejb.deleteBudgetPlan(getSelectedBudgetPlan().getId());
         } catch (Exception ex) {
                 WebUtils.addFacesMessage(ex);
         }
@@ -206,6 +215,9 @@ public class BudgetPlansBean implements Serializable {
     }
     
     public List<Integer> getMonthColumns() {
+    	if(getCurrentBudgetPlan() == null || getCurrentBudgetPlan().getId() == null)
+    		return null;
+    	
         List<Integer> result = new ArrayList<Integer>();
         int currentMonth = currentBudgetPlan.getPlanBegin();
         for (int i = 1; currentMonth <= currentBudgetPlan.getPlanEnd(); i++) {

@@ -8,10 +8,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+
+import org.primefaces.model.chart.PieChartModel;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
@@ -21,8 +24,6 @@ import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
-import java.util.Map;
-import org.primefaces.model.chart.PieChartModel;
 
 @Named
 @SessionScoped
@@ -38,6 +39,7 @@ public class BookingsBean implements Serializable {
 	private BudgetsEJBLocal budgetsEjb;
 	
 	private Booking current;
+	private Booking selected;
 	
 	private BookingTemplate currentTemplate = null;
 	
@@ -97,8 +99,16 @@ public class BookingsBean implements Serializable {
 		currentTemplate = bookingTemplateEjb.getBookingTemplate(v.getBookingTemplateId());
 	}
 	
-	public void delete (Booking v) {
-		bookingEjb.deleteBooking(v.getId());;
+	public Booking getSelected() {
+		return selected;
+	}
+
+	public void setSelected(Booking selected) {
+		this.selected = selected;
+	}
+
+	public void deleteSelected() {
+		bookingEjb.deleteBooking(getSelected().getId());
 	}
 	
 	public List<BookingTemplate> complete(String v) { 

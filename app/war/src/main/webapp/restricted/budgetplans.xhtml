@@ -55,16 +55,25 @@
                         <h:outputText value="#{budgetPlansBean.formatPeriodName(plan.planBegin,true)} - #{budgetPlansBean.formatPeriodName(plan.planEnd,true)}"/>
                     </p:column>
                     <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
-                        <h:commandLink value="Edit" action="#{budgetPlansBean.edit(plan)}"/>,
-                        <h:commandLink value="Delete" action="#{budgetPlansBean.delete(plan)}"/>
+                        <p:commandLink value="Edit" action="#{budgetPlansBean.edit(plan)}" ajax="false"/>,
+                        <p:commandLink value="Delete" oncomplete="confirmDeleteDialog.show()">
+                        	<f:setPropertyActionListener value="#{plan}" target="#{budgetPlansBean.selectedBudgetPlan}" />
+                        </p:commandLink>
                     </p:column>
                 </p:dataTable>  
                 
                 <p>
-                    <h:commandLink value="New budget plan" action="#{budgetPlansBean.newBudgetPlan}"/>
+                    <p:commandLink value="New budget plan" action="#{budgetPlansBean.newBudgetPlan}" ajax="false"/>
                 </p>
             </h:form>
-
+            
+            <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
+                <ui:param name="headerText" value="Do you want to delete this budget plan?"/>
+                <ui:param name="bean" value="#{budgetPlansBean}"/>
+                <ui:param name="action" value="deleteSelected"/>
+                <ui:param name="updateComponent" value=":viewform"/>
+            </ui:include>
+            
             <h:form id="editplanform" rendered="#{budgetPlansBean.currentBudgetPlan ne null and budgetPlansBean.currentBudgetPlan.id ne null}">
                 
                 <hr/>

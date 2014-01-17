@@ -56,7 +56,7 @@
 							<p:ajax event="keyup" update="budgetInfo" />
 						</p:inputText>
 						<p:message id="noHours" for="hours" display="text" rendered="#{budgetsBean.currentBudgetHours ge 0}"/>
-        					<h:commandLink value="#{-budgetsBean.currentBudgetHours} h" action="#{budgetsBean.showSubBudgets(budgetsBean.currentBudget)}" rendered="#{budgetsBean.currentBudgetHours lt 0}"/>
+        					<p:commandLink value="#{-budgetsBean.currentBudgetHours} h" action="#{budgetsBean.showSubBudgets(budgetsBean.currentBudget)}" rendered="#{budgetsBean.currentBudgetHours lt 0}" ajax="false"/>
 					</h:panelGroup>
 					<h:outputText id="budgetInfo" value="#{budgetsBean.getFormattedBudgetTime(budgetsBean.currentBudget.minutes)}"/>
 	
@@ -95,9 +95,9 @@
 					</p:column>
 					<p:column headerText="Name" filterBy="name">
                                             <h:outputText value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes ge 0 and budgetsBean.parentFilter lt 0}"/>
-                                            <h:commandLink value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter lt 0}" action="#{budgetsBean.showSubBudgets(b.budget)}"/>
+                                            <p:commandLink value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter lt 0}" action="#{budgetsBean.showSubBudgets(b.budget)}" ajax="false"/>
                                             <h:outputText value="#{b.budget.name}" rendered="#{b.budget.minutes ge 0 and budgetsBean.parentFilter ge 0}"/>
-                                            <h:commandLink value="#{b.budget.name}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter ge 0}" action="#{budgetsBean.showSubBudgets(b.budget)}"/>
+                                            <p:commandLink value="#{b.budget.name}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter ge 0}" action="#{budgetsBean.showSubBudgets(b.budget)}" ajax="false"/>
 					</p:column>
 					<p:column headerText="Budget">
 						<h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.budget.minutes)}"/>
@@ -129,10 +129,10 @@
 						<h:outputText value="#{budgetsBean.getProject(b.budget.projectId).name}"/>
 					</p:column>
 					<p:column headerText="Actions" rendered="#{budgetsBean.editingAllowed}">
-	                    <h:commandLink value="Edit" action="#{budgetsBean.edit(b.budget)}">
+	                    <p:commandLink value="Edit" action="#{budgetsBean.edit(b.budget)}" ajax="false">
                                 <p:resetInput target=":editform"/>
-                            </h:commandLink>,  
-	                    <h:commandLink value="Delete" action="#{budgetsBean.delete(b.budget)}"/>
+                            </p:commandLink>,  
+	                    <p:commandLink value="Delete" action="#{budgetsBean.delete(b.budget)}" ajax="false"/>
 					</p:column>
 				</p:dataTable>
 			

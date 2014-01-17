@@ -1,29 +1,30 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.primefaces.model.DualListModel;
+import org.primefaces.model.StreamedContent;
+
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetPlansEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
-import java.io.Serializable;
-import java.util.List;
-
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
 import com.wincor.bcon.bookingtool.server.ejb.ForecastsEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
-import java.util.ArrayList;
-import java.util.Calendar;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.inject.Inject;
-import org.primefaces.model.DualListModel;
-import org.primefaces.model.StreamedContent;
 
 @Named
 @SessionScoped
@@ -44,6 +45,7 @@ public class ForecastsBean implements Serializable, Converter {
     private BudgetsBean budgetsBean;
 
     private Forecast current = null;
+    private Forecast selected = null;
     
     private List<ForecastInfoRowVo> rows = null;
     
@@ -127,10 +129,18 @@ public class ForecastsBean implements Serializable, Converter {
         assignedBudgetPlans.setSource(source);
         assignedBudgetPlans.setTarget(target);
     }
+    
+    public Forecast getSelected() {
+		return selected;
+	}
 
-    public void delete(Forecast f) {
+	public void setSelected(Forecast selected) {
+		this.selected = selected;
+	}
+
+	public void deleteSelected() {
         try {
-            ejb.deleteForecast(f.getId());
+            ejb.deleteForecast(getSelected().getId());
             clear();
         } catch (Exception ex) {
             WebUtils.addFacesMessage(ex);
