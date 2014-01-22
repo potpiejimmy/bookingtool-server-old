@@ -8,9 +8,9 @@
     
     <ui:composition>
         
-            <p:dialog id="confirmDlg" widgetVar="confirmDeleteDialog" header="#{headerText}" closable="false" global="true" showEffect="fade" hideEffect="fade" icon="ui-icon-alert" resizable="false" modal="true" style="text-align:center;">
+            <p:dialog id="confirmDlg" widgetVar="confirmDeleteDialog" header="#{headerText}" closable="false" showEffect="fade" hideEffect="fade" resizable="false" modal="true" style="text-align:center;">
             	<h:form>
-            		<p:commandButton id="deleteButton" action="#{bean[action]}" onclick="confirmDeleteDialog.hide()" value="Yes" modal="true" update="#{updateComponent}" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+            		<p:commandButton id="deleteButton" action="#{bean[action]}" onclick="confirmDeleteDialog.hide()" value="Yes" ajax="false" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
             		<p:commandButton id="cancelButton" onclick="confirmDeleteDialog.hide()" value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close" style="margin-left:20px;"/>
             	</h:form>
             </p:dialog>

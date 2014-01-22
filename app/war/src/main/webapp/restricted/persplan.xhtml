@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="0" />
+
+        <ui:define name="pagetitle">BudgetTool - Personal Resource Plan</ui:define>
+        
+        <ui:define name="body">
+
+            <f:metadata>
+                <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+            </f:metadata>
+                
+            <h:form id="editform">
+                
+                <p:dataTable id="plantable" var="vo" value="#{persPlanBean.rowData}"
+                             editable="true" editMode="cell">
+                    
+                    <p:column headerText="Kalenderwoche">
+                        <h:outputText value="2013, KW 7" />
+                    </p:column>
+                    <p:column headerText="">
+                        <h:outputText value="21.01.-27.01." />
+                    </p:column>
+                    <p:columns value="#{persPlanBean.weekdayColumns}" var="weekday" styleClass="ui-editable-column">
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="#{weekday}"/>
+                            <ui:param name="binding" value="#{vo.values[weekday]}"/>
+                        </ui:include>
+                    </p:columns>            
+                </p:dataTable>  
+
+                <p>
+                    <p:commandButton id="hiddenSubmit" style="display: none;" update="plantable"/>
+                    <p:commandButton value="Speichern" action="#{persPlanBean.savePlan}" ajax="false"/>
+                </p>
+                <p:defaultCommand target="hiddenSubmit" />
+            </h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

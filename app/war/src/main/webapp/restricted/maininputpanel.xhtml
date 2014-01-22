@@ -10,7 +10,7 @@
 
 		<ui:param name="tabIndex" value="0" />
 
-        <ui:define name="pagetitle">Main Input Panel</ui:define>
+        <ui:define name="pagetitle">BudgetTool - Main Input Panel</ui:define>
         
         <ui:define name="body">
         	
@@ -180,10 +180,9 @@
 			</h:form>
 			
             <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
-                <ui:param name="headerText" value="Wollen Sie diese Buchung wirklich loeschen?"/>
+                <ui:param name="headerText" value="Wollen Sie diese Buchung wirklich löschen?"/>
                 <ui:param name="bean" value="#{bookingsBean}"/>
                 <ui:param name="action" value="deleteSelected"/>
-                <ui:param name="updateComponent" value=":viewform"/>
             </ui:include>
                 
         </ui:define>
