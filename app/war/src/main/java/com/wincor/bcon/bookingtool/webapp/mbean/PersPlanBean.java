@@ -14,9 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 
 /**
@@ -24,39 +21,21 @@ import javax.faces.model.SelectItem;
  */
 @Named
 @SessionScoped
-public class PersPlanBean implements Serializable, Converter {
+public class PersPlanBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    public static class MyRow implements Serializable {
-        private String testProperty = null;
-        private String testProperty2 = null;
+    public static class RowData implements Serializable {
         private Map<Integer,String> values = new HashMap<Integer,String>();
-        public String getTestProperty() {
-            return testProperty;
-        }
-
-        public void setTestProperty(String testProperty) {
-            this.testProperty = testProperty;
-        }
-        
         public Map<Integer,String> getValues() {
             return values;
-        }
-
-        public String getTestProperty2() {
-            return testProperty2;
-        }
-
-        public void setTestProperty2(String testProperty2) {
-            this.testProperty2 = testProperty2;
         }
     }
     
     private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("dd.MM.");
     private final static DateFormat WEEKDAY_FORMATTER = new SimpleDateFormat("EEEEE", Locale.GERMANY);
-
-    private List<MyRow> rowData = null;
+    
+    private List<RowData> rows = null;
     
     public void savePlan() {
         try {
@@ -79,27 +58,13 @@ public class PersPlanBean implements Serializable, Converter {
         return result;
     }
     
-    public List<Integer> getWeekdayColumns() {
-        return Arrays.asList(new Integer[] {Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY});
-    }
-    
-    public List<MyRow> getRowData() {
-        if (rowData == null) {
-            rowData = new ArrayList<MyRow>();
-            rowData.add(new MyRow());
-            rowData.add(new MyRow());
+    public List<RowData> getRowData() {
+        if (rows == null) {
+            rows = new ArrayList<RowData>();
+            rows.add(new RowData());
+            rows.add(new RowData());
         }
         
-        return rowData;
-    }
-
-    @Override
-    public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        return value;
-    }
-
-    @Override
-    public String getAsString(FacesContext context, UIComponent component, Object value) {
-        return ""+value;
+        return rows;
     }
 }

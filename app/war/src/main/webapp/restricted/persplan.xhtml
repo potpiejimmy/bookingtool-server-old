@@ -20,8 +20,12 @@
                 
             <h:form id="editform">
                 
+    <p:contextMenu for="plantable" widgetVar="cMenu">   
+        <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
+    </p:contextMenu> 
+
                 <p:dataTable id="plantable" var="vo" value="#{persPlanBean.rowData}"
-                             editable="true" editMode="cell">
+                             editable="true" editMode="cell" widgetVar="planTable">
                     
                     <p:column headerText="Kalenderwoche">
                         <h:outputText value="2013, KW 7" />
@@ -29,12 +33,41 @@
                     <p:column headerText="">
                         <h:outputText value="21.01.-27.01." />
                     </p:column>
-                    <p:columns value="#{persPlanBean.weekdayColumns}" var="weekday" styleClass="ui-editable-column">
+                    <p:column>
                         <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
-                            <ui:param name="weekday" value="#{weekday}"/>
-                            <ui:param name="binding" value="#{vo.values[weekday]}"/>
+                            <ui:param name="weekday" value="2"/>
                         </ui:include>
-                    </p:columns>            
+                    </p:column>            
+                    <p:column>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="3"/>
+                        </ui:include>
+                    </p:column>            
+                    <p:column>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="4"/>
+                        </ui:include>
+                    </p:column>            
+                    <p:column>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="5"/>
+                        </ui:include>
+                    </p:column>            
+                    <p:column>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="6"/>
+                        </ui:include>
+                    </p:column>            
+                    <p:column>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="7"/>
+                        </ui:include>
+                    </p:column>            
+                    <p:column>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="1"/>
+                        </ui:include>
+                    </p:column>            
                 </p:dataTable>  
 
                 <p>
@@ -43,7 +76,7 @@
                 </p>
                 <p:defaultCommand target="hiddenSubmit" />
             </h:form>
-
+ 
         </ui:define>
         
     </ui:composition>

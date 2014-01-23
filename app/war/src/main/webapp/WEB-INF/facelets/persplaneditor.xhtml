@@ -13,10 +13,10 @@
         </f:facet>
         <p:cellEditor>
             <f:facet name="output">
-                <h:outputText value="#{binding}"/>
+                <h:outputText value="#{vo.values[weekday]}"/>
             </f:facet>
             <f:facet name="input">
-                <h:selectOneMenu value="#{binding}" style="width:100%;">
+                <h:selectOneMenu value="#{vo.values[weekday]}" style="width:100%;">
                     <f:selectItems value="#{persPlanBean.selectItems}"/>
                 </h:selectOneMenu>
             </f:facet>  
