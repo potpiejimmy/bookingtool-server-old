@@ -8,19 +8,18 @@
     
     <ui:composition>
         
-        <f:facet name="header">
-            <h:outputText value="#{persPlanBean.formatWeekdayName(weekday)}"/>
-        </f:facet>
-        <p:cellEditor>
-            <f:facet name="output">
-                <h:outputText value="#{vo.values[weekday]}"/>
-            </f:facet>
-            <f:facet name="input">
-                <h:selectOneMenu value="#{vo.values[weekday]}" style="width:100%;">
-                    <f:selectItems value="#{persPlanBean.selectItems}"/>
-                </h:selectOneMenu>
-            </f:facet>  
-        </p:cellEditor>
+        <p:column styleClass="weekdaycolumn #{persPlanBean.getCellStyleClass(weekday,vo.values[weekday])}">
+            <p:cellEditor>
+                <f:facet name="output">
+                        <h:outputText value="#{vo.values[weekday]}"/>
+                </f:facet>
+                <f:facet name="input">
+                    <h:selectOneMenu value="#{vo.values[weekday]}" style="width:100%;">
+                        <f:selectItems value="#{persPlanBean.selectItems}"/>
+                    </h:selectOneMenu>
+                </f:facet>  
+            </p:cellEditor>
+        </p:column>
         
     </ui:composition>
     

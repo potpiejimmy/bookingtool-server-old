@@ -49,3 +49,23 @@ html {
 .rowhighlight {
     background-color: #CAE2FF;
 }
+
+.weekdaycolumn {
+    width: 80px;
+}
+
+.persplancolumn {
+    width: 160px;
+}
+
+.persplancellfree {
+    background: #BFB;
+}
+
+.persplancelloccupied {
+    background: #FBB;
+}
+
+.persplancellgone {
+    background: #DDF;
+}

@@ -6,14 +6,12 @@
 
 package com.wincor.bcon.bookingtool.server.ejb;
 
-import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.db.entity.ProjectManager;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,17 +28,14 @@ public class ProjectsEJB implements ProjectsEJBLocal {
     @Resource
     private SessionContext ctx;
 	
-    @EJB
-    private DomainsEJBLocal domainsEjb;
-    
     @Override
     @RolesAllowed({"admin","user"})
     public List<Project> getProjects() {
-        List<Project> result = new ArrayList<Project>();
-        for (Domain domain : domainsEjb.getDomains()) {
-            result.addAll(em.createNamedQuery("Project.findByDomainId", Project.class).setParameter("domainId", domain.getId()).getResultList());
+        if (ctx.isCallerInRole("superuser"))
+            return em.createNamedQuery("Project.findAll", Project.class).getResultList();
+        else {
+            return em.createNamedQuery("Project.findByDomainUser", Project.class).setParameter("userName", ctx.getCallerPrincipal().getName()).getResultList();
         }
-        return result;
     }
 
     @Override
