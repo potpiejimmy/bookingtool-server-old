@@ -30,20 +30,23 @@ public class PersPlanBean implements Serializable {
     private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("dd. MMM");
     private final static DateFormat WEEKDAY_FORMATTER = new SimpleDateFormat("EEEEE", Locale.GERMANY);
     
-    public static class RowData implements Serializable {
+    public static class WeekData implements Serializable {
         
         private int weekOfYear = 0;
+        private int year = 0;
         private String formattedWeekDateRange;
         
         private Map<Integer,String> values = new HashMap<Integer,String>();
 
-        public RowData(int weekOfYear) {
+        public WeekData(int weekOfYear, int year) {
             this.weekOfYear = weekOfYear;
+            this.year = year;
             Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, year);
             cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
             cal.set(Calendar.WEEK_OF_YEAR, weekOfYear);
             formattedWeekDateRange = DATE_FORMATTER.format(cal.getTime());
-            cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            cal.add(Calendar.DAY_OF_YEAR, 6);
             formattedWeekDateRange += " - " + DATE_FORMATTER.format(cal.getTime());
         }
         
@@ -55,21 +58,57 @@ public class PersPlanBean implements Serializable {
             return weekOfYear;
         }
         
+        public int getYear() {
+            return year;
+        }
+        
         public String getFormattedWeekDateRange() {
             return formattedWeekDateRange;
         }
     }
     
-    private List<RowData> rows = null;
+    private int year = Calendar.getInstance().get(Calendar.YEAR);
+    private int weekOfYear = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+    private int numWeeks = 14;
+    
+    private List<WeekData> rows = null;
     
     @EJB
     private ProjectsEJBLocal projectsEjb;
+    
+    public void applySettings() {
+        this.rows = null; // reset row data
+    }
     
     public void savePlan() {
         try {
         } catch (Exception ex) {
             WebUtils.addFacesMessage(ex);
         }
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getWeekOfYear() {
+        return weekOfYear;
+    }
+
+    public void setWeekOfYear(int weekOfYear) {
+        this.weekOfYear = weekOfYear;
+    }
+
+    public int getNumWeeks() {
+        return numWeeks;
+    }
+
+    public void setNumWeeks(int numWeeks) {
+        this.numWeeks = numWeeks;
     }
 
     public String formatWeekdayName(int weekday) {
@@ -80,7 +119,9 @@ public class PersPlanBean implements Serializable {
     
     public String getCellStyleClass(Integer weekday, String value) {
         return value != null  && value.length() > 0 ?
-            ("U".equals(value) ? "persplancellgone" : "persplancelloccupied") :
+            ("U".equals(value) ? "persplancellgone" : 
+             ("A".equals(value) ? "persplancellofftime" :
+              "persplancelloccupied")) :
             ((weekday == Calendar.SATURDAY || weekday == Calendar.SUNDAY) ?
               "" :
               "persplancellfree");
@@ -97,15 +138,16 @@ public class PersPlanBean implements Serializable {
         return result;
     }
     
-    public List<RowData> getRowData() {
+    public List<WeekData> getRowData() {
         if (rows == null) {
-            rows = new ArrayList<RowData>();
-            rows.add(new RowData(3));
-            rows.add(new RowData(4));
-            rows.add(new RowData(5));
-            rows.add(new RowData(6));
-            rows.add(new RowData(7));
-            rows.add(new RowData(8));
+            rows = new ArrayList<WeekData>(numWeeks);
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, year);
+            cal.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+            for (int i = 0; i < numWeeks; i++) {
+                rows.add(new WeekData(cal.get(Calendar.WEEK_OF_YEAR), cal.get(Calendar.YEAR)));
+                cal.add(Calendar.WEEK_OF_YEAR, 1);
+            }
         }
         
         return rows;

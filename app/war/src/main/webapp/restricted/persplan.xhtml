@@ -18,67 +18,90 @@
                 <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
             </f:metadata>
                 
-            <h:form id="editform">
-                
-                <p:contextMenu for="plantable" widgetVar="cMenu">   
-                    <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
-                </p:contextMenu> 
-
-                <p:dataTable id="plantable" var="vo" value="#{persPlanBean.rowData}"
-                             editable="true" editMode="cell" widgetVar="planTable">
+            <p:panel header="Persönlicher Ressourcen-Plan">
                     
-        <p:columnGroup type="header">  
-            <!-- Note: I had to move the header into this separate column group
-                 otherwise the individual cell styles were not applied correctly on AJAX update -->
-            <p:row>
-                <p:column headerText="Kalenderwoche" styleClass="persplancolumn"/>  
-                <p:column headerText="" styleClass="persplancolumn"/>  
-                <p:column headerText="#{persPlanBean.formatWeekdayName(2)}" styleClass="persplancolumn"/>  
-                <p:column headerText="#{persPlanBean.formatWeekdayName(3)}" styleClass="persplancolumn"/>  
-                <p:column headerText="#{persPlanBean.formatWeekdayName(4)}" styleClass="persplancolumn"/>  
-                <p:column headerText="#{persPlanBean.formatWeekdayName(5)}" styleClass="persplancolumn"/>  
-                <p:column headerText="#{persPlanBean.formatWeekdayName(6)}" styleClass="persplancolumn"/>  
-                <p:column headerText="#{persPlanBean.formatWeekdayName(7)}" styleClass="persplancolumn"/>  
-                <p:column headerText="#{persPlanBean.formatWeekdayName(1)}" styleClass="persplancolumn"/>  
-            </p:row>  
-        </p:columnGroup>  
+                <h:form id="editform">
+                
+                    <p:panelGrid columns="2">
+                        <h:outputText value="Start-KW:"/>
+                        <h:panelGroup>
+                            <p:spinner maxlength="2" min="1" max="53" value="#{persPlanBean.weekOfYear}"/>
+                            <p:spinner maxlength="4" min="2000" max="3000" value="#{persPlanBean.year}"/>
+                        </h:panelGroup>
+                        <h:outputText value="Anzahl Wochen:"/>
+                        <p:spinner maxlength="2" min="1" max="53" value="#{persPlanBean.numWeeks}"/>
+                    </p:panelGrid>
+                    
+                    <p>
+                        <p:commandButton value="Anwenden" action="#{persPlanBean.applySettings}" ajax="false"/>
+                    </p>
+                
+                </h:form>
 
-                    <p:column styleClass="persplancolumn">
-                        <h:outputText value="KW #{vo.weekOfYear}, 2013" />
-                    </p:column>
-                    <p:column styleClass="persplancolumn">
-                        <h:outputText value="#{vo.formattedWeekDateRange}" />
-                    </p:column>
-                    <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
-                        <ui:param name="weekday" value="2"/>
-                    </ui:include>
-                    <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
-                        <ui:param name="weekday" value="3"/>
-                    </ui:include>
-                    <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
-                        <ui:param name="weekday" value="4"/>
-                    </ui:include>
-                    <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
-                        <ui:param name="weekday" value="5"/>
-                    </ui:include>
-                    <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
-                        <ui:param name="weekday" value="6"/>
-                    </ui:include>
-                    <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
-                        <ui:param name="weekday" value="7"/>
-                    </ui:include>
-                    <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
-                        <ui:param name="weekday" value="1"/>
-                    </ui:include>
-                </p:dataTable>  
+                <h:form id="planform">
 
-                <p>
-                    <p:commandButton id="hiddenSubmit" style="display: none;" update="plantable"/>
-                    <p:commandButton value="Speichern" action="#{persPlanBean.savePlan}" ajax="false"/>
-                </p>
-                <p:defaultCommand target="hiddenSubmit" />
-            </h:form>
+                    <p:contextMenu for="plantable" widgetVar="cMenu">   
+                        <p:menuitem value="Hide Menu" icon="ui-icon-close" onclick="PF('cMenu').hide()"/>  
+                    </p:contextMenu> 
+
+                    <p:dataTable id="plantable" var="vo" value="#{persPlanBean.rowData}"
+                                 editable="true" editMode="cell" widgetVar="planTable">
+
+            <p:columnGroup type="header">  
+                <!-- Note: I had to move the header into this separate column group
+                     otherwise the individual cell styles were not applied correctly on AJAX update -->
+                <p:row>
+                    <p:column headerText="Kalenderwoche" styleClass="persplancolumn"/>  
+                    <p:column headerText="" styleClass="persplancolumn"/>  
+                    <p:column headerText="#{persPlanBean.formatWeekdayName(2)}" styleClass="persplancolumn"/>  
+                    <p:column headerText="#{persPlanBean.formatWeekdayName(3)}" styleClass="persplancolumn"/>  
+                    <p:column headerText="#{persPlanBean.formatWeekdayName(4)}" styleClass="persplancolumn"/>  
+                    <p:column headerText="#{persPlanBean.formatWeekdayName(5)}" styleClass="persplancolumn"/>  
+                    <p:column headerText="#{persPlanBean.formatWeekdayName(6)}" styleClass="persplancolumn"/>  
+                    <p:column headerText="#{persPlanBean.formatWeekdayName(7)}" styleClass="persplancolumn"/>  
+                    <p:column headerText="#{persPlanBean.formatWeekdayName(1)}" styleClass="persplancolumn"/>  
+                </p:row>  
+            </p:columnGroup>  
+
+                        <p:column styleClass="persplancolumn">
+                            <h:outputText value="KW #{vo.weekOfYear}, #{vo.year}" />
+                        </p:column>
+                        <p:column styleClass="persplancolumn">
+                            <h:outputText value="#{vo.formattedWeekDateRange}" />
+                        </p:column>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="2"/>
+                        </ui:include>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="3"/>
+                        </ui:include>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="4"/>
+                        </ui:include>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="5"/>
+                        </ui:include>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="6"/>
+                        </ui:include>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="7"/>
+                        </ui:include>
+                        <ui:include src="/WEB-INF/facelets/persplaneditor.xhtml">
+                            <ui:param name="weekday" value="1"/>
+                        </ui:include>
+                    </p:dataTable>  
+
+                    <p>
+                        <p:commandButton id="hiddenSubmit" style="display: none;" update="plantable"/>
+                        <p:commandButton value="Speichern" action="#{persPlanBean.savePlan}" ajax="false"/>
+                    </p>
+                    <p:defaultCommand target="hiddenSubmit" />
+
+                </h:form>
  
+            </p:panel>
+                
         </ui:define>
         
     </ui:composition>
