@@ -277,6 +277,83 @@ CREATE TABLE IF NOT EXISTS `project_manager` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `resource_plan_item`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `resource_plan_item` ;
+
+CREATE TABLE IF NOT EXISTS `resource_plan_item` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_name` VARCHAR(45) NOT NULL,
+  `day` DATE NOT NULL,
+  `avail` CHAR(1) NOT NULL,
+  `project_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_resource_plan_item_project1_idx` (`project_id` ASC),
+  INDEX `fk_resource_plan_item_user1_idx` (`user_name` ASC),
+  CONSTRAINT `fk_resource_plan_item_project1`
+    FOREIGN KEY (`project_id`)
+    REFERENCES `project` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_resource_plan_item_user1`
+    FOREIGN KEY (`user_name`)
+    REFERENCES `user` (`name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `resource_team`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `resource_team` ;
+
+CREATE TABLE IF NOT EXISTS `resource_team` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `domain_id` INT NOT NULL,
+  `name` VARCHAR(64) NOT NULL,
+  `manager` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_resource_team_user1_idx` (`manager` ASC),
+  INDEX `fk_resource_team_domain1_idx` (`domain_id` ASC),
+  CONSTRAINT `fk_resource_team_user1`
+    FOREIGN KEY (`manager`)
+    REFERENCES `user` (`name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_resource_team_domain1`
+    FOREIGN KEY (`domain_id`)
+    REFERENCES `domain` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `resource_team_member`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `resource_team_member` ;
+
+CREATE TABLE IF NOT EXISTS `resource_team_member` (
+  `resource_team_id` INT NOT NULL,
+  `user_name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`resource_team_id`, `user_name`),
+  INDEX `fk_resource_team_has_user_user1_idx` (`user_name` ASC),
+  INDEX `fk_resource_team_has_user_resource_team1_idx` (`resource_team_id` ASC),
+  CONSTRAINT `fk_resource_team_has_user_resource_team1`
+    FOREIGN KEY (`resource_team_id`)
+    REFERENCES `resource_team` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_resource_team_has_user_user1`
+    FOREIGN KEY (`user_name`)
+    REFERENCES `user` (`name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
