@@ -27,7 +27,7 @@ public class PersPlanBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     
-    private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("dd. MMM");
+    private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("dd. MMMMM", Locale.GERMANY);
     private final static DateFormat WEEKDAY_FORMATTER = new SimpleDateFormat("EEEEE", Locale.GERMANY);
     
     public static class WeekData implements Serializable {
@@ -119,8 +119,8 @@ public class PersPlanBean implements Serializable {
     
     public String getCellStyleClass(Integer weekday, String value) {
         return value != null  && value.length() > 0 ?
-            ("U".equals(value) ? "persplancellgone" : 
-             ("A".equals(value) ? "persplancellofftime" :
+            (("U".equals(value)||"Z".equals(value)||"K".equals(value)) ? "persplancellgone" : 
+             ("F".equals(value) ? "persplancellofftime" :
               "persplancelloccupied")) :
             ((weekday == Calendar.SATURDAY || weekday == Calendar.SUNDAY) ?
               "" :
@@ -130,11 +130,15 @@ public class PersPlanBean implements Serializable {
     public List<SelectItem> getSelectItems() {
         List<SelectItem> result = new ArrayList<SelectItem>();
         result.add(new SelectItem(null, ""));
-        result.add(new SelectItem("A", "A Abwesenheit"));
+        result.add(new SelectItem("A", "A Angeboten"));
+        result.add(new SelectItem("F", "F Frei"));
         result.add(new SelectItem("I", "I Internes Projekt"));
+        result.add(new SelectItem("K", "K Krankheit"));
         for (Project p : projectsEjb.getProjects())
             result.add(new SelectItem("P"+p.getId(), "P "+p.getName()));
+        result.add(new SelectItem("S", "S Schulung"));
         result.add(new SelectItem("U", "U Urlaub"));
+        result.add(new SelectItem("Z", "Z Zusatztag"));
         return result;
     }
     
