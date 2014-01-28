@@ -1,7 +1,9 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
+import com.wincor.bcon.bookingtool.server.db.entity.ResourcePlanItem;
 import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
+import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,19 +37,23 @@ public class PersPlanBean implements Serializable {
         private int weekOfYear = 0;
         private int year = 0;
         private String formattedWeekDateRange;
+        private Calendar startDate;
+        private Calendar endDate;
         
         private Map<Integer,String> values = new HashMap<Integer,String>();
 
         public WeekData(int weekOfYear, int year) {
             this.weekOfYear = weekOfYear;
             this.year = year;
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.YEAR, year);
-            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-            cal.set(Calendar.WEEK_OF_YEAR, weekOfYear);
-            formattedWeekDateRange = DATE_FORMATTER.format(cal.getTime());
-            cal.add(Calendar.DAY_OF_YEAR, 6);
-            formattedWeekDateRange += " - " + DATE_FORMATTER.format(cal.getTime());
+            this.startDate = Calendar.getInstance();
+            this.startDate.set(Calendar.YEAR, year);
+            this.startDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            this.startDate.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+            formattedWeekDateRange = DATE_FORMATTER.format(startDate.getTime());
+            this.endDate = Calendar.getInstance();
+            this.endDate.setTime(startDate.getTime());
+            this.endDate.add(Calendar.DAY_OF_YEAR, 6);
+            formattedWeekDateRange += " - " + DATE_FORMATTER.format(endDate.getTime());
         }
         
         public Map<Integer,String> getValues() {
@@ -60,6 +66,14 @@ public class PersPlanBean implements Serializable {
         
         public int getYear() {
             return year;
+        }
+        
+        public Calendar getStartDate() {
+            return startDate;
+        }
+        
+        public Calendar getEndDate() {
+            return endDate;
         }
         
         public String getFormattedWeekDateRange() {
@@ -82,6 +96,27 @@ public class PersPlanBean implements Serializable {
     
     public void savePlan() {
         try {
+            List<ResourcePlanItem> items = new ArrayList<ResourcePlanItem>();
+            Calendar planBegin = rows.get(0).getStartDate();
+            Calendar planEnd = rows.get(rows.size()-1).getEndDate();
+            TimePeriod p = new TimePeriod(planBegin.getTimeInMillis(), planEnd.getTimeInMillis());
+            
+            for (WeekData row : rows) {
+                Calendar day = row.getStartDate();
+                for (int i = 0; i < 7; i++) {
+                    String value = row.getValues().get(day.get(Calendar.DAY_OF_WEEK));
+                    if (value != null && value.length() > 0) {
+                        ResourcePlanItem item = new ResourcePlanItem();
+                        item.setUserName(WebUtils.getCurrentPerson());
+                        item.setDay(day.getTime());
+                        item.setAvail(value.charAt(0));
+                        if (value.startsWith("P"))
+                            item.setProjectId(Integer.parseInt(value.substring(1)));
+                        items.add(item);
+                    }
+                    day.add(Calendar.DAY_OF_YEAR, 1);
+                }
+            }
         } catch (Exception ex) {
             WebUtils.addFacesMessage(ex);
         }
