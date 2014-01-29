@@ -46,7 +46,7 @@
 	                    	<p:outputLabel value="Export of last:"/>
 	                    	<h:panelGroup>
 	                    		<p:spinner id="monthsToExport" value="#{excelExportBean.monthsToExport}" size="2" min="0" max="999" maxlength="3">
-                                            <f:validateLongRange minimum="1"/>
+                                            <f:validateLongRange minimum="0"/>
                                         </p:spinner>
 	                    		<h:outputText value="  Month(s)"/>
 	                    	</h:panelGroup>

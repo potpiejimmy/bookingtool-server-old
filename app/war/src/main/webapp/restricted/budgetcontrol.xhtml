@@ -52,7 +52,7 @@
                                                        labelTemplate="{value}%"
                                                        value="#{b.bookedMinutesRecursive*100/(b.budget.minutes ge 0 ? b.budget.minutes : -b.budget.minutes)}"/>
                                 </p:column>
-                                <p:column headerText="Edit Work Progress" style="width:64px;" rendered="#{budgetControlBean.editingAllowed}">
+                                <p:column headerText="Edit Progress [%]" style="width:64px;" rendered="#{budgetControlBean.editingAllowed}">
                                     <p:cellEditor>
                                         <f:facet name="output">
                                             <h:outputText value="#{b.budget.workProgress}%" rendered="#{b.budget.workProgress ne null and b.budget.workProgress gt 0}">
@@ -66,10 +66,10 @@
                                         </f:facet>  
                                     </p:cellEditor>
                                 </p:column>
-                                <p:column headerText="Work Progress [%]">
-                                        <p:progressBar rendered="#{b.budget.workProgress ne null and b.budget.workProgress gt 0}"
-                                                       labelTemplate="{value}%"
-                                                       value="#{b.budget.workProgress}"/>
+                                <p:column headerText="Progress [%]" rendered="#{not budgetControlBean.editingAllowed}">
+                                    <h:outputText value="#{b.budget.workProgress}%" rendered="#{b.budget.workProgress ne null and b.budget.workProgress gt 0}">
+                                        <f:convertNumber locale="de_DE"/>
+                                    </h:outputText>
                                 </p:column>
                                 <p:column headerText="Forecast">
                                     <h:outputText value="#{budgetControlBean.getFormattedBudgetOffset(budgetControlBean.getBudgetPrognosisOffset(b))}"

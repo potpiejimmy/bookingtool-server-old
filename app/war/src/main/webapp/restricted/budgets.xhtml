@@ -95,9 +95,9 @@
 					</p:column>
 					<p:column headerText="Name" filterBy="name">
                                             <h:outputText value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes ge 0 and budgetsBean.parentFilter lt 0}"/>
-                                            <p:commandLink value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter lt 0}" action="#{budgetsBean.showSubBudgets(b.budget)}" ajax="false"/>
+                                            <h:commandLink value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter lt 0}" action="#{budgetsBean.showSubBudgets(b.budget)}"/>
                                             <h:outputText value="#{b.budget.name}" rendered="#{b.budget.minutes ge 0 and budgetsBean.parentFilter ge 0}"/>
-                                            <p:commandLink value="#{b.budget.name}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter ge 0}" action="#{budgetsBean.showSubBudgets(b.budget)}" ajax="false"/>
+                                            <h:commandLink value="#{b.budget.name}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter ge 0}" action="#{budgetsBean.showSubBudgets(b.budget)}"/>
 					</p:column>
 					<p:column headerText="Budget">
 						<h:outputText value="#{budgetsBean.getFormattedBudgetTime(b.budget.minutes)}"/>

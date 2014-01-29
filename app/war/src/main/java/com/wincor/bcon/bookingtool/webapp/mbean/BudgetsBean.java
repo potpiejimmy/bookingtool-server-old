@@ -37,7 +37,7 @@ public class BudgetsBean implements Serializable {
 	private Budget currentBudget = null;
 	private int currentBudgetHours = 0; // for editing Budget in hours
 	
-	private int parentFilter = -2;
+	private int parentFilter = -1; // default <Show All>
         
         private Boolean editingAllowed = null;
         
@@ -78,7 +78,7 @@ public class BudgetsBean implements Serializable {
 	public void setCurrentProjectId(int currentProjectId) {
 		getCurrentBudget().setProjectId(currentProjectId);
                 currentRows = null; // reset row data if changing project
-		parentFilter = -2; // reset filter if changing project
+		parentFilter = -1; // reset filter if changing project
                 editingAllowed = null; // reset editing allowed flag
 		newBudget(); // and reset input fields
 	}
