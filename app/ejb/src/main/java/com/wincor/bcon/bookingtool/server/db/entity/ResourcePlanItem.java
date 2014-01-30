@@ -51,7 +51,6 @@ public class ResourcePlanItem implements Serializable {
 	private char avail;
 
 	@Column(name="project_id")
-	@Null
 	private Integer projectId;
 
 	public ResourcePlanItem() {
