@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/dialogbox.xhtml">
+        
+        <ui:define name="dialogContents">
+            <p>
+                <h:outputText value="The budget will be moved to a root position of the target project."/>
+            </p>
+            <p>
+                <p:panelGrid columns="2" style="text-align: left;">
+                    <h:outputText value="Budget: "/>
+                    <h:outputText value="#{budgetsBean.selectedBudget.name}"/>
+                    <h:outputText value="Target project: "/>
+                    <p:selectOneMenu value="#{budgetsBean.moveToProjectId}">
+                        <f:selectItems value="#{budgetsBean.projectItemsForMove}"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+            </p>
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

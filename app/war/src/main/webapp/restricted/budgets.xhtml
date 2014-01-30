@@ -125,19 +125,28 @@
 						    <p:fileDownload value="#{excelExportBean.getExcelListForBudget(b.budget.id)}" />
 						</p:commandLink>
 					</p:column>
-					<p:column headerText="Project">
-						<h:outputText value="#{budgetsBean.getProject(b.budget.projectId).name}"/>
-					</p:column>
 					<p:column headerText="Actions" rendered="#{budgetsBean.editingAllowed}">
 	                    <p:commandLink value="Edit" action="#{budgetsBean.edit(b.budget)}" ajax="false">
                                 <p:resetInput target=":editform"/>
                             </p:commandLink>,  
-	                    <p:commandLink value="Delete" action="#{budgetsBean.delete(b.budget)}" ajax="false"/>
+	                    <p:commandLink value="Delete" action="#{budgetsBean.delete(b.budget)}" ajax="false"/>, 
+                            <p:commandLink value="Move" oncomplete="moveBudgetDialog.show()" update=":moveDialogPanel">
+                        	<f:setPropertyActionListener value="#{b.budget}" target="#{budgetsBean.selectedBudget}" />
+                            </p:commandLink>
 					</p:column>
 				</p:dataTable>
 			
 			</h:form>
 
+        <p:outputPanel id="moveDialogPanel">
+            <ui:include src="/WEB-INF/facelets/dialogboxmovebudget.xhtml">
+                <ui:param name="widgetVar" value="moveBudgetDialog"/>
+                <ui:param name="headerText" value="Move the budget to a different project?"/>
+                <ui:param name="bean" value="#{budgetsBean}"/>
+                <ui:param name="action" value="moveSelectedBudget"/>
+            </ui:include>
+        </p:outputPanel>                
+                        
         </ui:define>
         
     </ui:composition>

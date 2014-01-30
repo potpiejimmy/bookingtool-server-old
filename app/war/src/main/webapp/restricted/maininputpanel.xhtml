@@ -180,6 +180,7 @@
 			</h:form>
 			
             <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
+                <ui:param name="widgetVar" value="confirmDeleteDialog"/>
                 <ui:param name="headerText" value="Wollen Sie diese Buchung wirklich löschen?"/>
                 <ui:param name="bean" value="#{bookingsBean}"/>
                 <ui:param name="action" value="deleteSelected"/>

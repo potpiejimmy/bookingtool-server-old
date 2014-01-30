@@ -126,6 +126,24 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 		
 	}
 	
+        @Override
+	@RolesAllowed("admin")
+        public void moveBudget(int budgetId, int targetProjectId) {
+            Budget budget = em.find(Budget.class, budgetId);
+            moveBudgetImpl(budget, targetProjectId);
+            // also set parent to null of the moved root budget
+            budget.setParentId(null);
+            em.merge(budget); // save
+        }
+        
+        protected void moveBudgetImpl(Budget budget, int targetProjectId) {
+            budget.setProjectId(targetProjectId);
+            em.merge(budget); // save
+            // move children, too:
+            for (Budget child : getBudgetsForParent(budget.getId()))
+                moveBudgetImpl(child, targetProjectId);
+        }
+
 	protected int getBookedMinutes(int budgetId) {
 		Long s = (Long)em.createNamedQuery("Budget.getBookedMinutes").setParameter("budgetId", budgetId).getSingleResult(); 
 		return s != null ? s.intValue() : 0;

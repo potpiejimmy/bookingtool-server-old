@@ -36,6 +36,9 @@ public class BudgetsBean implements Serializable {
         
 	private Budget currentBudget = null;
 	private int currentBudgetHours = 0; // for editing Budget in hours
+        
+        private Budget selectedBudget = null; // selected in list for move/delete
+        private Integer moveToProjectId = null;
 	
 	private int parentFilter = -1; // default <Show All>
         
@@ -66,6 +69,16 @@ public class BudgetsBean implements Serializable {
 		List<SelectItem> result = new ArrayList<SelectItem>(projects.size() + 1);
                 result.add(new SelectItem(0, "<Please choose>"));
 		for (Project p : projects) {
+			result.add(new SelectItem(p.getId(), p.getName()));
+		}
+		return result;
+	}
+	
+	public List<SelectItem> getProjectItemsForMove() {
+		List<Project> projects = projectsEjb.getManagedProjects();
+		List<SelectItem> result = new ArrayList<SelectItem>(projects.size() - 1);
+		for (Project p : projects) {
+                    if (!p.getId().equals(getCurrentProjectId()))
 			result.add(new SelectItem(p.getId(), p.getName()));
 		}
 		return result;
@@ -227,6 +240,27 @@ public class BudgetsBean implements Serializable {
         public void setAllowOverrun(boolean allowOverrun) {
             currentBudget.setAllowOverrun(allowOverrun ? (byte)1 : (byte)0);
         }
+
+    public Budget getSelectedBudget() {
+        return selectedBudget;
+    }
+
+    public void setSelectedBudget(Budget selectedBudget) {
+        this.selectedBudget = selectedBudget;
+    }
+        
+    public void moveSelectedBudget() {
+        ejb.moveBudget(selectedBudget.getId(), moveToProjectId);
+        currentRows = null; // reset row data
+    }
+
+    public Integer getMoveToProjectId() {
+        return moveToProjectId;
+    }
+
+    public void setMoveToProjectId(Integer moveToProjectId) {
+        this.moveToProjectId = moveToProjectId;
+    }
         
         public static class BudgetVoComparator implements Comparator<BudgetInfoVo>
         {

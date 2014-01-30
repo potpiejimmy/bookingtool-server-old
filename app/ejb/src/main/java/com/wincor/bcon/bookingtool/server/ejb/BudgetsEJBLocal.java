@@ -119,6 +119,17 @@ public interface BudgetsEJBLocal {
 	public void deleteBudget(int budgetId);
 
         /**
+         * Moves the given budget to the given target project. The budget itself
+         * and all its recursive children will be moved to the given target project.
+         * The parent budget of the given budget is set to null so that the new
+         * budget tree can be found at the root position of the target project.
+         * 
+         * @param budgetId
+         * @param targetProjectId 
+         */
+        public void moveBudget(int budgetId, int targetProjectId);
+        
+        /**
          * Returns true if the given budget is either the same as or a recursive
          * descendant of the given parent budget.
          * @param parentBudgetId a parent budget ID
