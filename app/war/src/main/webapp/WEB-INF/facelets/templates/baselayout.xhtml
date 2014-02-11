@@ -52,6 +52,9 @@
                     <h:panelGroup rendered="#{request.isUserInRole('superuser')}">,
                         <h:outputLink value="#{request.contextPath}/restricted/adminuser.xhtml">
                             <h:outputText value="Manage Users"/>
+                        </h:outputLink>,
+                        <h:outputLink value="#{request.contextPath}/restricted/adminresteams.xhtml">
+                            <h:outputText value="Manage Resource Teams"/>
                         </h:outputLink>
                     </h:panelGroup>
 	        </div>

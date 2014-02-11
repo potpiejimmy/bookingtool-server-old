@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
+
+       	<ui:param name="tabIndex" value="0" />
+
+        <ui:define name="pagetitle">Resource Teams Administration</ui:define>
+        
+        <ui:define name="body">
+        
+            <h:form id="editform">
+
+                    <p:panelGrid columns="2">
+                            <h:outputText value="Team ID:"/>
+                            <h:outputText value="#{resTeamsBean.currentResourceTeam.id eq null ? '&lt;New&gt;' : resTeamsBean.currentResourceTeam.id}"/>
+                            <h:outputText value="Team Name:"/>
+                            <h:panelGroup>
+                                    <p:inputText id="project" value="#{resTeamsBean.currentResourceTeam.name}"/>
+                                    <p:message id="noTeam" for="project" display="text"/>
+                            </h:panelGroup>
+                            <h:outputText value="Domain:"/>
+                            <h:panelGroup>
+                                <p:selectOneMenu value="#{resTeamsBean.currentResourceTeam.domainId}">
+                                        <f:selectItems value="#{resTeamsBean.domainItems}"/>
+                                        <f:validateLongRange minimum="1"/>
+                                        <p:ajax listener="#{resTeamsBean.updateMembersPickList}" update="assignedMembers"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel value="Bitte mindestens eine Domain anlegen bzw. zuweisen." rendered="#{resTeamsBean.domainItems.size() eq 1}" styleClass="ui-message-error ui-widget"/>
+                            </h:panelGroup>
+                    </p:panelGrid>
+
+                <p>
+                    <p:panel>
+                        <p:pickList id="assignedMembers" value="#{resTeamsBean.assignedMembers}" var="item"
+                                    itemLabel="#{item}"
+                                    itemValue="#{item}">
+                            <f:facet name="sourceCaption">Domain Users</f:facet>  
+                            <f:facet name="targetCaption">Team Members</f:facet>  
+                        </p:pickList>
+                        <p:message for="assignedMembers"/>
+                    </p:panel>
+                </p>
+
+                    <p:commandButton value="#{resTeamsBean.currentResourceTeam.id eq null ? 'Create' : 'Save'}" action="#{resTeamsBean.save}" ajax="false"/>
+                    <p:commandButton rendered="#{resTeamsBean.currentResourceTeam.id ne null}" value="Cancel" action="#{resTeamsBean.clear}" ajax="false"/>
+
+            </h:form>        
+
+            <hr/>
+
+            <h:form id="viewform">
+
+                <p:dataTable value="#{resTeamsBean.resourceTeams}" var="p">
+                            <p:column headerText="ID">
+                                    <h:outputText value="#{p.id}"/>
+                            </p:column>
+                            <p:column headerText="Name">
+                                    <h:outputText value="#{p.name}"/>
+                            </p:column>
+                            <p:column headerText="Domain">
+                                    <h:outputText value="#{projectsBean.getDomain(p.domainId).name}"/>
+                            </p:column>
+                            <p:column headerText="Team Members">
+                                    <h:outputText value="#{resTeamsBean.getAssignedMemberList(p.id)}"/>
+                            </p:column>
+                            <p:column headerText="Actions">
+                <p:commandLink value="Edit" action="#{resTeamsBean.edit(p)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,  
+                <p:commandLink value="Delete" action="#{resTeamsBean.delete(p)}" ajax="false"/>
+                            </p:column>
+                    </p:dataTable>
+
+            </h:form>
+
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

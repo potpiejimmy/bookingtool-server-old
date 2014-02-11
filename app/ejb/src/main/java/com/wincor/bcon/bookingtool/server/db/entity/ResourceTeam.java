@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ResourceTeam.findAll", query = "SELECT p FROM ResourceTeam p ORDER BY p.name"),
     @NamedQuery(name = "ResourceTeam.findByName", query = "SELECT p FROM ResourceTeam p WHERE p.name = :name"),
+    @NamedQuery(name = "ResourceTeam.findByManager", query = "SELECT p FROM ResourceTeam p WHERE p.manager = :manager"),
     @NamedQuery(name = "ResourceTeam.findByDomainId", query = "SELECT p FROM ResourceTeam p WHERE p.domainId = :domainId ORDER BY p.name"),
     @NamedQuery(name = "ResourceTeam.findByDomainUser", query = "SELECT p FROM ResourceTeam p,Domain d,DomainUser u WHERE p.domainId = d.id AND d.id = u.domainId AND u.userName=:userName ORDER BY p.name")})
 public class ResourceTeam implements Serializable {
