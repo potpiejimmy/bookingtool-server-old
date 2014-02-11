@@ -17,8 +17,9 @@
                     <h:outputText value="Budget: "/>
                     <h:outputText value="#{budgetsBean.selectedBudget.name}"/>
                     <h:outputText value="Target project: "/>
-                    <p:selectOneMenu value="#{budgetsBean.moveToProjectId}">
+                    <p:selectOneMenu value="#{budgetsBean.moveToProjectId}" required="true">
                         <f:selectItems value="#{budgetsBean.projectItemsForMove}"/>
+                        <f:validateLongRange minimum="1"/>
                     </p:selectOneMenu>
                 </p:panelGrid>
             </p>

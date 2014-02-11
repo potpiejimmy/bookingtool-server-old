@@ -76,7 +76,7 @@ public class BudgetsBean implements Serializable {
 	
 	public List<SelectItem> getProjectItemsForMove() {
 		List<Project> projects = projectsEjb.getManagedProjects();
-		List<SelectItem> result = new ArrayList<SelectItem>(projects.size() - 1);
+		List<SelectItem> result = new ArrayList<SelectItem>(Math.max(0, projects.size() - 1));
 		for (Project p : projects) {
                     if (!p.getId().equals(getCurrentProjectId()))
 			result.add(new SelectItem(p.getId(), p.getName()));
