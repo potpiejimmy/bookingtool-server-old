@@ -61,6 +61,31 @@
                         
                     </p:panel>
 
+                    <p:panel header="Export Resource Plans" rendered="#{excelExportBean.managedResourceTeamItems.size() gt 0}">
+
+                            <p:panelGrid columns="2">
+	                    	<p:outputLabel value="Team:"/>
+                                <p:selectOneMenu value="#{excelExportBean.teamToExport}">
+                                    <f:selectItems value="#{excelExportBean.managedResourceTeamItems}"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel value="No. of weeks"/>
+	                    	<h:panelGroup>
+	                    		<p:spinner id="weeksToExportResPlan" value="#{excelExportBean.weeksToExportResPlan}" size="2" min="0" max="999" maxlength="3">
+                                            <f:validateLongRange minimum="0"/>
+                                        </p:spinner>
+	                    		<h:outputText value="  Week(s)"/>
+	                    	</h:panelGroup>
+	                    </p:panelGrid>
+	                    
+	                    <p>
+	                    	<p:commandButton id="downloadLinkResPlan" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
+	                    					 icon="ui-icon-arrowthick-1-s">  
+	                    				<p:fileDownload value="#{excelExportBean.resourcePlan}" />  
+	                    	</p:commandButton>
+	                    </p>
+                        
+                    </p:panel>
+                    
 	        </h:form>
 
         </ui:define>

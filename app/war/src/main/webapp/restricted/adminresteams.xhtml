@@ -21,8 +21,13 @@
                             <h:outputText value="#{resTeamsBean.currentResourceTeam.id eq null ? '&lt;New&gt;' : resTeamsBean.currentResourceTeam.id}"/>
                             <h:outputText value="Team Name:"/>
                             <h:panelGroup>
-                                    <p:inputText id="project" value="#{resTeamsBean.currentResourceTeam.name}"/>
-                                    <p:message id="noTeam" for="project" display="text"/>
+                                    <p:inputText id="teamname" size="30" value="#{resTeamsBean.currentResourceTeam.name}"/>
+                                    <p:message for="teamname" display="text"/>
+                            </h:panelGroup>
+                            <h:outputText value="Team Manager:"/>
+                            <h:panelGroup>
+                                    <p:inputText id="manager" size="16" value="#{resTeamsBean.currentResourceTeam.manager}"/>
+                                    <p:message for="manager" display="text"/>
                             </h:panelGroup>
                             <h:outputText value="Domain:"/>
                             <h:panelGroup>
@@ -65,6 +70,9 @@
                             </p:column>
                             <p:column headerText="Domain">
                                     <h:outputText value="#{projectsBean.getDomain(p.domainId).name}"/>
+                            </p:column>
+                            <p:column headerText="Manager">
+                                    <h:outputText value="#{p.manager}"/>
                             </p:column>
                             <p:column headerText="Team Members">
                                     <h:outputText value="#{resTeamsBean.getAssignedMemberList(p.id)}"/>

@@ -36,8 +36,14 @@ public class ResourceTeamsEJB implements ResourceTeamsEJBLocal {
         if (ctx.isCallerInRole("superuser"))
             return em.createNamedQuery("ResourceTeam.findAll", ResourceTeam.class).getResultList();
         else {
-            return em.createNamedQuery("ResourceTeam.findByManager", ResourceTeam.class).setParameter("manager", ctx.getCallerPrincipal().getName()).getResultList();
+            return em.createNamedQuery("ResourceTeam.findByDomainUser", ResourceTeam.class).setParameter("userName", ctx.getCallerPrincipal().getName()).getResultList();
         }
+    }
+    
+    @Override
+    @RolesAllowed({"superuser","admin","user"})
+    public List<ResourceTeam> getManagedResourceTeams() {
+        return em.createNamedQuery("ResourceTeam.findByManager", ResourceTeam.class).setParameter("manager", ctx.getCallerPrincipal().getName()).getResultList();
     }
     
     @Override
@@ -84,7 +90,7 @@ public class ResourceTeamsEJB implements ResourceTeamsEJBLocal {
     @Override
     @RolesAllowed({"admin"})
     public List<String> getAssignedUsers(int teamId) {
-        List<ResourceTeamMember> users = em.createNamedQuery("ResourceTeamMember.findByResourceTeamId", ResourceTeamMember.class).setParameter("teamId", teamId).getResultList();
+        List<ResourceTeamMember> users = em.createNamedQuery("ResourceTeamMember.findByResourceTeamId", ResourceTeamMember.class).setParameter("resourceTeamId", teamId).getResultList();
         List<String> result = new ArrayList<String>(users.size());
         for (ResourceTeamMember u : users) result.add(u.getUserName());
         return result;

@@ -19,10 +19,17 @@ public interface ResourceTeamsEJBLocal {
     /**
      * Returns the list of resource teams. For a superuser role, a complete list
      * of all teams is returned. For an admin or user role, only those
-     * teams are returned that the current user is the manager of.
+     * teams are returned that belong the user's visible domains.
      * @return list of teams
      */
     public List<ResourceTeam> getResourceTeams();
+    
+    /**
+     * Returns the list of managed resource teams. Only those teams are returned
+     * that the current user is the manager of.
+     * @return list of managed teams
+     */
+    public List<ResourceTeam> getManagedResourceTeams();
     
     /**
      * Get the team for the given ID

@@ -88,8 +88,12 @@ public class ResTeamsBean implements Serializable {
 	}
 	
 	public void save() {
+            try {
 		ejb.saveResourceTeam(currentTeam, assignedMembers.getTarget());
 		newResourceTeam();
+            } catch (Exception ex) {
+                WebUtils.addFacesMessage(ex);
+            }
 	}
 	
 	public void edit(ResourceTeam p) {

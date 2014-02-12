@@ -10,10 +10,13 @@ import com.wincor.bcon.bookingtool.server.db.entity.ResourcePlanItem;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 /**
  * Implementation of the resources EJB.
@@ -23,6 +26,9 @@ public class ResourcesEJB implements ResourcesEJBLocal {
 
     @PersistenceContext(unitName = "EJBsPU")
     private EntityManager em;
+    
+    @EJB
+    private ResourceTeamsEJBLocal resourceTeamsEjb;
     
     @Override
     @RolesAllowed({"admin","user"})
@@ -49,5 +55,16 @@ public class ResourcesEJB implements ResourcesEJBLocal {
                 setParameter("to", new java.sql.Date(timePeriod.getTo()), TemporalType.DATE).
                 getResultList();
         
+    }
+    
+    @Override
+    @RolesAllowed({"admin","user"})
+    public HSSFWorkbook exportResourcePlan(int teamId, int weeksToExport) {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        
+        // TODO
+        
+        return wb;
     }
 }

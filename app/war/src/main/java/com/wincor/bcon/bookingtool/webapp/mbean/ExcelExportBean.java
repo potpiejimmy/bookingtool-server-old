@@ -1,5 +1,7 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
+import com.wincor.bcon.bookingtool.server.db.entity.Domain;
+import com.wincor.bcon.bookingtool.server.db.entity.ResourceTeam;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,7 +16,12 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import com.wincor.bcon.bookingtool.server.ejb.ExcelExportEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ResourceTeamsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ResourcesEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
+import java.util.ArrayList;
+import java.util.List;
+import javax.faces.model.SelectItem;
 
 
 @Named
@@ -25,9 +32,17 @@ public class ExcelExportBean implements Serializable {
 
 	@EJB
 	private ExcelExportEJBLocal myExcelExportEJB; 
+        
+        @EJB
+        private ResourceTeamsEJBLocal resourceTeamsEJB;
+	
+        @EJB
+        private ResourcesEJBLocal resourcesEJB;
 	
 	private Integer weeksToExport = 1;
 	private Integer monthsToExport = 0;
+	private Integer weeksToExportResPlan = 1;
+        private Integer teamToExport = 0;
 	
         public String getCurrentUserName() {
             return WebUtils.getCurrentPerson();
@@ -50,6 +65,11 @@ public class ExcelExportBean implements Serializable {
 		HSSFWorkbook wb = myExcelExportEJB.getExcelForBudget(budgetId);
 		return streamForWorkbook(wb, "buchungen_budget_"+budgetId);
 	}
+        
+        public StreamedContent getResourcePlan() {
+		HSSFWorkbook wb = resourcesEJB.exportResourcePlan(teamToExport, weeksToExportResPlan);
+		return streamForWorkbook(wb, "resource_plan_team"+teamToExport);
+        }
 	
 	public Integer getWeeksToExport() {
 		return weeksToExport;
@@ -65,6 +85,31 @@ public class ExcelExportBean implements Serializable {
 
 	public void setMonthsToExport(Integer monthsToExport) {
 		this.monthsToExport = monthsToExport;
+	}
+
+        public Integer getWeeksToExportResPlan() {
+            return weeksToExportResPlan;
+        }
+
+        public void setWeeksToExportResPlan(Integer weeksToExportResPlan) {
+            this.weeksToExportResPlan = weeksToExportResPlan;
+        }
+
+        public Integer getTeamToExport() {
+            return teamToExport;
+        }
+
+        public void setTeamToExport(Integer teamToExport) {
+            this.teamToExport = teamToExport;
+        }
+
+        public List<SelectItem> getManagedResourceTeamItems() {
+		List<ResourceTeam> teams = resourceTeamsEJB.getManagedResourceTeams();
+		List<SelectItem> result = new ArrayList<SelectItem>(teams.size());
+		for (ResourceTeam t : teams) {
+			result.add(new SelectItem(t.getId(), t.getName()));
+		}
+		return result;
 	}
 
 	public static DefaultStreamedContent streamForWorkbook(HSSFWorkbook wb, String filename) {

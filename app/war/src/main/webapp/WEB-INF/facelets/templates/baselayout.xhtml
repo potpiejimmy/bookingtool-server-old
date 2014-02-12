@@ -48,6 +48,9 @@
 	            </h:outputLink>,
 	            <h:outputLink value="#{request.contextPath}/restricted/changepassword.xhtml">
 	            	<h:outputText value="Change Password"/>
+	            </h:outputLink>,
+	            <h:outputLink value="#{request.contextPath}/restricted/persplan.xhtml">
+	            	<h:outputText value="My Plan"/>
 	            </h:outputLink>
                     <h:panelGroup rendered="#{request.isUserInRole('superuser')}">,
                         <h:outputLink value="#{request.contextPath}/restricted/adminuser.xhtml">
