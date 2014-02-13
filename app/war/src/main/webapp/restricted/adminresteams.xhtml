@@ -26,17 +26,19 @@
                             </h:panelGroup>
                             <h:outputText value="Team Manager:"/>
                             <h:panelGroup>
-                                    <p:inputText id="manager" size="16" value="#{resTeamsBean.currentResourceTeam.manager}"/>
-                                    <p:message for="manager" display="text"/>
+                                    <p:selectOneMenu id="managerSel" value="#{resTeamsBean.currentResourceTeam.manager}" required="true">
+                                            <f:selectItems value="#{resTeamsBean.managerItems}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="managerSel" display="text"/>
                             </h:panelGroup>
                             <h:outputText value="Domain:"/>
                             <h:panelGroup>
-                                <p:selectOneMenu value="#{resTeamsBean.currentResourceTeam.domainId}">
+                                <p:selectOneMenu id="domainSel" value="#{resTeamsBean.currentResourceTeam.domainId}">
                                         <f:selectItems value="#{resTeamsBean.domainItems}"/>
                                         <f:validateLongRange minimum="1"/>
-                                        <p:ajax listener="#{resTeamsBean.updateMembersPickList}" update="assignedMembers"/>
                                 </p:selectOneMenu>
                                 <p:outputLabel value="Bitte mindestens eine Domain anlegen bzw. zuweisen." rendered="#{resTeamsBean.domainItems.size() eq 1}" styleClass="ui-message-error ui-widget"/>
+                                <p:message for="domainSel" display="text"/>
                             </h:panelGroup>
                     </p:panelGrid>
 
@@ -45,7 +47,7 @@
                         <p:pickList id="assignedMembers" value="#{resTeamsBean.assignedMembers}" var="item"
                                     itemLabel="#{item}"
                                     itemValue="#{item}">
-                            <f:facet name="sourceCaption">Domain Users</f:facet>  
+                            <f:facet name="sourceCaption">All Users</f:facet>
                             <f:facet name="targetCaption">Team Members</f:facet>  
                         </p:pickList>
                         <p:message for="assignedMembers"/>

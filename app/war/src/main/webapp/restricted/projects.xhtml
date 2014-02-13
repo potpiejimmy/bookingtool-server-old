@@ -30,12 +30,13 @@
 					</h:panelGroup>
 					<h:outputText value="Domain:"/>
                                         <h:panelGroup>
-                                            <p:selectOneMenu value="#{projectsBean.currentProject.domainId}">
+                                            <p:selectOneMenu id="domainSel" value="#{projectsBean.currentProject.domainId}">
                                                     <f:selectItems value="#{projectsBean.domainItems}"/>
                                                     <f:validateLongRange minimum="1"/>
                                                     <p:ajax listener="#{projectsBean.updateManagersPickList}" update="assignedManagers"/>
                                             </p:selectOneMenu>
                                             <p:outputLabel value="Bitte mindestens eine Domain anlegen bzw. zuweisen." rendered="#{projectsBean.domainItems.size() eq 1}" styleClass="ui-message-error ui-widget"/>
+                                            <p:message for="domainSel" display="text"/>
                                         </h:panelGroup>
 				</p:panelGrid>
 				

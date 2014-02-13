@@ -42,9 +42,7 @@ public class ResTeamsBean implements Serializable {
         }
         
         public void updateMembersPickList() {
-                List<String> users = currentTeam.getDomainId() != null ?
-                        new ArrayList<String>(domainsEjb.getAssignedUsers(currentTeam.getDomainId())) :
-                        new ArrayList<String>();
+                List<String> users = new ArrayList<String>(domainsEjb.getAllUsers());
                 List<String> members = new ArrayList<String>();
                 if (currentTeam.getId() != null) {
                     members.addAll(ejb.getAssignedUsers(currentTeam.getId()));
@@ -83,6 +81,16 @@ public class ResTeamsBean implements Serializable {
                 result.add(new SelectItem(0, "<Please choose>"));
 		for (Domain d : domains) {
 			result.add(new SelectItem(d.getId(), d.getName()));
+		}
+		return result;
+	}
+	
+        public List<SelectItem> getManagerItems() {
+		List<String> users = domainsEjb.getAllUsers();
+		List<SelectItem> result = new ArrayList<SelectItem>(users.size() + 1);
+                result.add(new SelectItem(null, "<Please choose>"));
+		for (String s : users) {
+			result.add(new SelectItem(s));
 		}
 		return result;
 	}
