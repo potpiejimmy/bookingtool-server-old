@@ -24,6 +24,7 @@ import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
+import java.util.Arrays;
 
 @Named
 @SessionScoped
@@ -73,6 +74,7 @@ public class BookingsBean implements Serializable {
 	}
 	
 	public void setCurrentTemplate(BookingTemplate bt) {
+                if (bt == null) return;
 		this.currentTemplate = bt;
 		this.current.setSalesRepresentative(bt.getSalesRepresentative()); // adapt Vertriebsbeauftragter
                 if (this.current.getId() == null)
@@ -155,16 +157,33 @@ public class BookingsBean implements Serializable {
 		currentTemplate = null;
 	}
         
-        public PieChartModel getPieChart() {
+        public PieChartModel getPieChartType() {
+            return getPieChart(0);
+        }
+        
+        public PieChartModel getPieChartPsp() {
+            return getPieChart(1);
+        }
+        
+        protected PieChartModel getPieChart(int chartType) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(getCurrent().getDay());
             Map<String,Number> sums = bookingEjb.getBookingSumsForMonth(
                     WebUtils.getCurrentPerson(), 
-                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH));
-            if (sums.isEmpty()) sums.put("", 1);
+                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+                    chartType);
+            if (sums.isEmpty()) sums.put("keine Buchungen", 1);
             PieChartModel model = new PieChartModel();
-            for (String key : sums.keySet())
-                model.set(key + " " + Utils.labelForBookingType(key, true), sums.get(key));
+            final int MAX_LEGEND = 10;
+            int i = 0;
+            String[] keys = sums.keySet().toArray(new String[sums.size()]);
+            Arrays.sort(keys);
+            for (String key : keys) {
+                String label = chartType == 0 ? key + " " + Utils.labelForBookingType(key, true) : key;
+                model.set(label, sums.get(key));
+                i++;
+                if (i >= MAX_LEGEND) break; // XXX TODO show rest
+            }
             return model;
         }
         

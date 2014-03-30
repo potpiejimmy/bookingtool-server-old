@@ -61,9 +61,10 @@ public class BookingsEJB implements BookingsEJBLocal {
         
         @Override
 	@RolesAllowed({"admin", "user"})
-        public Map<String,Number> getBookingSumsForMonth(String person, int year, int month) {
+        public Map<String,Number> getBookingSumsForMonth(String person, int year, int month, int chartType) {
             TimePeriod timePeriod = Utils.timePeriodForMonth(year, month);
-            List<Object[]> sums = (List<Object[]>)em.createNamedQuery("Booking.sumsByTypeForPersonAndTimePeriod").
+            List<Object[]> sums = (List<Object[]>)em.createNamedQuery(
+                    chartType == 0 ? "Booking.sumsByTypeForPersonAndTimePeriod" : "Booking.sumsByPspForPersonAndTimePeriod").
                     setParameter("person", person).
                     setParameter("from", new java.sql.Date(timePeriod.getFrom()), TemporalType.DATE).
                     setParameter("to", new java.sql.Date(timePeriod.getTo()), TemporalType.DATE).

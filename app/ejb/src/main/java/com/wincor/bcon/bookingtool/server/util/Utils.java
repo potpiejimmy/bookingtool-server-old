@@ -48,6 +48,6 @@ public class Utils {
             return "Reisezeit";
         else if ("NP".equals(type)) 
             return shorten ? "Nicht-Prod." : "nicht produktive Tätigkeiten";
-        else return "Unbekannt";
+        else return "";
     }
 }

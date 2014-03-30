@@ -34,7 +34,7 @@ public interface BookingsEJBLocal {
 	
 	/**
 	 * Returns the list of all bookings for the given last day
-	 * @param lastDay - the last export day
+	 * @param day - the last export day
 	 * @return list of bookings
 	 */
 	public List<Booking> getBookingsByLastExportDayForSuperuser(Date day);
@@ -45,9 +45,10 @@ public interface BookingsEJBLocal {
      * @param person a person name
      * @param year the year, e.g. 2013
      * @param month a month constant as defined by Calendar.JANUARY to Calendar.DECEMBER
+     * @param chartType chart type
      * @return Map of booked minutes per booking type
      */
-    public Map<String,Number> getBookingSumsForMonth(String person, int year, int month);
+    public Map<String,Number> getBookingSumsForMonth(String person, int year, int month, int chartType);
         
 	/**
 	 * Returns the list of all booking for the given person and day

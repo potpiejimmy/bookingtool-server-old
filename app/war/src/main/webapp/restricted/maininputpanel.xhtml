@@ -59,9 +59,8 @@
 
 				</p:panelGrid>
                                 <p/>
-                                <table><tr><td>
                                     
-                                    <p:panelGrid columns="2" id="editPanel">
+                                    <p:panelGrid columns="2" id="editPanel" rendered="#{bookingsBean.currentTemplate ne null}">
 					<h:outputText value="ID:"/>
 					<h:outputText id="ID" value="#{bookingsBean.current.id eq null ? '&lt;Neu&gt;' : bookingsBean.current.id}"/>
 					
@@ -102,7 +101,7 @@
 					
 					<h:outputText value="Tätigkeit:"/>
 					<h:panelGroup>
-						<p:inputText  id="description" value="#{bookingsBean.current.description}" size="80"/>
+						<p:inputText  id="description" value="#{bookingsBean.current.description}" size="120"/>
 						<p:message for="description" display="text"/>
 					</h:panelGroup>
 					
@@ -129,15 +128,17 @@
 
                                     </p:panelGrid>
                                             
-                                </td><td style="vertical-align: top;">
-                                    
-                                    <p:outputPanel id="pieChart">
-                                        <p:pieChart value="#{bookingsBean.pieChart}" legendPosition="e" fill="false" showDataLabels="true"  
-                                                    title="#{bookingsBean.pieChartTitle}" style="width:300px;height:240px" sliceMargin="5" diameter="120" />  
+                                    <p:outputPanel id="pieChart" rendered="#{bookingsBean.currentTemplate eq null}">
+                                        <p:panel header="#{bookingsBean.pieChartTitle}">
+                                            <p:panelGrid columns="2">
+                                                <p:pieChart value="#{bookingsBean.pieChartType}" legendPosition="e" fill="false" showDataLabels="true"  
+                                                            style="width:360px;height:300px" sliceMargin="5" diameter="120" />  
+                                                <p:pieChart value="#{bookingsBean.pieChartPsp}" legendPosition="e" fill="false" showDataLabels="true"  
+                                                            style="width:500px;height:300px" sliceMargin="5" diameter="120" />  
+                                            </p:panelGrid>
+                                        </p:panel>
                                     </p:outputPanel>
                                     
-                                </td></tr></table>
-				
 				<p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}" value="#{bookingsBean.current.id eq null ? 'Hinzufügen' : 'Speichern'}" action="#{bookingsBean.save}" ajax="false"/>
 				<p:commandButton id="cancelBtn" rendered="#{bookingsBean.current.id ne null or bookingsBean.currentTemplate.id ne null}" value="Abbrechen" action="#{bookingsBean.clear}" ajax="false" immediate="true">
 					<p:resetInput target=":currentTemplate"/>
