@@ -175,14 +175,18 @@ public class BookingsBean implements Serializable {
             if (sums.isEmpty()) sums.put("keine Buchungen", 1);
             PieChartModel model = new PieChartModel();
             final int MAX_LEGEND = 10;
-            int i = 0;
             String[] keys = sums.keySet().toArray(new String[sums.size()]);
             Arrays.sort(keys);
-            for (String key : keys) {
+            for (int i=0; i<keys.length; i++) {
+                String key = keys[i];
                 String label = chartType == 0 ? key + " " + Utils.labelForBookingType(key, true) : key;
-                model.set(label, sums.get(key));
-                i++;
-                if (i >= MAX_LEGEND) break; // XXX TODO show rest
+                int value = sums.get(key).intValue();
+                if (i >= MAX_LEGEND-1) {
+                    label = "weitere";
+                    Number wval = model.getData().get(label);
+                    if (wval!=null) value += wval.intValue();
+                }
+                model.set(label, value);
             }
             return model;
         }
