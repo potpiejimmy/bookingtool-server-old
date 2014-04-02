@@ -57,11 +57,16 @@
 	            </h:outputLink>,
 	            <h:outputLink value="#{request.contextPath}/restricted/changepassword.xhtml">
 	            	<h:outputText value="Change Password"/>
-	            </h:outputLink>,
-	            <h:outputLink value="#{request.contextPath}/restricted/persplan.xhtml">
-	            	<h:outputText value="My Plan"/>
 	            </h:outputLink>
+                    <h:panelGroup rendered="#{not request.isUserInRole('superuser')}">,
+                        <h:outputLink value="#{request.contextPath}/restricted/persplan.xhtml">
+                            <h:outputText value="My Plan"/>
+                        </h:outputLink>
+                    </h:panelGroup>
                     <h:panelGroup rendered="#{request.isUserInRole('superuser')}">,
+                        <h:outputLink value="#{request.contextPath}/restricted/admin.xhtml">
+                            <h:outputText value="System Maintenance"/>
+                        </h:outputLink>,
                         <h:outputLink value="#{request.contextPath}/restricted/adminuser.xhtml">
                             <h:outputText value="Manage Users"/>
                         </h:outputLink>,
