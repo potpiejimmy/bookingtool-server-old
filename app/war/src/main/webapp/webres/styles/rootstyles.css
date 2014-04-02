@@ -46,6 +46,10 @@ html {
    height: 200px;
 }
 
+.redColoredPanel .ui-panel-content {
+   background-color: #FBB;
+}
+
 .rowhighlight {
     background-color: #CAE2FF;
 }

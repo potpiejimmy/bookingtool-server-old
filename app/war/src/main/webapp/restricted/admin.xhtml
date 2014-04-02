@@ -11,11 +11,17 @@
         <ui:define name="pagetitle">System Administration</ui:define>
         
         <ui:define name="body">
-        
+
         	<p:panel header="Deploy EAR file:" rendered="#{request.isUserInRole('superuser')}">
 		        <h:form>
-					 <p:fileUpload fileUploadListener="#{systemAdminBean.handleFileUpload}" mode="advanced"  
-					      update="messages" auto="true" sizeLimit="50000000" allowTypes="/(\.|\/)(ear)$/"/>  
+                            <p>
+                                <p:selectBooleanCheckbox value="#{systemAdminBean.maintenanceWarning}" itemLabel="Set System Maintenance Warning: "> 
+                                    <p:ajax/>
+                                </p:selectBooleanCheckbox>
+                            </p>
+                            
+                                <p:fileUpload fileUploadListener="#{systemAdminBean.handleFileUpload}" mode="advanced"  
+                                     update="messages" auto="true" sizeLimit="50000000" allowTypes="/(\.|\/)(ear)$/"/>  
 			            
 			         <p:growl id="messages" showDetail="true"/>  
 				</h:form>

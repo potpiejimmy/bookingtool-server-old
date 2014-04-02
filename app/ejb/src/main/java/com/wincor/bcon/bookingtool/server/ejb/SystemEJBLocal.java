@@ -9,4 +9,7 @@ public interface SystemEJBLocal {
 
 	public void deployEar(byte[] contents) throws IOException;
 
+        public String getSystemWarning();
+        
+        public void setSystemWarning(String warning);
 }

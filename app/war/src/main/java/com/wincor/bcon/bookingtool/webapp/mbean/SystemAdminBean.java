@@ -28,4 +28,18 @@ public class SystemAdminBean implements Serializable {
 			WebUtils.addFacesMessage(ex);
 		}
 	}
+        
+        public String getSystemMsg() {
+            return ejb.getSystemWarning();
+        }
+
+        public boolean isMaintenanceWarning() {
+            return ejb.getSystemWarning() != null;
+        }
+
+        public void setMaintenanceWarning(boolean maintenanceWarning) {
+            ejb.setSystemWarning(maintenanceWarning ?
+                    "System is going down for maintenance. Please finish your work and log out." :
+                    null);
+        }
 }

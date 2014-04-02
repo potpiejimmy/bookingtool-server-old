@@ -18,8 +18,8 @@
                 
 		<ui:define name="rootbody">
 				
-				<h:form>
-					<p:tabMenu activeIndex="${tabIndex}">  
+				<h:form id="tabMenuForm">
+					<p:tabMenu id="tabMenu" activeIndex="${tabIndex}">  
 					    <p:menuitem value="Main" url="/restricted/maininputpanel.xhtml"/>  
 					    <p:menuitem value="Export" url="/restricted/excelexport.xhtml"/>
 					    <p:menuitem value="Domains" url="/restricted/domains.xhtml" rendered="#{request.isUserInRole('admin')}"/>  
@@ -31,6 +31,15 @@
 					    <p:menuitem value="Budget Plans" url="/restricted/budgetplans.xhtml" rendered="#{request.isUserInRole('admin')}"/>  
 					    <p:menuitem value="Forecasts" url="/restricted/forecasts.xhtml" rendered="#{request.isUserInRole('admin')}"/>  
 					</p:tabMenu>
+                                        <p:outputPanel id="systemMsg">
+                                            <p:panel styleClass="redColoredPanel" rendered="#{systemAdminBean.systemMsg ne null}">
+                                                <h:panelGrid columns="2">
+                                                    <h:outputText styleClass="ui-message-warn-icon"/>
+                                                    <h:outputText value=" #{systemAdminBean.systemMsg}"/>
+                                                </h:panelGrid>
+                                            </p:panel>
+                                        </p:outputPanel>
+                                        <p:poll interval="10" update="systemMsg" />
 				</h:form>  
 
 				<p/>
