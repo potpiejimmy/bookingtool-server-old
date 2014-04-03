@@ -52,6 +52,7 @@ public class ForecastsBean implements Serializable, Converter {
     private DualListModel<BudgetPlan> assignedBudgetPlans = new DualListModel<BudgetPlan>();
     
     private boolean showDetails = false;
+    private boolean hidePast = false;
     private boolean showIfrs = false;
 
     public void clear() {
@@ -190,6 +191,16 @@ public class ForecastsBean implements Serializable, Converter {
         return ejb.getMonthsForFiscalYear(current.getFiscalYear());
     }
     
+    public List<Integer> getMonthColumnsForDisplay() {
+        List<Integer> months = getMonthColumns();
+        if (!hidePast || months == null) return months;
+        List<Integer> futureMonths = new ArrayList<Integer>(months.size());
+        for (int i=0; i<months.size(); i++)
+            if (i==months.size()-1 || months.get(i+1) >= getCurrentMonth())
+                futureMonths.add(months.get(i));
+        return futureMonths;
+    }
+    
     public int getColumnSumMinutesPlanned(int month) {
         int result = 0;
         for (ForecastInfoRowVo row : getForecastRows()) {
@@ -280,6 +291,14 @@ public class ForecastsBean implements Serializable, Converter {
     public void setShowDetails(boolean showDetails) {
         this.showDetails = showDetails;
         this.rows = null; // reset rows
+    }
+
+    public boolean isHidePast() {
+        return hidePast;
+    }
+
+    public void setHidePast(boolean hidePast) {
+        this.hidePast = hidePast;
     }
 
     public boolean isShowIfrs() {

@@ -9,6 +9,7 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -98,5 +99,14 @@ public class WebUtils
     {
         ExternalContext ctx = FacesContext.getCurrentInstance().getExternalContext();
         ctx.redirect(ctx.getRequestContextPath() + relativeUrl);
+    }
+    
+    /**
+     * Returns the default resource bundle of this application
+     * @return default resource bundle
+     */
+    public static ResourceBundle getResBundle() {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        return ctx.getApplication().getResourceBundle(ctx, "msg"); // "msg" specified in faces-config.xml
     }
 }

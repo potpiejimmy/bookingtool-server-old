@@ -24,7 +24,9 @@ import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
+import java.text.MessageFormat;
 import java.util.Arrays;
+import javax.faces.context.FacesContext;
 
 @Named
 @SessionScoped
@@ -39,13 +41,13 @@ public class BookingsBean implements Serializable {
 	@EJB
 	private BudgetsEJBLocal budgetsEjb;
 	
-	private Booking current;
+        private Booking current;
 	private Booking selected;
 	
 	private BookingTemplate currentTemplate = null;
 	
-	private final static DateFormat DATE_FORMATTER = new SimpleDateFormat("EEEEE", Locale.GERMANY);
-	private final static DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMM", Locale.GERMANY);
+	private final DateFormat DATE_FORMATTER = new SimpleDateFormat("EEEEE", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+	private final DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMM", FacesContext.getCurrentInstance().getViewRoot().getLocale());
 	
 	public List<Booking> getBookings() {
 		return bookingEjb.getBookings(WebUtils.getCurrentPerson(), current.getDay());
@@ -196,6 +198,6 @@ public class BookingsBean implements Serializable {
         }
         
         public String getPieChartTitle() {
-            return "Deine Buchungen im Monat " + MONTH_FORMATTER.format(getCurrent().getDay());
+            return MessageFormat.format(WebUtils.getResBundle().getString("booking_yourbookingsinmonth"), MONTH_FORMATTER.format(getCurrent().getDay()));
         }
 }

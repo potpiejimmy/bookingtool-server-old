@@ -51,7 +51,13 @@
                 <p:panel header="#{forecastsBean.current.name}">
                 
                     <p:selectBooleanButton value="#{forecastsBean.showDetails}"
-                                           onLabel="Hide Details" offLabel="Show Details"
+                                           onLabel="Showing Details" offLabel="Show Details"
+                                           onIcon="ui-icon-check">  
+                        <p:ajax update=":forecastviewform"/>
+                    </p:selectBooleanButton>  
+                    
+                    <p:selectBooleanButton value="#{forecastsBean.hidePast}"
+                                           onLabel="Hiding Past Months" offLabel="Hide Past Months"
                                            onIcon="ui-icon-check">  
                         <p:ajax update=":forecastviewform"/>
                     </p:selectBooleanButton>  
@@ -105,9 +111,9 @@
                         <p:column styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" headerText="Budget Plan">
                             <h:outputText value="#{forecastsBean.getBudgetDisplayName(vo.budgetInfo.budget)}"/>
                         </p:column>
-                        <p:columns styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" value="#{forecastsBean.monthColumns}" var="month" style="width:80px;text-align:right;">
+                        <p:columns styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" value="#{forecastsBean.monthColumnsForDisplay}" var="month" columnIndexVar="monthIndex" style="width:80px;text-align:right;">
                             <f:facet name="header">
-                                <h:outputText value="#{budgetPlansBean.formatPeriodName(month, month%100 eq 10 or month%100 eq 1)}"/>
+                                <h:outputText value="#{budgetPlansBean.formatPeriodName(month, monthIndex eq 0 or month%100 eq 1)}"/>
                             </f:facet>
                             <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.months[month].plannedMinutes)}"
                                           rendered="#{!vo.summaryRow}"/>
@@ -122,13 +128,13 @@
                         <p:columnGroup type="footer">
                             <p:row>
                                 <p:column style="text-align: right;" footerText="Planned:"/>
-                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                <c:forEach items="#{forecastsBean.monthColumnsForDisplay}" var="month">
                                     <p:column style="text-align: right;" footerText="#{budgetsBean.getFormattedBudgetTime(forecastsBean.getColumnSumMinutesPlanned(month))}"/>
                                 </c:forEach>>
                             </p:row>
                             <p:row>
                                 <p:column style="text-align: right;" footerText="Used:"/>
-                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                <c:forEach items="#{forecastsBean.monthColumnsForDisplay}" var="month">
                                     <p:column style="text-align: right;">
                                         <f:facet name="footer">
                                             <h:outputText value="#{budgetsBean.getFormattedBudgetTime(forecastsBean.getColumnSumMinutesBooked(month))}"
@@ -139,7 +145,7 @@
                             </p:row>
                             <p:row>
                                 <p:column style="text-align: right;" footerText="Planned [EUR]:"/>
-                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                <c:forEach items="#{forecastsBean.monthColumnsForDisplay}" var="month">
                                     <p:column style="text-align: right;">
                                         <f:facet name="footer">
                                             <h:outputText value="#{forecastsBean.getColumnSumEurosPlanned(month)}">
@@ -151,7 +157,7 @@
                             </p:row>
                             <p:row>
                                 <p:column style="text-align: right;" footerText="Used [EUR]:"/>
-                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                <c:forEach items="#{forecastsBean.monthColumnsForDisplay}" var="month">
                                     <p:column style="text-align: right;">
                                         <f:facet name="footer">
                                             <h:outputText value="#{forecastsBean.getColumnSumEurosBooked(month)}"
@@ -164,7 +170,7 @@
                             </p:row>
                             <p:row>
                                 <p:column style="text-align: right;" footerText="Plan Diff [EUR]:"/>
-                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                <c:forEach items="#{forecastsBean.monthColumnsForDisplay}" var="month">
                                     <p:column style="text-align: right;">
                                         <f:facet name="footer">
                                             <h:outputText value="#{forecastsBean.getColumnSumEurosDiff(month)}" rendered="#{forecastsBean.currentMonth gt month and forecastsBean.getColumnSumEurosDiff(month) ge 0}" style="color:green;">
@@ -179,7 +185,7 @@
                             </p:row>
                             <p:row>
                                 <p:column style="text-align: right;" footerText="Yearly Budget [EUR]:"/>
-                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                <c:forEach items="#{forecastsBean.monthColumnsForDisplay}" var="month">
                                     <p:column style="text-align: right;">
                                         <f:facet name="footer">
                                             <h:outputText value="#{forecastsBean.current.fcBudgetCents/1200}">
@@ -191,7 +197,7 @@
                             </p:row>
                             <p:row>
                                 <p:column style="text-align: right;" footerText="Yearly Budget Diff [EUR]:"/>
-                                <c:forEach items="#{forecastsBean.monthColumns}" var="month">
+                                <c:forEach items="#{forecastsBean.monthColumnsForDisplay}" var="month">
                                     <p:column style="text-align: right;">
                                         <f:facet name="footer">
                                             <h:outputText value="#{forecastsBean.getColumnSumEurosDiffFcBudget(month)}" rendered="#{forecastsBean.currentMonth gt month and forecastsBean.getColumnSumEurosDiffFcBudget(month) ge 0}" style="color:green;">

@@ -20,9 +20,9 @@
                 
 			<h:form id="searchform">
 				<p:panelGrid columns="2">
-					<h:outputText value="Datum:"/>
+                                        <h:outputText value="#{msg.date}:"/>
 					<h:panelGroup>
-						<p:commandButton title="Zurück" immediate="true" process="@this" update=":searchform, :currentTemplate, :viewform, :pieChart" id="back"  
+						<p:commandButton immediate="true" process="@this" update=":searchform, :currentTemplate, :viewform, :pieChart" id="back"  
 							actionListener="#{bookingsBean.changeDay(false)}" icon="ui-icon-carat-1-w"/>
 							
 						<p:calendar value="#{bookingsBean.current.day}" 
@@ -34,7 +34,7 @@
 							<p:ajax event="dateSelect" update=":searchform, :currentTemplate, :viewform, :pieChart"/>
 						</p:calendar>
 			
-						<p:commandButton style="margin-left:3px;" title="Vor" immediate="true" process="@this" update=":searchform, :currentTemplate,:viewform, :pieChart" id="forward"  
+						<p:commandButton style="margin-left:3px;" immediate="true" process="@this" update=":searchform, :currentTemplate,:viewform, :pieChart" id="forward"  
 							actionListener="#{bookingsBean.changeDay(true)}" icon="ui-icon-carat-1-e"/>
             				
 						<h:outputText id="formattedDay" value="#{bookingsBean.currentDayFormatted}" style="vertical-align: middle; margin-left:10px; font-size:small;"/>
@@ -42,7 +42,7 @@
             				
 					</h:panelGroup>
 					
-					<h:outputText value="Vorlagensuche:"/>
+                                        <h:outputText value="#{msg.booking_templatesearch}:"/>
 					<p:autoComplete id="acSimple" value="#{bookingsBean.currentTemplate}"
 					    size="160"
 						completeMethod="#{bookingsBean.complete}"
@@ -69,12 +69,12 @@
                                     <p:panelGrid columns="2" id="editPanel" rendered="#{bookingsBean.currentTemplate ne null}">
 
 					<h:outputText value="ID:"/>
-					<h:outputText id="ID" value="#{bookingsBean.current.id eq null ? '&lt;Neu&gt;' : bookingsBean.current.id}"/>
+                                        <h:outputText id="ID" value="#{bookingsBean.current.id eq null ? msg.newid : bookingsBean.current.id}"/>
 					
-					<h:outputText value="Vorlagen-ID:"/>
+                                        <h:outputText value="#{msg.booking_templateid}:"/>
 					<h:outputText id="templateID" value="#{bookingsBean.currentTemplate.id}"/>
 					
-					<h:outputText value="Benutzername:"/>
+                                        <h:outputText value="#{msg.username}:"/>
 					<h:outputText id="person" value="#{bookingsBean.current.person}"/>
 					
 					<h:outputText value="Budget:"/>
@@ -97,33 +97,33 @@
                                                           value="#{bookingsBean.getFormattedBookingTime((bookingsBean.currentBudget.budget.minutes ge 0 ? bookingsBean.currentBudget.budget.minutes : -bookingsBean.currentBudget.budget.minutes) - bookingsBean.currentBudget.bookedMinutesRecursive)}"/>
                                         </h:panelGroup>
 					
-					<h:outputText value="PSP:"/>
+                                        <h:outputText value="#{msg.sap_psp}:"/>
 					<h:outputText id="psp" value="#{bookingsBean.currentTemplate.psp}"/>
 					
-					<h:outputText value="Bezeichnung:"/>
+                                        <h:outputText value="#{msg.sap_pspname}:"/>
 					<h:outputText id="name" value="#{bookingsBean.currentTemplate.name}"/>
 					
-					<h:outputText value="Tätigkeitsart:"/>
+                                        <h:outputText value="#{msg.sap_type}:"/>
 					<h:outputText id="type" value="#{bookingsBean.currentTemplate.type}"/>
 					
-					<h:outputText value="Tätigkeit:"/>
+                                        <h:outputText value="#{msg.sap_description}:"/>
 					<h:panelGroup>
 						<p:inputText  id="description" value="#{bookingsBean.current.description}" size="150"/>
 						<p:message for="description" display="text"/>
 					</h:panelGroup>
 					
 
-					<h:outputText value="Vertriebsbeauftragter:"/>
+                                        <h:outputText value="#{msg.sap_salescontact}:"/>
 					<h:panelGroup>
 						<p:inputText id="sales" value="#{bookingsBean.current.salesRepresentative}"
                                                              readonly="#{bookingsBean.currentTemplate.salesRepresentative ne null and bookingsBean.currentTemplate.salesRepresentative ne ''}"/>
 						<p:message for="sales" display="text"/>
 					</h:panelGroup>
 					
-					<h:outputText value="Teilprojekt:"/>
+                                        <h:outputText value="#{msg.sap_subproject}:"/>
 					<h:outputText id="subproject" value="#{bookingsBean.currentTemplate.subproject}"/>
 					
-					<h:outputText value="Zeit in Minuten:"/>
+                                        <h:outputText value="#{msg.booking_timeminutes}:"/>
 					<h:panelGroup>
                                                 <p:focus for="minutes"/>
 						<p:inputText id="minutes" value="#{bookingsBean.current.minutes}" size="10">
@@ -136,8 +136,8 @@
 
                                     </p:panelGrid>
                                             
-				<p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}" value="#{bookingsBean.current.id eq null ? 'Hinzufügen' : 'Speichern'}" action="#{bookingsBean.save}" ajax="false"/>
-				<p:commandButton id="cancelBtn" rendered="#{bookingsBean.current.id ne null or bookingsBean.currentTemplate.id ne null}" value="Abbrechen" action="#{bookingsBean.clear}" ajax="false" immediate="true">
+                                <p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}" value="#{bookingsBean.current.id eq null ? msg.add : msg.save}" action="#{bookingsBean.save}" ajax="false"/>
+                                <p:commandButton id="cancelBtn" rendered="#{bookingsBean.current.id ne null or bookingsBean.currentTemplate.id ne null}" value="#{msg.cancel}" action="#{bookingsBean.clear}" ajax="false" immediate="true">
 					<p:resetInput target=":currentTemplate"/>
 				</p:commandButton>
 	        </h:form>
@@ -150,27 +150,24 @@
 	                    <f:facet name="header"><h:outputText value="ID"/></f:facet>
 	                    <h:outputText value="#{v.id}"/>
 	                </p:column>
-	                <p:column headerText="Person">
-	                    <h:outputText value="#{v.person}"/>
-	                </p:column>
-	                <p:column headerText="PSP">
+                        <p:column headerText="#{msg.sap_psp}">
 	                    <h:outputText value="#{bookingsBean.getPSPForBooking(v.bookingTemplateId)}"/>
 	                </p:column>
-	                <p:column headerText="Bezeichnung">
+                        <p:column headerText="#{msg.sap_pspname}">
 	                    <h:outputText value="#{bookingsBean.getPSPNameForBooking(v.bookingTemplateId)}"/>
 	                </p:column>
-	                <p:column headerText="Description">
+                        <p:column headerText="#{msg.sap_description}">
 	                    <h:outputText value="#{v.description}"/>
 	                </p:column>
-	                <p:column headerText="Vertriebsbeauftragter">
+                        <p:column headerText="#{msg.sap_salescontact}">
 	                    <h:outputText value="#{v.salesRepresentative}"/>
 	                </p:column>
-	                <p:column headerText="Stunden" footerText="#{bookingsBean.formattedBookingTimeSum}">
+                        <p:column headerText="#{msg.sap_hours}" footerText="#{bookingsBean.formattedBookingTimeSum}">
 	                    <h:outputText value="#{bookingsBean.getFormattedBookingTime(v.minutes)}"/>
 	                </p:column>
 	                <p:column headerText="Actions">
-	                    <p:commandLink value="Bearbeiten" action="#{bookingsBean.edit(v)}" ajax="false"> <p:resetInput target=":currentTemplate"/> </p:commandLink>,
-	                    <p:commandLink value="Löschen" oncomplete="confirmDeleteDialog.show()">
+                            <p:commandLink value="#{msg.edit}" action="#{bookingsBean.edit(v)}" ajax="false"> <p:resetInput target=":currentTemplate"/> </p:commandLink>,
+                            <p:commandLink value="#{msg.delete}" oncomplete="confirmDeleteDialog.show()">
   	                       <f:setPropertyActionListener value="#{v}" target="#{bookingsBean.selected}" />
   	                    </p:commandLink>
 	                </p:column>
@@ -183,10 +180,10 @@
                         <p:panel header="#{bookingsBean.pieChartTitle}">
                             <p:panelGrid columns="2">
                                 <p:pieChart value="#{bookingsBean.pieChartPsp}" legendPosition="e" fill="false" showDataLabels="true"  
-                                            title="Projekte"
+                                            title="#{msg.piechart_title_projects}"
                                             style="width:500px;height:300px" sliceMargin="5" diameter="120" />  
                                 <p:pieChart value="#{bookingsBean.pieChartType}" legendPosition="e" fill="false" showDataLabels="true"  
-                                            title="Arbeitszeit"
+                                            title="#{msg.piechart_title_worktime}"
                                             style="width:360px;height:300px" sliceMargin="5" diameter="120" />  
                             </p:panelGrid>
                         </p:panel>
@@ -194,7 +191,7 @@
                                     
             <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
                 <ui:param name="widgetVar" value="confirmDeleteDialog"/>
-                <ui:param name="headerText" value="Wollen Sie diese Buchung wirklich löschen?"/>
+                <ui:param name="headerText" value="#{msg.booking_reallydelete}"/>
                 <ui:param name="bean" value="#{bookingsBean}"/>
                 <ui:param name="action" value="deleteSelected"/>
             </ui:include>
