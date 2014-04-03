@@ -51,7 +51,7 @@
 						converter="#{templateConverter}"
 						forceSelection="true"
 						var="bookingTemplate"
-						itemLabel="#{bookingTemplate.searchString}" 
+						itemLabel="#{bookingsBean.shortenForCombo(bookingTemplate.searchString)}" 
 						itemValue="#{bookingTemplate}">
 						
 						<p:ajax event="itemSelect" update=":currentTemplate"/>

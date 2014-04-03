@@ -50,4 +50,15 @@ public class Utils {
             return shorten ? "Nicht-Prod." : "nicht produktive Tätigkeiten";
         else return "";
     }
+    
+    /**
+     * Shortens the string using the ellipsis character if necessary.
+     * @param in input string
+     * @param len desired length
+     * @return shortened string
+     */
+    public static String shorten(String in, int len) {
+        if (in==null || in.length()<=len) return in;
+        return in.substring(0, len-1) + '\u2026'; // ellipsis char "..."
+    }
 }

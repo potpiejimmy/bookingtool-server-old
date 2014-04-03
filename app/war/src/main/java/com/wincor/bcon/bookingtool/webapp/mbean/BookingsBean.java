@@ -116,6 +116,10 @@ public class BookingsBean implements Serializable {
 	public List<BookingTemplate> complete(String v) { 
 		return bookingTemplateEjb.findBookingTemplates(v);
 	} 
+        
+        public String shortenForCombo(String in) {
+            return Utils.shorten(in, 120);
+        }
 
 	public String getFormattedBookingTime(int minutes) {
 		NumberFormat f = NumberFormat.getNumberInstance();
