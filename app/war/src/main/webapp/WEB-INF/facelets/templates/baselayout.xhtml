@@ -52,9 +52,14 @@
 			
 	        <div id="root_footer">
 	            <hr/>
-	            <h:outputLink value="#{request.contextPath}/restricted/imprint.xhtml">
+	            <h:outputLink value="#{request.contextPath}/webres/help/about.xhtml">
 	            	<h:outputText value="About"/>
 	            </h:outputLink>,
+                    <h:panelGroup rendered="#{helpId ne null}">
+                        <h:outputLink value="#{request.contextPath}/webres/help/#{helpId}.xhtml">
+                            <h:outputText value="Help"/>
+                        </h:outputLink>,
+                    </h:panelGroup>
 	            <h:outputLink value="#{request.contextPath}/restricted/changepassword.xhtml">
 	            	<h:outputText value="Change Password"/>
 	            </h:outputLink>
