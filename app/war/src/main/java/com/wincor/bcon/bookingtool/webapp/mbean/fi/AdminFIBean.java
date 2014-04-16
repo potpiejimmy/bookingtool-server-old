@@ -63,7 +63,10 @@ public class AdminFIBean implements Serializable {
 	}
 
 	public void setCurrentProjectId(int currentProjectId) {
-		this.currentProjectId = currentProjectId;
+            if (this.currentProjectId != currentProjectId) {
+                this.currentProjectId = currentProjectId;
+                selectDefaults();
+            }
 	}
 
 	public List<SelectItem> getProjectItems() {
@@ -140,6 +143,15 @@ public class AdminFIBean implements Serializable {
                 current.setSpecBudgetId(lastSpecBudgetId);
 	}
 	
+        protected void selectDefaults() {
+            // set default parent budget (look for "CRs" if available)
+            for (Budget b : budgetsEjb.getBudgets(currentProjectId))
+                if ("crs".equalsIgnoreCase(b.getName())) current.setParentBudgetId(b.getId());
+            // set default specification budget (look for "Arbeit an Spezifikationen" if available)
+            for (Budget b : budgetsEjb.getBudgets(currentProjectId))
+                if ("Arbeit an Spezifikationen".equalsIgnoreCase(b.getName())) current.setSpecBudgetId(b.getId());
+        }
+        
 	public Boolean getBudgetAvailable() {
 		return budgetsEjb.getBudgets(getCurrentProjectId()).size() > 0;
 	}

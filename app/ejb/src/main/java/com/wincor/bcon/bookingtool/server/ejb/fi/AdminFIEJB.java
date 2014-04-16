@@ -47,12 +47,14 @@ public class AdminFIEJB implements AdminFIEJBLocal {
 		crBudgetDev.setMinutes(createVo.getMinutesDev());
 		crBudgetDev.setProjectId(createVo.getProjectId());
 		crBudgetDev.setParentId(crBudget.getId());
+                crBudgetDev.setAllowOverrun((byte)1);
 
 		Budget crBudgetQA = new Budget();
 		crBudgetQA.setName("QA");
 		crBudgetQA.setMinutes(createVo.getMinutesQA());
 		crBudgetQA.setProjectId(createVo.getProjectId());
 		crBudgetQA.setParentId(crBudget.getId());
+                crBudgetQA.setAllowOverrun((byte)1);
 		
 		em.persist(crBudgetDev);
 		em.persist(crBudgetQA);
