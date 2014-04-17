@@ -16,7 +16,9 @@
     <h:body>
         <div id="root_header">
             <div class="floatleft">
-                <h:graphicImage value="/webres/img/icon.png"/>
+                <h:outputLink value="#{request.contextPath}/">
+                    <h:graphicImage value="/webres/img/icon.png"/>
+                </h:outputLink>
             </div>
             <div id="root_title">
                 <h:outputText value="Welcome to the BCON Budget Planning Tool"/>
@@ -32,11 +34,11 @@
 	            
 	            	<ui:insert name="rootbody"/>
 	
+        	        <p:messages globalOnly="true" showDetail="true"/>
+	
 	        </div>
 	        
 			<ui:insert name="rootfooter"/>
-	
-	        <p:messages globalOnly="true" showDetail="true"/>
         
         </f:view>
     </h:body>

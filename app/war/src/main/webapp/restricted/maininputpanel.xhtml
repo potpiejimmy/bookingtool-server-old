@@ -174,21 +174,6 @@
                         </p:dataTable>
                     </h:form>
 
-                       <hr/>
-
-                    <p:outputPanel id="pieChart">
-                        <p:panel header="#{bookingsBean.pieChartTitle}">
-                            <p:panelGrid columns="2">
-                                <p:pieChart value="#{bookingsBean.pieChartPsp}" legendPosition="e" fill="false" showDataLabels="true"  
-                                            title="#{msg.piechart_title_projects}"
-                                            style="width:500px;height:300px" sliceMargin="5" diameter="120" />  
-                                <p:pieChart value="#{bookingsBean.pieChartType}" legendPosition="e" fill="false" showDataLabels="true"  
-                                            title="#{msg.piechart_title_worktime}"
-                                            style="width:360px;height:300px" sliceMargin="5" diameter="120" />  
-                            </p:panelGrid>
-                        </p:panel>
-                    </p:outputPanel>
-                                    
             <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
                 <ui:param name="widgetVar" value="confirmDeleteDialog"/>
                 <ui:param name="headerText" value="#{msg.booking_reallydelete}"/>
@@ -196,6 +181,25 @@
                 <ui:param name="action" value="deleteSelected"/>
             </ui:include>
                 
+        </ui:define>
+        
+        <ui:define name="body_footer">
+            
+            <hr/>
+
+            <p:outputPanel id="pieChart">
+                <p:panel header="#{bookingsBean.pieChartTitle}">
+                    <p:panelGrid columns="2">
+                        <p:pieChart value="#{bookingsBean.pieChartPsp}" legendPosition="e" fill="false" showDataLabels="true"  
+                                    title="#{msg.piechart_title_projects}"
+                                    style="width:500px;height:300px" sliceMargin="5" diameter="120" />  
+                        <p:pieChart value="#{bookingsBean.pieChartType}" legendPosition="e" fill="false" showDataLabels="true"  
+                                    title="#{msg.piechart_title_worktime}"
+                                    style="width:360px;height:300px" sliceMargin="5" diameter="120" />  
+                    </p:panelGrid>
+                </p:panel>
+            </p:outputPanel>
+                                    
         </ui:define>
         
     </ui:composition>
