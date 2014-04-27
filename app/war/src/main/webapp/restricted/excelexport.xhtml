@@ -23,12 +23,12 @@
                     <p:panel header="Export all bookings for #{excelExportBean.currentUserName}">
                     
 	                    <p:panelGrid columns="2" id="excelByWeeks">
-	                    	<p:outputLabel value="Export of last:"/>
+	                    	<p:outputLabel value="Export last"/>
 	                    	<h:panelGroup>
 	                    		<p:spinner id="weeksToExport" value="#{excelExportBean.weeksToExport}" size="2" min="1" max="999" maxlength="3">
                                             <f:validateLongRange minimum="1"/>
                                         </p:spinner>
-	                    		<h:outputText value="  Week(s)"/>
+	                    		<h:outputText value="  week(s)"/>
 	                    	</h:panelGroup>
 	                    </p:panelGrid>
 	                    
@@ -43,12 +43,12 @@
                     <p:panel header="Export all bookings (Superuser Only)" rendered="#{request.isUserInRole('superuser')}">
                     
 	                    <p:panelGrid columns="2" id="excelByMonths">
-	                    	<p:outputLabel value="Export of last:"/>
+	                    	<p:outputLabel value="Export last"/>
 	                    	<h:panelGroup>
 	                    		<p:spinner id="monthsToExport" value="#{excelExportBean.monthsToExport}" size="2" min="0" max="999" maxlength="3">
                                             <f:validateLongRange minimum="0"/>
                                         </p:spinner>
-	                    		<h:outputText value="  Month(s)"/>
+	                    		<h:outputText value="  month(s)"/>
 	                    	</h:panelGroup>
 	                    </p:panelGrid>
 	                    
@@ -73,7 +73,7 @@
 	                    		<p:spinner id="weeksToExportResPlan" value="#{excelExportBean.weeksToExportResPlan}" size="2" min="0" max="999" maxlength="3">
                                             <f:validateLongRange minimum="0"/>
                                         </p:spinner>
-	                    		<h:outputText value="  Week(s)"/>
+	                    		<h:outputText value="  week(s)"/>
 	                    	</h:panelGroup>
 	                    </p:panelGrid>
 	                    
