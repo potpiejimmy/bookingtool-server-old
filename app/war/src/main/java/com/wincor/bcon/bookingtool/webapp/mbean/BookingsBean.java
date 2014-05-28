@@ -21,6 +21,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.BookingsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
@@ -40,6 +41,8 @@ public class BookingsBean implements Serializable {
 	private BookingTemplatesEJBLocal bookingTemplateEjb;
 	@EJB
 	private BudgetsEJBLocal budgetsEjb;
+        @EJB
+        private ProjectsEJBLocal projectsEjb;
 	
         private Booking current;
 	private Booking selected;
@@ -199,5 +202,10 @@ public class BookingsBean implements Serializable {
         
         public String getPieChartTitle() {
             return MessageFormat.format(WebUtils.getResBundle().getString("booking_yourbookingsinmonth"), MONTH_FORMATTER.format(getCurrent().getDay()));
+        }
+        
+        public boolean isEditingAllowed() {
+            return Boolean.valueOf(WebUtils.getHttpServletRequest().isUserInRole("admin")) &&
+                                        projectsEjb.getAssignedManagers(budgetsEjb.getBudget(this.currentTemplate.getBudgetId()).getProjectId()).contains(WebUtils.getCurrentPerson());
         }
 }

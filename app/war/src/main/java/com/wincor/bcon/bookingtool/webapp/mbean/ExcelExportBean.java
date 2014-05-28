@@ -1,6 +1,5 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
-import com.wincor.bcon.bookingtool.server.db.entity.Domain;
 import com.wincor.bcon.bookingtool.server.db.entity.ResourceTeam;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,7 +10,6 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -22,6 +20,7 @@ import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.model.SelectItem;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 @Named
@@ -50,24 +49,24 @@ public class ExcelExportBean implements Serializable {
         
 	public StreamedContent getExcelList () {
 		
-		HSSFWorkbook wb = myExcelExportEJB.getExcelForName(WebUtils.getCurrentPerson(), getWeeksToExport());
+                XSSFWorkbook wb = myExcelExportEJB.getExcelForName(WebUtils.getCurrentPerson(), getWeeksToExport());
 		return streamForWorkbook(wb, "buchungen_"+WebUtils.getCurrentPerson());
 	}
 	
 	public StreamedContent getExcelListAdmin () {
 		
-		HSSFWorkbook wb = myExcelExportEJB.getExcelForAdmin(getMonthsToExport());
+		XSSFWorkbook wb = myExcelExportEJB.getExcelForAdmin(getMonthsToExport());
 		return streamForWorkbook(wb, "buchungen_all");
 	}
 	
 	public StreamedContent getExcelListForBudget(Integer budgetId) {
 		
-		HSSFWorkbook wb = myExcelExportEJB.getExcelForBudget(budgetId);
+		XSSFWorkbook wb = myExcelExportEJB.getExcelForBudget(budgetId);
 		return streamForWorkbook(wb, "buchungen_budget_"+budgetId);
 	}
         
         public StreamedContent getResourcePlan() {
-		HSSFWorkbook wb = resourcesEJB.exportResourcePlan(teamToExport, weeksToExportResPlan);
+		XSSFWorkbook wb = resourcesEJB.exportResourcePlan(teamToExport, weeksToExportResPlan);
 		return streamForWorkbook(wb, "resource_plan_team"+teamToExport);
         }
 	
@@ -112,7 +111,7 @@ public class ExcelExportBean implements Serializable {
 		return result;
 	}
 
-	public static DefaultStreamedContent streamForWorkbook(HSSFWorkbook wb, String filename) {
+	public static DefaultStreamedContent streamForWorkbook(XSSFWorkbook wb, String filename) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			wb.write(baos);
@@ -124,7 +123,7 @@ public class ExcelExportBean implements Serializable {
 		
 		byte[] content = baos.toByteArray();
 
-		return new DefaultStreamedContent(new ByteArrayInputStream(content), "application/excel", filename+".xls");
+		return new DefaultStreamedContent(new ByteArrayInputStream(content), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename+".xlsx");
 	}
 
 	

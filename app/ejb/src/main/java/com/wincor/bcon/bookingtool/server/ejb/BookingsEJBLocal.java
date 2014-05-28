@@ -66,10 +66,18 @@ public interface BookingsEJBLocal {
 	public List<Booking> getBookingsForBudget(int budgetId);
 	
 	/**
+	 * Returns the booking with the given booking template ID
+	 * @param templateId a booking template ID
+	 * @return the booking
+	 */
+        public List<Booking> getBookingsByTemplateId(int templateId);
+	
+	/**
 	 * Returns the booking with the given ID
 	 * @param bookingId a booking ID
 	 * @return the booking
 	 */
+        
 	public Booking getBooking(int bookingId);
 	
 	/**

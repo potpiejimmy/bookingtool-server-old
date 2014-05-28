@@ -19,11 +19,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TemporalType;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Implementation of the resources EJB.
@@ -66,9 +66,9 @@ public class ResourcesEJB implements ResourcesEJBLocal {
     
     @Override
     @RolesAllowed({"admin","user"})
-    public HSSFWorkbook exportResourcePlan(int teamId, int weeksToExport) {
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
+    public XSSFWorkbook exportResourcePlan(int teamId, int weeksToExport) {
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet();
         
         final DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMMMMM");
         final DateFormat DAY_FORMATTER = new SimpleDateFormat("dd");
@@ -86,7 +86,7 @@ public class ResourcesEJB implements ResourcesEJBLocal {
         end.add(Calendar.DAY_OF_YEAR, daysToExport - 1);
         
         int rowIndex = 0;
-        HSSFRow row = sheet.createRow(rowIndex++);
+        XSSFRow row = sheet.createRow(rowIndex++);
         createTimeLine(row, start, daysToExport, MONTH_FORMATTER, null, null);
         row = sheet.createRow(rowIndex++);
         createTimeLine(row, start, daysToExport, DAY_FORMATTER, null, null);
@@ -103,10 +103,10 @@ public class ResourcesEJB implements ResourcesEJBLocal {
         return wb;
     }
     
-    protected void createTimeLine(HSSFRow row, Calendar start, int numberOfDays, DateFormat formatter, String user, List<ResourcePlanItem> items) {
+    protected void createTimeLine(XSSFRow row, Calendar start, int numberOfDays, DateFormat formatter, String user, List<ResourcePlanItem> items) {
         int colIndex = 0;
-        HSSFCell cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(user != null ? user : ""));
+        XSSFCell cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString(user != null ? user : ""));
         
         Calendar iter = Calendar.getInstance(Locale.GERMANY);
         iter.setTime(start.getTime());
@@ -117,10 +117,10 @@ public class ResourcesEJB implements ResourcesEJBLocal {
                 // header lines:
                 String formatting = formatter.format(iter.getTime());
                 if (!formatting.equals(lastFormatting)) {
-                    cell.setCellValue(new HSSFRichTextString(formatting));
+                    cell.setCellValue(new XSSFRichTextString(formatting));
                     lastFormatting = formatting;
                 } else {
-                    cell.setCellValue(new HSSFRichTextString(""));
+                    cell.setCellValue(new XSSFRichTextString(""));
                 }
             } else {
                 // user line:
@@ -132,7 +132,7 @@ public class ResourcesEJB implements ResourcesEJBLocal {
                     itemDay.set(Calendar.SECOND, 0);
                     itemDay.set(Calendar.MILLISECOND, 0);
                     if (itemDay.equals(iter)) {
-                        cell.setCellValue(new HSSFRichTextString("" + item.getAvail() + (item.getProjectId() != null ? String.valueOf(item.getProjectId()) : "")));
+                        cell.setCellValue(new XSSFRichTextString("" + item.getAvail() + (item.getProjectId() != null ? String.valueOf(item.getProjectId()) : "")));
                     }
                 }
             }

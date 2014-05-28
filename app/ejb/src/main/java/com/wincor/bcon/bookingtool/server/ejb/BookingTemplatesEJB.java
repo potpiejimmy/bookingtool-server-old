@@ -1,17 +1,16 @@
 package com.wincor.bcon.bookingtool.server.ejb;
 
+import com.wincor.bcon.bookingtool.server.db.entity.Booking;
+import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
+import com.wincor.bcon.bookingtool.server.db.entity.Domain;
+import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
-import com.wincor.bcon.bookingtool.server.db.entity.Domain;
-import java.util.ArrayList;
-import javax.ejb.EJB;
 
 @Stateless
 public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
@@ -21,6 +20,9 @@ public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
 
         @EJB
         private DomainsEJBLocal domainsEjb;
+       
+        @EJB
+        private BookingsEJBLocal bookingsEjb;
         
 	@Override
 	@RolesAllowed({"admin", "user"})
@@ -47,7 +49,23 @@ public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
 	@Override
 	@RolesAllowed("admin")
 	public void saveBookingTemplate(BookingTemplate bt) {
-		//update the searchString
+		// check whether booking relevant fields in the template have
+		// changed and if so, re-save all bookings that have already
+		// been exported so that they get marked as changed.
+                if (bt.getId() != null) {
+                    // template was edited
+                    BookingTemplate btold = getBookingTemplate(bt.getId());
+                    boolean hasRelevantChanges = !bt.getPsp().equals(btold.getPsp()) ||
+                                                 !bt.getName().equals(btold.getName()) ||
+                                                 !bt.getType().equals(btold.getType()) ||
+                                                 !bt.getSubproject().equals(btold.getSubproject());
+                    if (hasRelevantChanges) {
+                        for(Booking b : bookingsEjb.getBookingsByTemplateId(bt.getId()))
+                                if (b.getExportState()==1) bookingsEjb.saveBooking(b);
+                    }
+                }
+                
+                //update the searchString
 		bt.setSearchString(bt.getPsp() + " " + bt.getName() + " " + bt.getSalesRepresentative() + " " + bt.getSubproject() + " " + bt.getAdditionalInfo() + " " + bt.getDescription());
 		
 		if (bt.getId() != null)

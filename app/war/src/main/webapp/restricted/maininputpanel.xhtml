@@ -17,7 +17,6 @@
                     <f:metadata>
                         <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
                     </f:metadata>
-                
 			<h:form id="searchform">
 				<p:panelGrid columns="2">
                                         <h:outputText value="#{msg.date}:"/>
@@ -43,19 +42,22 @@
 					</h:panelGroup>
 					
                                         <h:outputText value="#{msg.booking_templatesearch}:"/>
-					<p:autoComplete id="acSimple" value="#{bookingsBean.currentTemplate}"
-					    size="160"
-						completeMethod="#{bookingsBean.complete}"
-						minQueryLength="3"
-						maxResults="20"
-						converter="#{templateConverter}"
-						forceSelection="true"
-						var="bookingTemplate"
-						itemLabel="#{bookingsBean.shortenForCombo(bookingTemplate.searchString)}" 
-						itemValue="#{bookingTemplate}">
-						
-						<p:ajax event="itemSelect" update=":currentTemplate"/>
-					</p:autoComplete>
+                                        <h:panelGroup>
+                                            <p:focus for="acSimple" rendered="#{bookingsBean.currentTemplate eq null}"/>
+                                            <p:autoComplete id="acSimple" value="#{bookingsBean.currentTemplate}"
+                                                size="160"
+                                                    completeMethod="#{bookingsBean.complete}"
+                                                    minQueryLength="3"
+                                                    maxResults="20"
+                                                    converter="#{templateConverter}"
+                                                    forceSelection="true"
+                                                    var="bookingTemplate"
+                                                    itemLabel="#{bookingsBean.shortenForCombo(bookingTemplate.searchString)}" 
+                                                    itemValue="#{bookingTemplate}">
+
+                                                    <p:ajax event="itemSelect" update=":currentTemplate"/>
+                                            </p:autoComplete>
+                                        </h:panelGroup>
 
 				</p:panelGrid>
                             
@@ -68,16 +70,36 @@
                                     
                                     <p:panelGrid columns="2" id="editPanel" rendered="#{bookingsBean.currentTemplate ne null}">
 
-					<h:outputText value="ID:"/>
+                                        <h:outputText value="ID:"/>
                                         <h:outputText id="ID" value="#{bookingsBean.current.id eq null ? msg.newid : bookingsBean.current.id}"/>
 					
-                                        <h:outputText value="#{msg.booking_templateid}:"/>
+                                        <h:panelGroup>
+                                            <h:outputText value="#{msg.booking_templateid}:"/>
+                                            <ui:include src="/WEB-INF/facelets/editButton.xhtml">
+                                                <ui:param name="outcome" value="templates"/>
+                                                <ui:param name="renderingAllowed" value="#{bookingsBean.editingAllowed}"/>
+                                                <ui:param name="toolTip" value="#{msg.edit_template_tooltip}"/>
+                                                <ui:param name="paramName" value="editTemplate"/>
+                                                <ui:param name="paramValue" value="#{bookingsBean.currentTemplate.id}"/>
+                                                <ui:param name="icon" value="ui-icon-pencil"/>
+                                            </ui:include>  
+                                        </h:panelGroup>
 					<h:outputText id="templateID" value="#{bookingsBean.currentTemplate.id}"/>
 					
                                         <h:outputText value="#{msg.username}:"/>
 					<h:outputText id="person" value="#{bookingsBean.current.person}"/>
 					
-					<h:outputText value="Budget:"/>
+                                        <h:panelGroup>
+                                            <h:outputText value="Budget:"/>
+                                            <ui:include src="/WEB-INF/facelets/editButton.xhtml">
+                                                <ui:param name="outcome" value="budgets"/>
+                                                <ui:param name="renderingAllowed" value="#{bookingsBean.editingAllowed}"/>
+                                                <ui:param name="toolTip" value="#{msg.edit_budget_tooltip}"/>
+                                                <ui:param name="paramName" value="budgetId"/>
+                                                <ui:param name="paramValue" value="#{bookingsBean.currentTemplate.budgetId}"/>
+                                                <ui:param name="icon" value="ui-icon-pencil"/>
+                                            </ui:include> 
+                                        </h:panelGroup>
                                         <h:panelGroup>
                                             <h:outputText id="budget" 
                                                           rendered="#{bookingsBean.currentBudget ne null}"
@@ -125,13 +147,13 @@
 					
                                         <h:outputText value="#{msg.booking_timeminutes}:"/>
 					<h:panelGroup>
-                                                <p:focus for="minutes"/>
-						<p:inputText id="minutes" value="#{bookingsBean.current.minutes}" size="10">
-							<f:validateLongRange minimum="1" />
-							<p:ajax event="keyup" update="hoursInfo" /> 
-						</p:inputText><span> </span>
-						<h:outputText id="hoursInfo" value="#{bookingsBean.getFormattedBookingTime(bookingsBean.current.minutes)}" style="margin-left:3px;"/>
-						<p:message for="minutes" display="text"/>
+                                                <p:focus for="minutes" rendered="#{bookingsBean.currentTemplate ne null}"/>
+                                                <p:inputText id="minutes" value="#{bookingsBean.current.minutes}" size="10">
+                                                        <f:validateLongRange minimum="1" />
+                                                        <p:ajax event="keyup" update="hoursInfo" /> 
+                                                </p:inputText><span> </span>
+                                                <h:outputText id="hoursInfo" value="#{bookingsBean.getFormattedBookingTime(bookingsBean.current.minutes)}" style="margin-left:3px;"/>
+                                                <p:message for="minutes" display="text"/>
 					</h:panelGroup>
 
                                     </p:panelGrid>
@@ -143,8 +165,11 @@
 	        </h:form>
 
                     <p/>
-                    
+          
                     <h:form id="viewform">
+                        
+            
+                        
                         <p:dataTable value="#{bookingsBean.bookings}" var="v">
 	                <p:column headerText="ID">
 	                    <f:facet name="header"><h:outputText value="ID"/></f:facet>
@@ -167,21 +192,22 @@
 	                </p:column>
 	                <p:column headerText="Actions">
                             <p:commandLink value="#{msg.edit}" action="#{bookingsBean.edit(v)}" ajax="false"> <p:resetInput target=":currentTemplate"/> </p:commandLink>,
-                            <p:commandLink value="#{msg.delete}" oncomplete="confirmDeleteDialog.show()">
+                            <p:commandLink value="#{msg.delete}" oncomplete="PF('confirmDeleteDialog').show()">
   	                       <f:setPropertyActionListener value="#{v}" target="#{bookingsBean.selected}" />
   	                    </p:commandLink>
 	                </p:column>
                         </p:dataTable>
                     </h:form>
-
             <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
                 <ui:param name="widgetVar" value="confirmDeleteDialog"/>
                 <ui:param name="headerText" value="#{msg.booking_reallydelete}"/>
                 <ui:param name="bean" value="#{bookingsBean}"/>
                 <ui:param name="action" value="deleteSelected"/>
-            </ui:include>
+            </ui:include>  
+
                 
         </ui:define>
+
         
         <ui:define name="body_footer">
             
@@ -192,10 +218,10 @@
                     <p:panelGrid columns="2">
                         <p:pieChart value="#{bookingsBean.pieChartPsp}" legendPosition="e" fill="false" showDataLabels="true"  
                                     title="#{msg.piechart_title_projects}"
-                                    style="width:500px;height:300px" sliceMargin="5" diameter="120" />  
+                                    style="width:500px;height:320px" sliceMargin="5" diameter="180" />  
                         <p:pieChart value="#{bookingsBean.pieChartType}" legendPosition="e" fill="false" showDataLabels="true"  
                                     title="#{msg.piechart_title_worktime}"
-                                    style="width:360px;height:300px" sliceMargin="5" diameter="120" />  
+                                    style="width:360px;height:320px" sliceMargin="5" diameter="180" />  
                     </p:panelGrid>
                 </p:panel>
             </p:outputPanel>

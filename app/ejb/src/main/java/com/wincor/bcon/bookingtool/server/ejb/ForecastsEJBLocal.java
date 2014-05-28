@@ -11,7 +11,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
 import java.util.List;
 import javax.ejb.Local;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Forecast enterprise java bean
@@ -73,13 +73,13 @@ public interface ForecastsEJBLocal {
      * @param forecastId a forecast ID
      * @return plan data export
      */
-    public HSSFWorkbook exportPlanData(int forecastId);
+    public XSSFWorkbook exportPlanData(int forecastId);
 
     /**
      * Create a special sales report sheet for the given forecast
      * @param forecastId a forecast ID
      * @return sales report sheet
      */
-    public HSSFWorkbook createSalesReport(int forecastId);
+    public XSSFWorkbook createSalesReport(int forecastId);
 
 }

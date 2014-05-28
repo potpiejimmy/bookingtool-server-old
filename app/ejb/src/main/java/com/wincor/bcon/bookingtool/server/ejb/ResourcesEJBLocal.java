@@ -10,7 +10,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.ResourcePlanItem;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 import java.util.List;
 import javax.ejb.Local;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Resource EJB local interface
@@ -40,5 +40,5 @@ public interface ResourcesEJBLocal {
      * @param weeksToExport number of weeks to export
      * @return resource plan
      */
-    public HSSFWorkbook exportResourcePlan(int teamId, int weeksToExport);
+    public XSSFWorkbook exportResourcePlan(int teamId, int weeksToExport);
 }

@@ -16,6 +16,7 @@
 
                     <f:metadata>
                         <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+                        <f:event type="preRenderView" listener="#{budgetsBean.checkRequestParams}"/>
                     </f:metadata>
                 
 			<h:form id="projectform">
@@ -89,11 +90,11 @@
 					</p:selectOneMenu>
 				</p:panelGrid>
 			
-				<p:dataTable id="outputTable" value="#{budgetsBean.budgets}" var="b">
+                            <p:dataTable id="outputTable" value="#{budgetsBean.budgets}" var="b">
 					<p:column headerText="ID">
 						<h:outputText value="#{b.budget.id}"/>
 					</p:column>
-					<p:column headerText="Name" filterBy="name">
+					<p:column headerText="Name">
                                             <h:outputText value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes ge 0 and budgetsBean.parentFilter lt 0}"/>
                                             <h:commandLink value="#{budgetsBean.getFullBudgetName(b.budget)}" rendered="#{b.budget.minutes lt 0 and budgetsBean.parentFilter lt 0}" action="#{budgetsBean.showSubBudgets(b.budget)}"/>
                                             <h:outputText value="#{b.budget.name}" rendered="#{b.budget.minutes ge 0 and budgetsBean.parentFilter ge 0}"/>
@@ -110,12 +111,21 @@
 						               labelTemplate="{value}%"
 						               value="#{b.bookedMinutesRecursive*100/(b.budget.minutes ge 0 ? b.budget.minutes : -b.budget.minutes)}"/>
 					</p:column>
-					<p:column headerText="Templates" style="width:32px;">
-						<h:outputLink rendered="#{b.numberOfTemplates gt 0}"
-                                                              disabled="#{not budgetsBean.editingAllowed}"
-                                                              value="templates.xhtml?filter=#{b.budget.id}">
-						    <h:outputText value="#{b.numberOfTemplates}"/>
-						</h:outputLink>
+                                        <p:column headerText="Templates">
+                                                <p:outputPanel style="float: left" rendered="#{b.numberOfTemplates gt 0}">
+                                                        <h:outputLink disabled="#{not budgetsBean.editingAllowed}"
+                                                                      value="templates.xhtml?filter=#{b.budget.id}">
+                                                            <h:outputText value="#{b.numberOfTemplates}"/>
+                                                        </h:outputLink>
+                                                </p:outputPanel>
+                                                <ui:include src="/WEB-INF/facelets/editButton.xhtml">
+                                                    <ui:param name="outcome" value="templates"/>
+                                                    <ui:param name="renderingAllowed" value="#{budgetsBean.editingAllowed}"/>
+                                                    <ui:param name="toolTip" value="#{msg.create_template_tooltip}"/>
+                                                    <ui:param name="paramName" value="create"/>
+                                                    <ui:param name="paramValue" value="#{b.budget.id}"/>
+                                                    <ui:param name="icon" value="ui-icon-plus"/>
+                                                </ui:include>  
 					</p:column>
 					<p:column headerText="Bookings">
 						<p:commandLink ajax="false"
@@ -130,7 +140,7 @@
                                 <p:resetInput target=":editform"/>
                             </p:commandLink>,  
 	                    <p:commandLink value="Delete" action="#{budgetsBean.delete(b.budget)}" ajax="false"/>, 
-                            <p:commandLink value="Move" oncomplete="moveBudgetDialog.show()" update=":moveDialogPanel">
+                            <p:commandLink value="Move" oncomplete="PF('moveBudgetDialog').show()" update=":moveDialogPanel">
                         	<f:setPropertyActionListener value="#{b.budget}" target="#{budgetsBean.selectedBudget}" />
                             </p:commandLink>
 					</p:column>

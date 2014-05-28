@@ -46,6 +46,14 @@ html {
    height: 200px;
 }
 
+.ui-datatable table {
+    table-layout: auto;
+}
+
+.jqplot-target {
+    font-size: 125%;
+}
+
 .redColoredPanel .ui-panel-content {
    background-color: #FBB;
 }

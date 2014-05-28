@@ -90,6 +90,11 @@ public class BookingsEJB implements BookingsEJBLocal {
 	public List<Booking> getBookingsForBudget(int budgetId) {
 		return em.createNamedQuery("Booking.findByBudgetId", Booking.class).setParameter("budgetId", budgetId).getResultList();
 	}
+        
+        @Override
+        public List<Booking> getBookingsByTemplateId(int bookingTemplateId) {
+		return em.createNamedQuery("Booking.findByTemplateId", Booking.class).setParameter("bookingTemplateId", bookingTemplateId).getResultList();
+	}
 
 	@Override
 	@RolesAllowed({"admin", "user"})
@@ -102,7 +107,11 @@ public class BookingsEJB implements BookingsEJBLocal {
 	public void saveBooking(Booking booking) {
                 assertNoOverrun(booking);
 		if (booking.getId() != null)
-			em.merge(booking);		// update the booking
+                {
+                    if (booking.getExportState() == 1)
+                        booking.setExportState((byte)2);                    
+                    em.merge(booking);		// update the booking                 
+                }
 		else
 			em.persist(booking); 	//insert a new booking
 

@@ -56,7 +56,7 @@
                     </p:column>
                     <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
                         <p:commandLink value="Edit" action="#{budgetPlansBean.edit(plan)}" ajax="false"/>,
-                        <p:commandLink value="Delete" oncomplete="confirmDeleteDialog.show()">
+                        <p:commandLink value="Delete" oncomplete="PF('confirmDeleteDialog').show()">
                         	<f:setPropertyActionListener value="#{plan}" target="#{budgetPlansBean.selectedBudgetPlan}" />
                         </p:commandLink>
                     </p:column>

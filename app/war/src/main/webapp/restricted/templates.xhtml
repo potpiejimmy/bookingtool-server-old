@@ -16,7 +16,7 @@
         
                     <f:metadata>
                         <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
-                        <f:event type="preRenderView" listener="#{templatesBean.checkFilterRequestParam}"/>
+                        <f:event type="preRenderView" listener="#{templatesBean.checkRequestParams}"/>
                     </f:metadata>
                 
 			<h:form id="projectform">
@@ -133,8 +133,9 @@
 						<p:selectBooleanCheckbox value="#{t.active == 1 ? true : false}" disabled="true"/>
 					</p:column>
 					<p:column headerText="Actions">
-	                    <p:commandLink value="Edit" action="#{templatesBean.edit(t)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,  
-	                    <p:commandLink value="Delete" action="#{templatesBean.delete(t)}" ajax="false"/>
+	                    <p:commandLink value="Edit" action="#{templatesBean.edit(t)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,  	             
+                            <p:commandLink value="Copy" action="#{templatesBean.copy(t)}" ajax="false"/>, 
+                            <p:commandLink value="Delete" action="#{templatesBean.delete(t)}" ajax="false"/>
 					</p:column>
 				</p:dataTable>
 			

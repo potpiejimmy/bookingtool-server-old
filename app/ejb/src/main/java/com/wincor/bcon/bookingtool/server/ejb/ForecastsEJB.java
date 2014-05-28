@@ -25,13 +25,13 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @Stateless
 public class ForecastsEJB implements ForecastsEJBLocal {
@@ -155,25 +155,25 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     }
     
     @Override
-    public HSSFWorkbook exportPlanData(int forecastId) {
+    public XSSFWorkbook exportPlanData(int forecastId) {
         final DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMMMMM");
         Forecast forecast = em.find(Forecast.class, forecastId);
         
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet();
         
         int rowIndex = 0;
-        HSSFRow row; HSSFCell cell;
+        XSSFRow row; XSSFCell cell;
         
         int colIndex = 0;
         row = sheet.createRow(rowIndex++);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Budget"));
+        cell.setCellValue(new XSSFRichTextString("Budget"));
         
         for (int period : getMonthsForFiscalYear(forecast.getFiscalYear())) {
             TimePeriod p = Utils.timePeriodForMonth(period / 100, (period % 100)-1);
             cell = row.createCell(colIndex++);
-            cell.setCellValue(new HSSFRichTextString(MONTH_FORMATTER.format(p.getFrom())));
+            cell.setCellValue(new XSSFRichTextString(MONTH_FORMATTER.format(p.getFrom())));
         }
         
         for (BudgetPlan plan : getAssignedBudgetPlans(forecastId)) {
@@ -181,7 +181,7 @@ public class ForecastsEJB implements ForecastsEJBLocal {
                 ForecastInfoRowVo data = getForecastInfoForBudget(forecastId, leaf.getId());
                 row = sheet.createRow(rowIndex++); colIndex = 0;
                 cell = row.createCell(colIndex++);
-                cell.setCellValue(new HSSFRichTextString(budgetsEjb.getFullBudgetName(leaf.getId())));
+                cell.setCellValue(new XSSFRichTextString(budgetsEjb.getFullBudgetName(leaf.getId())));
                 for (int period : getMonthsForFiscalYear(forecast.getFiscalYear())) {
                     cell = row.createCell(colIndex++);
                     cell.setCellValue(((double)data.getMonths().get(period).getPlannedMinutes())/60); // hours
@@ -242,7 +242,7 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     }
 
     @Override
-    public HSSFWorkbook createSalesReport(int forecastId) {
+    public XSSFWorkbook createSalesReport(int forecastId) {
         Calendar reportCurrentMonth = Calendar.getInstance();
         reportCurrentMonth.add(Calendar.MONTH, -1); // last month is the report's current month
         final DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMMMMM");
@@ -255,159 +255,159 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         cal.add(Calendar.MONTH, 1);
         String currentMonthPlus2 = MONTH_FORMATTER.format(cal.getTime());
 
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet();
 
-        HSSFCellStyle headerStyle = wb.createCellStyle();
+        XSSFCellStyle headerStyle = wb.createCellStyle();
         headerStyle.setWrapText(true);
-        headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-        headerStyle.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
-        headerStyle.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
-        headerStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        headerStyle.setAlignment(XSSFCellStyle.ALIGN_CENTER);
+        headerStyle.setVerticalAlignment(XSSFCellStyle.VERTICAL_TOP);
+        headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        headerStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
 
         int rowIndex = 0;
-        HSSFRow row;
-        HSSFCell cell;
+        XSSFRow row;
+        XSSFCell cell;
         
         int colIndex = 0;
         row = sheet.createRow(rowIndex++);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(""));
+        cell.setCellValue(new XSSFRichTextString(""));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Budget"));
+        cell.setCellValue(new XSSFRichTextString("Budget"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(""));
+        cell.setCellValue(new XSSFRichTextString(""));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Actual"));
+        cell.setCellValue(new XSSFRichTextString("Actual"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(""));
+        cell.setCellValue(new XSSFRichTextString(""));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(""));
+        cell.setCellValue(new XSSFRichTextString(""));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(""));
+        cell.setCellValue(new XSSFRichTextString(""));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Forecast"));
+        cell.setCellValue(new XSSFRichTextString("Forecast"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(""));
+        cell.setCellValue(new XSSFRichTextString(""));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(""));
+        cell.setCellValue(new XSSFRichTextString(""));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Forecast"));
-        cell.setCellStyle(headerStyle);
-
-        colIndex = 0;
-        row = sheet.createRow(rowIndex++);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString(""));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Total project"));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Prev. years\n2012/2013"));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("YTD\nw/o curr.\nmonth"));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Curr. month\n\n"+currentMonth));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Month + 1\n\n"+currentMonthPlus1));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Month + 2\n\n"+currentMonthPlus2));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Month + 3\nuntil project\nend"));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Total project"));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("therof curr.\nFY"));
-        cell.setCellStyle(headerStyle);
-        cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("vs. budget"));
+        cell.setCellValue(new XSSFRichTextString("Forecast"));
         cell.setCellStyle(headerStyle);
 
         colIndex = 0;
         row = sheet.createRow(rowIndex++);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("cum. / monthly"));
+        cell.setCellValue(new XSSFRichTextString(""));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("cum."));
+        cell.setCellValue(new XSSFRichTextString("Total project"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("cum."));
+        cell.setCellValue(new XSSFRichTextString("Prev. years\n2012/2013"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("cum."));
+        cell.setCellValue(new XSSFRichTextString("YTD\nw/o curr.\nmonth"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("monthly"));
+        cell.setCellValue(new XSSFRichTextString("Curr. month\n\n"+currentMonth));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("monthly"));
+        cell.setCellValue(new XSSFRichTextString("Month + 1\n\n"+currentMonthPlus1));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("monthly"));
+        cell.setCellValue(new XSSFRichTextString("Month + 2\n\n"+currentMonthPlus2));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("cum."));
+        cell.setCellValue(new XSSFRichTextString("Month + 3\nuntil project\nend"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("cum."));
+        cell.setCellValue(new XSSFRichTextString("Total project"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("cum."));
+        cell.setCellValue(new XSSFRichTextString("therof curr.\nFY"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("vs. budget"));
         cell.setCellStyle(headerStyle);
 
         colIndex = 0;
         row = sheet.createRow(rowIndex++);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("Currency"));
+        cell.setCellValue(new XSSFRichTextString("cum. / monthly"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("cum."));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("cum."));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("cum."));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("monthly"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("monthly"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("monthly"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("cum."));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("cum."));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("EUR"));
+        cell.setCellValue(new XSSFRichTextString("cum."));
+        cell.setCellStyle(headerStyle);
+
+        colIndex = 0;
+        row = sheet.createRow(rowIndex++);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("Currency"));
         cell.setCellStyle(headerStyle);
         cell = row.createCell(colIndex++);
-        cell.setCellValue(new HSSFRichTextString("(%)"));
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("EUR"));
+        cell.setCellStyle(headerStyle);
+        cell = row.createCell(colIndex++);
+        cell.setCellValue(new XSSFRichTextString("(%)"));
         cell.setCellStyle(headerStyle);
         
         ForecastInfoRowVo summaryData = getForecastInfoReportSummary(forecastId, reportCurrentMonth);
@@ -429,23 +429,23 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         return wb;
     }
     
-    protected void addSalesReportRow(HSSFSheet sheet, int rowIndex, int forecastId, ForecastInfoRowVo summaryData, int rowType) {
-        HSSFRow row = sheet.createRow(rowIndex);
+    protected void addSalesReportRow(XSSFSheet sheet, int rowIndex, int forecastId, ForecastInfoRowVo summaryData, int rowType) {
+        XSSFRow row = sheet.createRow(rowIndex);
         
         Forecast forecast = em.find(Forecast.class, forecastId);
         int colIndex = 0;
         
         // Row title
-        HSSFCell cell = row.createCell(colIndex++);
+        XSSFCell cell = row.createCell(colIndex++);
         switch (rowType) {
             case REPORT_ROW_SALES_XLE:
-                cell.setCellValue(new HSSFRichTextString("Cost of sales XLE"));
+                cell.setCellValue(new XSSFRichTextString("Cost of sales XLE"));
                 break;
             case REPORT_ROW_SALES_IFRS:
-                cell.setCellValue(new HSSFRichTextString("Cost of sales IFRS"));
+                cell.setCellValue(new XSSFRichTextString("Cost of sales IFRS"));
                 break;
             case REPORT_ROW_EFFORTS:
-                cell.setCellValue(new HSSFRichTextString("Effort [d]"));
+                cell.setCellValue(new XSSFRichTextString("Effort [d]"));
                 break;
         }
         
@@ -510,7 +510,7 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         cell.setCellFormula(""+(char)('A'+colIndex-3)+(rowIndex+1)+"/"+(char)('A'+colIndex-10)+(rowIndex+1));
     }
     
-    protected static void addSalesReportColumn(Forecast forecast, HSSFCell cell, int value, int rowType) {
+    protected static void addSalesReportColumn(Forecast forecast, XSSFCell cell, int value, int rowType) {
         switch (rowType) {
             case REPORT_ROW_SALES_XLE:
                 cell.setCellValue(-Math.round((double)value * forecast.getCentsPerHour() / 6000));

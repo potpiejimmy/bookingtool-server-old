@@ -47,19 +47,41 @@ public class TemplatesBean implements Serializable {
 		clear();
 	}
         
-        public void checkFilterRequestParam() {
-            String filter = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("filter");
-            if (filter != null) {
+        public void checkRequestParams() {
+            String paramFilter = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("filter");
+            String paramCreate = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("create");
+            
+            if (paramFilter != null || paramCreate != null) {
                 try {
-                    Budget filterBudget = budgetsEjb.getBudget(Integer.parseInt(filter));
+                    int filter = Integer.parseInt(paramFilter!=null ? paramFilter : paramCreate);
+                    Budget filterBudget = budgetsEjb.getBudget(filter);
                     this.currentProjectId = filterBudget.getProjectId();
                     this.budgetFilter = filterBudget.getId();
+                    
+                    if (paramCreate != null) {
+                        newForBudget(filterBudget.getId());
+                    }
                 } catch (Exception ex) {
                     // ignore
-                }
+                } 
+            }
+            
+            String editTemplate = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("editTemplate");
+            if (editTemplate != null) {
+                try {
+                    this.edit(ejb.getBookingTemplate(Integer.parseInt(editTemplate)));
+                } catch (Exception ex) {
+                    // ignore
+                } 
             }
         }
 
+        protected void newForBudget(int budgetId) {
+            clear();
+            currentTemplate.setBudgetId(budgetId);
+            edit(currentTemplate);
+        }
+        
 	public void clear() {
 		currentTemplate = new BookingTemplate();
 		currentTemplate.setActive((byte)1);
@@ -156,6 +178,10 @@ public class TemplatesBean implements Serializable {
 		} catch (Exception ex) {
 			WebUtils.addFacesMessage(ex);
 		}
+	}
+        public void copy(BookingTemplate t) {
+	t.setId(null);
+        edit(t);
 	}
 	
 	public Boolean getActive() {

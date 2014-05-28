@@ -31,10 +31,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Booking.findByLastExportDayForSuperuser", query = "SELECT b FROM Booking b WHERE b.day >= :day ORDER BY b.day DESC, b.person"),
     @NamedQuery(name = "Booking.findByDay", query = "SELECT b FROM Booking b WHERE b.day = :day"),
     @NamedQuery(name = "Booking.findByBudgetId", query = "SELECT b FROM Booking b,BookingTemplate t WHERE b.bookingTemplateId=t.id AND t.budgetId=:budgetId ORDER BY b.day DESC, b.person"),
+    @NamedQuery(name = "Booking.findByTemplateId", query = "SELECT b FROM Booking b WHERE b.bookingTemplateId=:bookingTemplateId"),
     @NamedQuery(name = "Booking.findByPerson", query = "SELECT b FROM Booking b WHERE b.person = :person ORDER BY b.day DESC"),
     @NamedQuery(name = "Booking.findByPersonAndDay", query = "SELECT b FROM Booking b WHERE b.person = :person AND b.day = :day"),
     @NamedQuery(name = "Booking.sumsByTypeForPersonAndTimePeriod", query = "SELECT t.type,SUM(b.minutes) FROM Booking b,BookingTemplate t WHERE b.bookingTemplateId=t.id AND b.person=:person AND b.day>=:from AND b.day<:to GROUP BY t.type"),
     @NamedQuery(name = "Booking.sumsByProjectForPersonAndTimePeriod", query = "SELECT p.name,SUM(b.minutes) FROM Booking b,BookingTemplate t,Budget bu,Project p WHERE b.bookingTemplateId=t.id AND t.budgetId=bu.id AND bu.projectId=p.id AND b.person=:person AND b.day>=:from AND b.day<:to GROUP BY p.name")})
+
 public class Booking implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -70,6 +72,11 @@ public class Booking implements Serializable {
 	@Column(name="booking_template_id")
 	@NotNull
 	private Integer bookingTemplateId;
+        
+        @Column(name="export_state")
+	@NotNull
+	private byte exportState;
+        
 
 	public Booking() {
 	}
@@ -128,6 +135,13 @@ public class Booking implements Serializable {
 
 	public void setBookingTemplateId(Integer bookingTemplateId) {
 		this.bookingTemplateId = bookingTemplateId;
+	}
+        
+        public byte getExportState() {
+		return this.exportState;
+	}
+        public void setExportState(byte exportState) {
+		this.exportState = exportState;
 	}
 
 	@Override

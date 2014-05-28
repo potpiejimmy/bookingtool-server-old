@@ -19,6 +19,7 @@ import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
+import javax.faces.context.FacesContext;
 
 @Named
 @SessionScoped
@@ -49,7 +50,18 @@ public class BudgetsBean implements Serializable {
 	public void clear() {
 		newBudget();
 	}
-
+        
+        public void checkRequestParams() {
+            String budget = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("budgetId");
+            if (budget != null) {
+                try {
+                    this.edit(ejb.getBudget(Integer.parseInt(budget)));
+                } catch (Exception ex) {
+                    // ignore
+                } 
+            }
+        }
+        
 	public Budget getCurrentBudget() {
 		if (currentBudget == null) newBudget(); // lazy initialization to enable EJB access
 		return currentBudget;

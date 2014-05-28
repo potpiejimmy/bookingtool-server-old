@@ -29,7 +29,7 @@
                     </p:column>
                     <p:column headerText="Actions" rendered="#{request.isUserInRole('admin')}">
                         <p:commandLink value="Show / Edit" action="#{forecastsBean.edit(f)}" ajax="false"/>,
-                        <p:commandLink value="Delete" oncomplete="confirmDeleteDialog.show()">
+                        <p:commandLink value="Delete" oncomplete="PF('confirmDeleteDialog').show()">
   	                       <f:setPropertyActionListener value="#{f}" target="#{forecastsBean.selected}" />
   						</p:commandLink>
                     </p:column>
