@@ -103,39 +103,41 @@
 			
 				<p:dataTable value="#{templatesBean.templates}" var="t">
 					<p:column headerText="ID">
-						<h:outputText value="#{t.id}"/>
+                                            <h:outputText value="#{t.template.id}"/>
 					</p:column>
 					<p:column headerText="PSP">
-						<h:outputText value="#{t.psp}"/>
+                                            <h:outputText value="#{t.template.psp}"/>
 					</p:column>
 					<p:column headerText="Bezeichnung">
-						<h:outputText value="#{t.name}"/>
+                                            <h:outputText value="#{t.template.name}"/>
 					</p:column>
 					<p:column headerText="T.-Art">
-						<h:outputText value="#{t.type}"/>
+                                            <h:outputText value="#{t.template.type}"/>
 					</p:column>
 					<p:column headerText="VB">
-						<h:outputText value="#{t.salesRepresentative}"/>
+                                            <h:outputText value="#{t.template.salesRepresentative}"/>
 					</p:column>
 					<p:column headerText="Teilprojekt">
-						<h:outputText value="#{t.subproject}"/>
+                                            <h:outputText value="#{t.template.subproject}"/>
 					</p:column>
 					<p:column headerText="Tätigkeit">
-						<h:outputText value="#{t.description}"/>
+                                            <h:outputText value="#{t.template.description}"/>
 					</p:column>
 					<p:column headerText="Zusatzinfo">
-						<h:outputText value="#{t.additionalInfo}"/>
+                                            <h:outputText value="#{t.template.additionalInfo}"/>
 					</p:column>
 					<p:column headerText="Budget">
-						<h:outputText value="#{templatesBean.getBudgetDisplayName(t.budgetId)}"/>
+                                            <h:outputText value="#{templatesBean.getBudgetDisplayName(t.template.budgetId)}"/>
 					</p:column>
 					<p:column  headerText="Active" style="text-align:center;">
-						<p:selectBooleanCheckbox value="#{t.active == 1 ? true : false}" disabled="true"/>
+                                            <p:selectBooleanCheckbox value="#{t.active}">
+                                                <p:ajax listener="#{templatesBean.rowActiveCheckboxClicked(t)}"/>
+                                            </p:selectBooleanCheckbox>
 					</p:column>
 					<p:column headerText="Actions">
-	                    <p:commandLink value="Edit" action="#{templatesBean.edit(t)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,  	             
-                            <p:commandLink value="Copy" action="#{templatesBean.copy(t)}" ajax="false"/>, 
-                            <p:commandLink value="Delete" action="#{templatesBean.delete(t)}" ajax="false"/>
+                            <p:commandLink value="Edit" action="#{templatesBean.edit(t.template)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,
+                            <p:commandLink value="Copy" action="#{templatesBean.copy(t.template)}" ajax="false"/>, 
+                            <p:commandLink value="Delete" action="#{templatesBean.delete(t.template)}" ajax="false"/>
 					</p:column>
 				</p:dataTable>
 			

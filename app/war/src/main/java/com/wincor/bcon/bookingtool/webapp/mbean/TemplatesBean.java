@@ -115,11 +115,15 @@ public class TemplatesBean implements Serializable {
 		return result;
 	}
 	
-	public List<BookingTemplate> getTemplates() {
+	public List<BookingTemplateRowVo> getTemplates() {
+            List<BookingTemplate> templates;
             if (budgetFilter > 0)
-                return ejb.getBookingTemplatesByBudgetId(budgetFilter);
+                templates = ejb.getBookingTemplatesByBudgetId(budgetFilter);
             else
-		return ejb.getBookingTemplatesByProjectId(getCurrentProjectId());
+		templates = ejb.getBookingTemplatesByProjectId(getCurrentProjectId());
+            List<BookingTemplateRowVo> result = new ArrayList<BookingTemplateRowVo>(templates.size());
+            for (BookingTemplate t : templates) result.add(new BookingTemplateRowVo(t));
+            return result;
 	}
 	
 	public List<SelectItem> getBudgetItems() {
@@ -195,4 +199,33 @@ public class TemplatesBean implements Serializable {
 	public Boolean getBudgetAvailable() {
 		return budgetsEjb.getBudgets(getCurrentProjectId()).size() > 0;
 	}
+        
+        public void rowActiveCheckboxClicked(BookingTemplateRowVo vo) {
+            vo.setActive(vo.getActive() ^ true);
+            ejb.saveBookingTemplate(vo.getTemplate());
+        }
+        
+        /**
+         * Wrapper class for row-editing of the 'active' field via selectBooleanCheckbox
+         */
+        public static class BookingTemplateRowVo implements java.io.Serializable {
+            
+            private BookingTemplate template;
+            
+            public BookingTemplateRowVo(BookingTemplate template) {
+                this.template = template;
+            }
+            
+            public BookingTemplate getTemplate() {
+                return this.template;
+            }
+            
+            public Boolean getActive() {
+                return this.template.getActive() == 1;
+            }
+
+            public void setActive(Boolean active) {
+                this.template.setActive(active ? (byte)1 : (byte)0);
+            }
+        }
 }
