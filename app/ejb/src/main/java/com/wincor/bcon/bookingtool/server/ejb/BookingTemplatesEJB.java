@@ -76,6 +76,12 @@ public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
 
 	@Override
 	@RolesAllowed("admin")
+        public void setTemplateActive(int bookingTemplateId, byte active) {
+            getBookingTemplate(bookingTemplateId).setActive(active);
+        }
+
+	@Override
+	@RolesAllowed("admin")
 	public void deleteBookingTemplate(int bookingTemplateId) {
 		em.remove(getBookingTemplate(bookingTemplateId));
 	}

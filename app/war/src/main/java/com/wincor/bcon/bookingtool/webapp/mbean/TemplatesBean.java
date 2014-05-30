@@ -189,11 +189,11 @@ public class TemplatesBean implements Serializable {
 	}
 	
 	public Boolean getActive() {
-		return currentTemplate.getActive() == 1;
+		return BookingTemplateRowVo.getTemplateActive(currentTemplate);
 	}
 	
 	public void setActive(Boolean active) {
-		currentTemplate.setActive(active ? (byte)1 : (byte)0);
+		BookingTemplateRowVo.setTemplateActive(currentTemplate, active);
 	}
 	
 	public Boolean getBudgetAvailable() {
@@ -201,8 +201,8 @@ public class TemplatesBean implements Serializable {
 	}
         
         public void rowActiveCheckboxClicked(BookingTemplateRowVo vo) {
-            vo.setActive(vo.getActive() ^ true);
-            ejb.saveBookingTemplate(vo.getTemplate());
+            vo.setActive(vo.getActive() ^ true); // flip active flag
+            ejb.setTemplateActive(vo.getTemplate().getId(), vo.getTemplate().getActive());
         }
         
         /**
@@ -210,7 +210,7 @@ public class TemplatesBean implements Serializable {
          */
         public static class BookingTemplateRowVo implements java.io.Serializable {
             
-            private BookingTemplate template;
+            private final BookingTemplate template;
             
             public BookingTemplateRowVo(BookingTemplate template) {
                 this.template = template;
@@ -221,11 +221,19 @@ public class TemplatesBean implements Serializable {
             }
             
             public Boolean getActive() {
-                return this.template.getActive() == 1;
+                return getTemplateActive(this.template);
             }
 
             public void setActive(Boolean active) {
-                this.template.setActive(active ? (byte)1 : (byte)0);
+                setTemplateActive(this.template, active);
+            }
+            
+            public static Boolean getTemplateActive(BookingTemplate template) {
+                return template.getActive() == 1;
+            }
+            
+            public static void setTemplateActive(BookingTemplate template, Boolean active) {
+                template.setActive(active ? (byte)1 : (byte)0);
             }
         }
 }

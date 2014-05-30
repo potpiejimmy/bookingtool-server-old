@@ -41,7 +41,14 @@ public interface BookingTemplatesEJBLocal {
 	 * @param bookingTemplate a booking template
 	 */
 	public void saveBookingTemplate(BookingTemplate bookingTemplate);
-	
+
+        /**
+         * Sets the given template's active flag.
+         * @param bookingTemplateId a booking template
+         * @param active the active field to be set
+         */
+        public void setTemplateActive(int bookingTemplateId, byte active);
+        
 	/**
 	 * Removes the booking template with the given ID
 	 * @param bookingTemplateId a booking template ID
@@ -51,6 +58,7 @@ public interface BookingTemplatesEJBLocal {
 	/**
 	 * Returns the list of templates matching the given search criteria
 	 * @param searchString a search string
+         * @return list of matching templates
 	 */
 	public List<BookingTemplate> findBookingTemplates(String searchString);
 }
