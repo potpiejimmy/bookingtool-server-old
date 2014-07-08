@@ -1,19 +1,17 @@
 package com.wincor.bcon.bookingtool.server.ejb;
 
-import com.wincor.bcon.bookingtool.server.db.entity.Booking;
-import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
-import com.wincor.bcon.bookingtool.server.util.Utils;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import org.apache.poi.ss.usermodel.FillPatternType;
 
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -21,6 +19,10 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.wincor.bcon.bookingtool.server.db.entity.Booking;
+import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
+import com.wincor.bcon.bookingtool.server.util.Utils;
 
 @Stateless
 public class ExcelExportEJB implements ExcelExportEJBLocal {
@@ -41,9 +43,11 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 		List<Booking> bookingList = bookingEJB.getBookingsByLastExportDay(person, lastExportDay.getTime());
                     
 		XSSFWorkbook result = getExcelForBookings(bookingList, false);
-                for (Booking booking : bookingList)
-                    booking.setExportState((byte)1);  
-                return result;
+		
+        for (Booking booking : bookingList)
+            booking.setExportState((byte)1);  
+        
+        return result;
 	}
 		
 	@Override
@@ -84,7 +88,7 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 			BookingTemplate bt = bookingTemplateEJB.getBookingTemplate(booking.getBookingTemplateId());
 			
                         XSSFCellStyle style = wb.createCellStyle();
-                        style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+                        
                         if (booking.getExportState() == 2){
                             style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
                             style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -100,40 +104,50 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 			//Datum
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(new XSSFRichTextString(sdf.format(booking.getDay())));
+                        cell.setCellStyle(style);
 
 			if (withNameColumn) {
 				//Person
 				cell = row.createCell(cellPosition++) ;
 				cell.setCellValue(new XSSFRichTextString(booking.getPerson()));
+                                cell.setCellStyle(style);
 			}
                         
 			//PSP-Element
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(new XSSFRichTextString(bt.getPsp()));
+                        cell.setCellStyle(style);
 			//Bezeichnung des PSP-Elements
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(new XSSFRichTextString(bt.getName()));
+                        cell.setCellStyle(style);
 			//Tätigkeitsart
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(new XSSFRichTextString(bt.getType()));
+                        cell.setCellStyle(style);
 			//Bezeichnung der Tätigkeitsart
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(new XSSFRichTextString(Utils.labelForBookingType(bt.getType(), false)));
+                        cell.setCellStyle(style);
 			//Tätigkeit
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(new XSSFRichTextString(booking.getDescription()));
+                        cell.setCellStyle(style);
 			//VB-Beauftragter
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(new XSSFRichTextString(booking.getSalesRepresentative()));
+                        cell.setCellStyle(style);
 			//Teilprojekt
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(new XSSFRichTextString(bt.getSubproject()));
+                        cell.setCellStyle(style);
 			//Stunden
 			cell = row.createCell(cellPosition++) ;
 			cell.setCellValue(df.format(((float)Math.round(booking.getMinutes().doubleValue()/60*100))/100));
+                        cell.setCellStyle(style);
+                        
 			lastDate = booking.getDay();
                         
-                        row.setRowStyle(style);
 		}
                 
                 //autosize every column!

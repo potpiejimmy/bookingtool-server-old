@@ -44,6 +44,10 @@ public class Project implements Serializable {
 	@NotNull
 	private Integer domainId;
 
+        @Column
+	@NotNull
+	private byte status;
+        
 	public Project() {
 	}
 
@@ -69,6 +73,14 @@ public class Project implements Serializable {
 
     public void setDomainId(Integer domainId) {
         this.domainId = domainId;
+    }
+
+    public byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(byte status) {
+        this.status = status;
     }
 
 	@Override
