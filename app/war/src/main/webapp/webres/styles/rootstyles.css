@@ -62,6 +62,10 @@ html {
     background-color: #CAE2FF;
 }
 
+.rowgreyedout {
+    color: #AAA;
+}
+
 .weekdaycolumn {
     width: 80px;
 }

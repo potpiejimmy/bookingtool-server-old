@@ -63,9 +63,9 @@
 					</p:column>
 					<p:column headerText="Actions">
 	                    <p:commandLink value="Edit" action="#{domainsBean.edit(p)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>
-                            <p:outputPanel rendered="#{request.isUserInRole('superuser')}">, 
+                            <h:panelGroup rendered="#{request.isUserInRole('superuser')}">, 
                                 <p:commandLink value="Delete" action="#{domainsBean.delete(p)}" ajax="false"/>
-                            </p:outputPanel>
+                            </h:panelGroup>
 					</p:column>
 				</p:dataTable>
 			

@@ -28,6 +28,13 @@
 						<p:inputText id="project" value="#{projectsBean.currentProject.name}"/>
 						<p:message id="noProject" for="project" display="text"/>
 					</h:panelGroup>
+					<h:outputText value="Status:"/>
+                                        <h:panelGroup>
+                                            <p:selectOneMenu id="statusSel" value="#{projectsBean.currentProject.status}">
+                                                    <f:selectItems value="#{projectsBean.statusItems}"/>
+                                            </p:selectOneMenu>
+                                            <p:message for="statusSel" display="text"/>
+                                        </h:panelGroup>
 					<h:outputText value="Domain:"/>
                                         <h:panelGroup>
                                             <p:selectOneMenu id="domainSel" value="#{projectsBean.currentProject.domainId}">
@@ -64,7 +71,7 @@
 			
 			<h:form id="viewform">
 			
-				<p:dataTable value="#{projectsBean.projects}" var="p">
+                                <p:dataTable value="#{projectsBean.projects}" var="p" rowStyleClass="#{p.status==0 ? '' : 'rowgreyedout'}">
 					<p:column headerText="ID">
 						<h:outputText value="#{p.id}"/>
 					</p:column>
@@ -81,15 +88,29 @@
                                             <p:outputPanel rendered="#{projectsBean.isProjectManagedByMe(p)}">
 	                    <p:commandLink value="Edit" action="#{projectsBean.edit(p)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,  
 	                    <p:commandLink value="Delete" action="#{projectsBean.delete(p)}" ajax="false"/>
+                            <h:panelGroup rendered="#{request.isUserInRole('superuser')}">, 
+                                <p:commandLink value="Drop" oncomplete="PF('confirmDropDialog').show()">
+                                    <f:setPropertyActionListener value="#{p}" target="#{projectsBean.selectedForDrop}" />
+                                </p:commandLink>
+                            </h:panelGroup>
                                             </p:outputPanel>
 					</p:column>
 				</p:dataTable>
 			
 			</h:form>
 
+            <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
+                <ui:param name="widgetVar" value="confirmDropDialog"/>
+                <ui:param name="headerText" value="Really drop the project?"/>
+                <ui:param name="bean" value="#{projectsBean}"/>
+                <ui:param name="action" value="dropProject"/>
+                <ui:param name="dialogText" value="WARNING: All project data - including budgets, templates, bookings and budget plans - will be&lt;br/&gt;erased from the database. This cannot be undone. Do you really wish to proceed?"/>
+            </ui:include>  
+
         </ui:define>
         
     </ui:composition>
     
-</html>
 
+
+</html>

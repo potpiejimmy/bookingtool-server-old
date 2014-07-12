@@ -29,6 +29,7 @@ public class ProjectsBean implements Serializable {
 	private DomainsEJBLocal domainsEjb;
 	
 	private Project currentProject = null;
+        private Project selectedForDrop = null;
 
         private DualListModel<String> assignedManagers = new DualListModel<String>();
     
@@ -81,9 +82,16 @@ public class ProjectsBean implements Serializable {
         }
 
 	public List<Project> getProjects() {
-		return ejb.getProjects();
+		return ejb.getProjectsForAdmin();
 	}
         
+        public List<SelectItem> getStatusItems() {
+		List<SelectItem> result = new ArrayList<SelectItem>();
+                result.add(new SelectItem((byte)0, "Active"));
+                result.add(new SelectItem((byte)1, "Hidden"));
+		return result;
+	}
+	
         public List<SelectItem> getDomainItems() {
 		List<Domain> domains = domainsEjb.getDomains();
 		List<SelectItem> result = new ArrayList<SelectItem>(domains.size() + 1);
@@ -114,5 +122,24 @@ public class ProjectsBean implements Serializable {
 		} catch (Exception ex) {
 			WebUtils.addFacesMessage(ex);
 		}
+	}
+
+        public Project getSelectedForDrop() {
+            return selectedForDrop;
+        }
+
+        public void setSelectedForDrop(Project selectedForDrop) {
+            this.selectedForDrop = selectedForDrop;
+        }
+        
+	public void dropProject() {
+            try {
+                if (selectedForDrop != null) {
+                    ejb.dropProject(selectedForDrop.getId());
+                }
+            } catch (Exception ex) {
+                    WebUtils.addFacesMessage(ex);
+            }
+            selectedForDrop = null;
 	}
 }

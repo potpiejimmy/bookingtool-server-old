@@ -69,9 +69,9 @@ public class BudgetsBean implements Serializable {
         
         public boolean isEditingAllowed() {
             if (editingAllowed == null) {
-                editingAllowed = Boolean.valueOf(
+                editingAllowed =
                         WebUtils.getHttpServletRequest().isUserInRole("admin") &&
-                        projectsEjb.getAssignedManagers(getCurrentProjectId()).contains(WebUtils.getCurrentPerson()));
+                        projectsEjb.getAssignedManagers(getCurrentProjectId()).contains(WebUtils.getCurrentPerson());
             }
             return editingAllowed;
         }

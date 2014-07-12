@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Project.findAll", query = "SELECT p FROM Project p ORDER BY p.name"),
     @NamedQuery(name = "Project.findByName", query = "SELECT p FROM Project p WHERE p.name = :name"),
     @NamedQuery(name = "Project.findByDomainId", query = "SELECT p FROM Project p WHERE p.domainId = :domainId ORDER BY p.name"),
-    @NamedQuery(name = "Project.findByDomainUser", query = "SELECT p FROM Project p,Domain d,DomainUser u WHERE p.domainId = d.id AND d.id = u.domainId AND u.userName=:userName ORDER BY p.name")})
+    @NamedQuery(name = "Project.findByDomainUser", query = "SELECT p FROM Project p,Domain d,DomainUser u WHERE p.domainId = d.id AND d.id = u.domainId AND u.userName=:userName ORDER BY p.name"),
+    @NamedQuery(name = "Project.findByDomainUserActive", query = "SELECT p FROM Project p,Domain d,DomainUser u WHERE p.domainId = d.id AND d.id = u.domainId AND u.userName=:userName AND p.status=0 ORDER BY p.name")})
 public class Project implements Serializable {
 	private static final long serialVersionUID = 1L;
 

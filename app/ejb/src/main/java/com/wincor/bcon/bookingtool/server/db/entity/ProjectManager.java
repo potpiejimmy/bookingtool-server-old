@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ProjectManager.findByProjectId", query = "SELECT f FROM ProjectManager f WHERE f.projectId=:projectId ORDER BY f.userName"),
-    @NamedQuery(name = "ProjectManager.findByUserName", query = "SELECT f FROM ProjectManager f,Project p WHERE f.projectId=p.id AND f.userName=:userName ORDER BY p.name"),
+    @NamedQuery(name = "ProjectManager.findByUserName", query = "SELECT f FROM ProjectManager f,Project p WHERE f.projectId=p.id AND f.userName=:userName AND p.status=0 ORDER BY p.name"),
     @NamedQuery(name = "ProjectManager.deleteByProjectId", query = "DELETE FROM ProjectManager f WHERE f.projectId=:projectId")})
 public class ProjectManager implements Serializable {
 	private static final long serialVersionUID = 1L;

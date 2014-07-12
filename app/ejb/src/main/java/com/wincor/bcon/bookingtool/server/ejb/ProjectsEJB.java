@@ -34,6 +34,16 @@ public class ProjectsEJB implements ProjectsEJBLocal {
         if (ctx.isCallerInRole("superuser"))
             return em.createNamedQuery("Project.findAll", Project.class).getResultList();
         else {
+            return em.createNamedQuery("Project.findByDomainUserActive", Project.class).setParameter("userName", ctx.getCallerPrincipal().getName()).getResultList();
+        }
+    }
+    
+    @Override
+    @RolesAllowed("admin")
+    public List<Project> getProjectsForAdmin() {
+        if (ctx.isCallerInRole("superuser"))
+            return em.createNamedQuery("Project.findAll", Project.class).getResultList();
+        else {
             return em.createNamedQuery("Project.findByDomainUser", Project.class).setParameter("userName", ctx.getCallerPrincipal().getName()).getResultList();
         }
     }
@@ -95,6 +105,14 @@ public class ProjectsEJB implements ProjectsEJBLocal {
         // delete existing user assignments
         em.createNamedQuery("ProjectManager.deleteByProjectId").setParameter("projectId", projectId).executeUpdate();
         em.remove(em.find(Project.class, projectId));
+    }
+   
+    @Override
+    @RolesAllowed("superuser")
+    public void dropProject(int projectId) {
+        // XXX TODO to be implemented
+        // Erase all budgets, templates, bookings and budget plans.
+        deleteProject(projectId);
     }
    
     @Override
