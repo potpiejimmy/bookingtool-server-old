@@ -26,7 +26,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ResourcePlanItem.findByUserAndDateRange", query = "SELECT i FROM ResourcePlanItem i WHERE i.userName=:userName AND i.day>=:from AND i.day<=:to ORDER BY i.day"),
-    @NamedQuery(name = "ResourcePlanItem.deleteByUserAndDateRange", query = "DELETE FROM ResourcePlanItem i WHERE i.userName=:userName AND i.day>=:from AND i.day<=:to")})
+    @NamedQuery(name = "ResourcePlanItem.deleteByUserAndDateRange", query = "DELETE FROM ResourcePlanItem i WHERE i.userName=:userName AND i.day>=:from AND i.day<=:to"),
+    @NamedQuery(name = "ResourcePlanItem.deleteByProjectId", query = "DELETE FROM ResourcePlanItem i WHERE i.projectId=:projectId")})
 public class ResourcePlanItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -6,12 +6,17 @@
 
 package com.wincor.bcon.bookingtool.server.ejb;
 
+import com.wincor.bcon.bookingtool.server.db.entity.Booking;
+import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
+import com.wincor.bcon.bookingtool.server.db.entity.Budget;
+import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.db.entity.ProjectManager;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -27,6 +32,9 @@ public class ProjectsEJB implements ProjectsEJBLocal {
     
     @Resource
     private SessionContext ctx;
+    
+    @EJB
+    private BudgetsEJBLocal budgetsEjb;
 	
     @Override
     @RolesAllowed({"admin","user"})
@@ -110,8 +118,42 @@ public class ProjectsEJB implements ProjectsEJBLocal {
     @Override
     @RolesAllowed("superuser")
     public void dropProject(int projectId) {
-        // XXX TODO to be implemented
-        // Erase all budgets, templates, bookings and budget plans.
+        /**
+         * Erase all data associated with a project:
+         * booking
+         * booking_template
+         * forecast_budget_plan
+         * budget_plan_item
+         * budget_plan
+         * budget
+         * resource_plan_item
+         * project
+         */
+        // first, erase budget plans:
+        List<BudgetPlan> budgetPlans = em.createNamedQuery("BudgetPlan.findByProjectId", BudgetPlan.class).setParameter("projectId", projectId).getResultList();
+        for (BudgetPlan plan : budgetPlans) {
+            em.createNamedQuery("ForecastBudgetPlan.deleteByBudgetPlanId").setParameter("budgetPlanId", plan.getId()).executeUpdate();
+            em.remove(plan);
+        }
+        // erase bookings, templates and budgets and budget_plan_items
+        List<Budget> budgets = budgetsEjb.getLeafBudgets(projectId);
+        while (!budgets.isEmpty()) {
+            for (Budget budget : budgets) {
+                List<BookingTemplate> templates = em.createNamedQuery("BookingTemplate.findByBudgetId", BookingTemplate.class).setParameter("budgetId", budget.getId()).getResultList();
+                for (BookingTemplate t : templates) {
+                    for (Booking booking : em.createNamedQuery("Booking.findByTemplateId", Booking.class).setParameter("bookingTemplateId", t.getId()).getResultList()) {
+                        em.remove(booking);
+                    }
+                    em.remove(t);
+                }
+                em.createNamedQuery("BudgetPlanItem.deleteByBudgetId").setParameter("budgetId", budget.getId()).executeUpdate();
+                em.remove(budget);
+            }
+            budgets = budgetsEjb.getLeafBudgets(projectId);
+        }
+        // delete resource plan items:
+        em.createNamedQuery("ResourcePlanItem.deleteByProjectId").setParameter("projectId", projectId).executeUpdate();
+        // finally, delete project:
         deleteProject(projectId);
     }
    

@@ -16,7 +16,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "ForecastBudgetPlan.findByForecastId", query = "SELECT f FROM ForecastBudgetPlan f WHERE f.forecastId=:forecastId ORDER BY f.position"),
-    @NamedQuery(name = "ForecastBudgetPlan.deleteByForecastId", query = "DELETE FROM ForecastBudgetPlan f WHERE f.forecastId=:forecastId")})
+    @NamedQuery(name = "ForecastBudgetPlan.deleteByForecastId", query = "DELETE FROM ForecastBudgetPlan f WHERE f.forecastId=:forecastId"),
+    @NamedQuery(name = "ForecastBudgetPlan.deleteByBudgetPlanId", query = "DELETE FROM ForecastBudgetPlan f WHERE f.budgetPlanId=:budgetPlanId")})
 public class ForecastBudgetPlan implements Serializable {
 	private static final long serialVersionUID = 1L;
 
