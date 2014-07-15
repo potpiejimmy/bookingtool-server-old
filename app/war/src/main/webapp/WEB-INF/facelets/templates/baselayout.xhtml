@@ -12,7 +12,10 @@
 
                 <ui:define name="headerdivright">
                     <h:form>
-            		<p:commandButton id="logoutBtn" value="Logout" action="#{logoutBean.logout}" ajax="false" immediate="true"/>
+                        <h:panelGrid columns="1">
+                            <p:commandLink id="logoutBtn" value="Logout" action="#{logoutBean.logout}" ajax="false" immediate="true"/>
+                            <p:outputPanel><h:outputText value="#{request.userPrincipal.name}"/></p:outputPanel>
+                        </h:panelGrid>
                     </h:form>
                 </ui:define>
                 
@@ -39,7 +42,7 @@
                                                 </h:panelGrid>
                                             </p:panel>
                                         </p:outputPanel>
-                                        <p:poll interval="10" update="systemMsg" />
+                                        <p:poll interval="30" update="systemMsg" />
 				</h:form>  
 
 				<p/>

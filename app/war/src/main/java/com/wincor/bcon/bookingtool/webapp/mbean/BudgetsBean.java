@@ -55,7 +55,9 @@ public class BudgetsBean implements Serializable {
             String budget = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("budgetId");
             if (budget != null) {
                 try {
-                    this.edit(ejb.getBudget(Integer.parseInt(budget)));
+                    Budget b = ejb.getBudget(Integer.parseInt(budget));
+                    this.setCurrentProjectId(b.getProjectId());
+                    this.edit(b);
                 } catch (Exception ex) {
                     // ignore
                 } 
