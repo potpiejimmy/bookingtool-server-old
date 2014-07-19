@@ -63,15 +63,25 @@ public class BookingsEJB implements BookingsEJBLocal {
 	@RolesAllowed({"admin", "user"})
         public Map<String,Number> getBookingSumsForMonth(String person, int year, int month, int chartType) {
             TimePeriod timePeriod = Utils.timePeriodForMonth(year, month);
-            List<Object[]> sums = (List<Object[]>)em.createNamedQuery(
-                    chartType == 0 ? "Booking.sumsByTypeForPersonAndTimePeriod" : "Booking.sumsByProjectForPersonAndTimePeriod").
+            String chartStmt = null;
+            switch (chartType) {
+                case 0: chartStmt = "Booking.sumsByTypeForPersonAndTimePeriod"; break;
+                case 1: chartStmt = "Booking.sumsByProjectForPersonAndTimePeriod"; break;
+                case 2: chartStmt = "Booking.sumAndCountDayForPersonAndTimePeriod"; break;
+            }
+            List<Object[]> sums = (List<Object[]>)em.createNamedQuery(chartStmt).
                     setParameter("person", person).
                     setParameter("from", new java.sql.Date(timePeriod.getFrom()), TemporalType.DATE).
                     setParameter("to", new java.sql.Date(timePeriod.getTo()), TemporalType.DATE).
                     getResultList();
             Map<String,Number> result = new HashMap<String,Number>();
-            for (Object[] o : sums) {
-                result.put((String)o[0], (Number)o[1]);
+            if (chartType == 2) {
+                result.put("sum",  (Number)sums.get(0)[0]);
+                result.put("days", (Number)sums.get(0)[1]);
+            } else {
+                for (Object[] o : sums) {
+                    result.put((String)o[0], (Number)o[1]);
+                }
             }
             return result;
         }

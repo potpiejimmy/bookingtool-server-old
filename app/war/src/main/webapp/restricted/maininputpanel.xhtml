@@ -215,13 +215,15 @@
 
             <p:outputPanel id="pieChart">
                 <p:panel header="#{bookingsBean.pieChartTitle}">
-                    <p:panelGrid columns="2">
+                    <p:panelGrid columns="3">
                         <p:pieChart value="#{bookingsBean.pieChartPsp}" legendPosition="e" fill="false" showDataLabels="true"  
                                     title="#{msg.piechart_title_projects}"
                                     style="width:500px;height:320px" sliceMargin="5" diameter="180" />  
                         <p:pieChart value="#{bookingsBean.pieChartType}" legendPosition="e" fill="false" showDataLabels="true"  
                                     title="#{msg.piechart_title_worktime}"
                                     style="width:360px;height:320px" sliceMargin="5" diameter="180" />  
+                        <p:chart type="metergauge" model="#{bookingsBean.meterChart}"
+                                    style="width:300px;height:300px"/>
                     </p:panelGrid>
                 </p:panel>
             </p:outputPanel>

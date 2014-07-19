@@ -28,6 +28,7 @@ import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import javax.faces.context.FacesContext;
+import org.primefaces.model.chart.MeterGaugeChartModel;
 
 @Named
 @SessionScoped
@@ -202,6 +203,28 @@ public class BookingsBean implements Serializable {
         
         public String getPieChartTitle() {
             return MessageFormat.format(WebUtils.getResBundle().getString("booking_yourbookingsinmonth"), MONTH_FORMATTER.format(getCurrent().getDay()));
+        }
+        
+        public MeterGaugeChartModel getMeterChart() {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(getCurrent().getDay());
+            Map<String,Number> sums = bookingEjb.getBookingSumsForMonth(
+                    WebUtils.getCurrentPerson(), 
+                    cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+                    2);
+            
+            int days = sums.get("days").intValue();
+            int minutes = sums.get("sum") != null ? sums.get("sum").intValue() : 0;
+            int minutes8h = days * 8 * 60;
+            MeterGaugeChartModel model = new MeterGaugeChartModel(days > 0 ? Math.min(((float)minutes) * 100 / minutes8h, 200) : 100, Arrays.asList((Number)100,200));
+            model.setTitle(WebUtils.getResBundle().getString("booking_yourhoursvs8h"));
+            model.setShowTickLabels(false);
+            model.setSeriesColors("cc6666,66cc66");
+            model.setLabelHeightAdjust(82);
+            String overtime = (minutes > minutes8h ? "+" : "") + getFormattedBookingTime(minutes - minutes8h);
+            model.setGaugeLabel(MessageFormat.format(WebUtils.getResBundle().getString("booking_overtimeindays"), overtime, days));
+            
+            return model;
         }
         
         public boolean isEditingAllowed() {
