@@ -50,6 +50,18 @@ html {
     table-layout: auto;
 }
 
+.no-table-header table thead tr {
+    display: none;
+}
+
+.topAlign {
+    vertical-align: top;
+}
+
+.maxWidth {
+    width: 100%;
+}
+
 .jqplot-target {
     font-size: 125%;
 }

@@ -28,6 +28,7 @@ import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.chart.MeterGaugeChartModel;
 
 @Named
@@ -47,6 +48,8 @@ public class BookingsBean implements Serializable {
 	
         private Booking current;
 	private Booking selected;
+        
+        private int numberOfQuickSelectRows = 5;
 	
 	private BookingTemplate currentTemplate = null;
 	
@@ -221,7 +224,7 @@ public class BookingsBean implements Serializable {
             model.setShowTickLabels(false);
             model.setSeriesColors("cc6666,66cc66");
             model.setLabelHeightAdjust(82);
-            String overtime = (minutes > minutes8h ? "+" : "") + getFormattedBookingTime(minutes - minutes8h);
+            String overtime = (minutes > minutes8h ? "+" : (minutes == minutes8h ? "\u00B1" : "")) + getFormattedBookingTime(minutes - minutes8h);
             model.setGaugeLabel(MessageFormat.format(WebUtils.getResBundle().getString("booking_overtimeindays"), overtime, days));
             
             return model;
@@ -231,4 +234,31 @@ public class BookingsBean implements Serializable {
             return Boolean.valueOf(WebUtils.getHttpServletRequest().isUserInRole("admin")) &&
                                         projectsEjb.getAssignedManagers(budgetsEjb.getBudget(this.currentTemplate.getBudgetId()).getProjectId()).contains(WebUtils.getCurrentPerson());
         }
+        
+    public List<BookingTemplate> getQuickSelectionList() {
+        List<BookingTemplate> list = bookingTemplateEjb.getLastUsedByPerson(WebUtils.getCurrentPerson(), numberOfQuickSelectRows);
+        numberOfQuickSelectRows = Math.max(1, list.size());
+        return list;
+    }
+        
+    public BookingTemplate getQuickSelectedBookingTemplate() {
+        return null; // never show selection after onQuickSelect
+    }
+    
+    public void setQuickSelectedBookingTemplate(BookingTemplate b) {
+        // no need to remember selection
+    }
+    
+    public void onQuickSelect(SelectEvent event) {
+        setCurrentTemplate((BookingTemplate)event.getObject());
+    }
+
+    public void numberOfQuickSelectRowsInc() {
+        numberOfQuickSelectRows++;
+    }
+
+    public void numberOfQuickSelectRowsDec() {
+        numberOfQuickSelectRows = Math.max(1, numberOfQuickSelectRows-1);
+    }
+    
 }

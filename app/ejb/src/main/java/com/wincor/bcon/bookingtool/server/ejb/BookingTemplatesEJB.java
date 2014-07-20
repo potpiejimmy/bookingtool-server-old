@@ -45,6 +45,12 @@ public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
 	public BookingTemplate getBookingTemplate(int bookingTemplateId) {
 		return em.find(BookingTemplate.class, bookingTemplateId);
 	}
+        
+	@Override
+	@RolesAllowed({"admin", "user"})
+        public List<BookingTemplate> getLastUsedByPerson(String person, int num) {
+            return em.createNamedQuery("BookingTemplate.findLastUsedByPerson", BookingTemplate.class).setParameter("person", person).setMaxResults(num).getResultList();
+        }
 
 	@Override
 	@RolesAllowed("admin")

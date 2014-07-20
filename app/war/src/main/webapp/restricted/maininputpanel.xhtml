@@ -38,7 +38,6 @@
             				
 						<h:outputText id="formattedDay" value="#{bookingsBean.currentDayFormatted}" style="vertical-align: middle; margin-left:10px; font-size:small;"/>
 						<p:message for="popupCal" display="text"/>
-            				
 					</h:panelGroup>
 					
                                         <h:outputText value="#{msg.booking_templatesearch}:"/>
@@ -55,10 +54,37 @@
                                                     itemLabel="#{bookingsBean.shortenForCombo(bookingTemplate.searchString)}" 
                                                     itemValue="#{bookingTemplate}">
 
-                                                    <p:ajax event="itemSelect" update=":currentTemplate"/>
+                                                    <p:ajax event="itemSelect" update=":currentTemplate, :searchform"/>
                                             </p:autoComplete>
                                         </h:panelGroup>
 
+                                        <h:outputText value="#{msg.booking_quickselect}" escape="false" rendered="#{bookingsBean.currentTemplate eq null}"/>
+                                        <h:panelGrid columns="2" rowClasses="topAlign" columnClasses="maxWidth,topAlign" rendered="#{bookingsBean.currentTemplate eq null}">
+                                            <p:dataTable styleClass="no-table-header" value="#{bookingsBean.quickSelectionList}" var="t" rowIndexVar="i" selectionMode="single" selection="#{bookingsBean.quickSelectedBookingTemplate}" rowKey="#{t.id}">
+                                                <p:ajax event="rowSelect" listener="#{bookingsBean.onQuickSelect}" update=":currentTemplate, :searchform" />
+                                                <p:column>
+                                                    <h:outputText value="#{i+1}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <h:outputText value="#{t.psp}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <h:outputText value="#{t.name}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <h:outputText value="#{t.description}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <h:outputText value="#{t.salesRepresentative}"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                            <h:panelGroup>
+                                                <h:panelGrid columns="1">
+                                                    <p:commandLink value="▲" style="text-decoration:none;font-family:Arial;" action="#{bookingsBean.numberOfQuickSelectRowsDec}" update=":searchform"/>
+                                                    <p:commandLink value="▼" style="text-decoration:none;font-family:Arial;" action="#{bookingsBean.numberOfQuickSelectRowsInc}" update=":searchform"/>
+                                                </h:panelGrid>
+                                            </h:panelGroup>
+                                        </h:panelGrid>
 				</p:panelGrid>
                             
                                 <p:defaultCommand target="acSimple" />
@@ -167,9 +193,6 @@
                     <p/>
           
                     <h:form id="viewform">
-                        
-            
-                        
                         <p:dataTable value="#{bookingsBean.bookings}" var="v">
 	                <p:column headerText="ID">
 	                    <f:facet name="header"><h:outputText value="ID"/></f:facet>

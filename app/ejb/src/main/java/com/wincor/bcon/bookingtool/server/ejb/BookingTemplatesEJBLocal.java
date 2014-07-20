@@ -35,6 +35,14 @@ public interface BookingTemplatesEJBLocal {
 	 * @return a list of booking templates
 	 */
 	public List<BookingTemplate> getBookingTemplatesByBudgetId(int budgetId);
+        
+        /**
+         * Returns the list of last used booking templates for the given person.
+         * @param person a person name
+         * @param num number of templates to return
+         * @return list of last used templates
+         */
+        public List<BookingTemplate> getLastUsedByPerson(String person, int num);
 	
 	/**
 	 * Saves or updates the given booking template
