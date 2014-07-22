@@ -67,7 +67,7 @@ public class BookingTemplatesEJB implements BookingTemplatesEJBLocal {
                                                  !bt.getSubproject().equals(btold.getSubproject());
                     if (hasRelevantChanges) {
                         for(Booking b : bookingsEjb.getBookingsByTemplateId(bt.getId()))
-                                if (b.getExportState()==1) bookingsEjb.saveBooking(b);
+                                if (b.getExportState()==1) b.setExportState((byte)2);
                     }
                 }
                 

@@ -116,6 +116,7 @@ public class BookingsEJB implements BookingsEJBLocal {
 	@RolesAllowed({"admin", "user"})
 	public void saveBooking(Booking booking) {
                 assertNoOverrun(booking);
+                booking.setModifiedDate(new Date());
 		if (booking.getId() != null)
                 {
                     if (booking.getExportState() == 1)

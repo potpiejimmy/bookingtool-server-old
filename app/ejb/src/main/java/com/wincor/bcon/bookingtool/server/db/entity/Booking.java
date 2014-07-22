@@ -78,6 +78,10 @@ public class Booking implements Serializable {
 	@NotNull
 	private byte exportState;
         
+        @Column(name="modified_date")
+        @Temporal(TemporalType.TIMESTAMP)
+        @NotNull
+        private Date modifiedDate;
 
 	public Booking() {
 	}
@@ -144,6 +148,14 @@ public class Booking implements Serializable {
         public void setExportState(byte exportState) {
 		this.exportState = exportState;
 	}
+
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
 
 	@Override
     public int hashCode() {

@@ -79,9 +79,9 @@
                                                 </p:column>
                                             </p:dataTable>
                                             <h:panelGroup>
-                                                <h:panelGrid columns="1">
-                                                    <p:commandLink value="▲" style="text-decoration:none;font-family:Arial;" action="#{bookingsBean.numberOfQuickSelectRowsDec}" update=":searchform"/>
-                                                    <p:commandLink value="▼" style="text-decoration:none;font-family:Arial;" action="#{bookingsBean.numberOfQuickSelectRowsInc}" update=":searchform"/>
+                                                <h:panelGrid columns="1" cellspacing="0" cellpadding="0">
+                                                    <p:commandButton action="#{bookingsBean.numberOfQuickSelectRowsDec}" update=":searchform" icon="ui-icon-carat-1-n" style="width:1.75em; height:1.25em; border-radius:0;"/>
+                                                    <p:commandButton action="#{bookingsBean.numberOfQuickSelectRowsInc}" update=":searchform" icon="ui-icon-carat-1-s" style="width:1.75em; height:1.25em; border-radius:0;"/>
                                                 </h:panelGrid>
                                             </h:panelGroup>
                                         </h:panelGrid>

@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS `booking` (
   `person` VARCHAR(45) NOT NULL,
   `booking_template_id` INT NOT NULL,
   `export_state` TINYINT NOT NULL DEFAULT 0,
+  `modified_date` TIMESTAMP NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_booking_booking_template1_idx` (`booking_template_id` ASC),
   CONSTRAINT `fk_booking_booking_template1`
