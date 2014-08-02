@@ -28,6 +28,15 @@
 			</p:panel>
 		</ui:define>
 
+		<ui:define name="rootfooter">
+                    <div id="root_footer">
+                        <hr/>
+                        <h:outputLink value="#{request.contextPath}/webres/help/about.xhtml">
+                            <h:outputText value="About"/>
+                        </h:outputLink>
+                    </div>
+                </ui:define>
+                
 	</ui:composition>
     
 </html>

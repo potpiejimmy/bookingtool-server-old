@@ -51,4 +51,8 @@ public class UsersBean implements Serializable {
 			WebUtils.addFacesMessage(ex);
 		}
 	}
+
+        public void resetPassword(UserInfoVo u) {
+            ejb.resetPassword(u.getUser().getName());
+	}
 }

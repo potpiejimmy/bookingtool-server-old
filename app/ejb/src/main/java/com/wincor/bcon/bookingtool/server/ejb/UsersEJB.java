@@ -59,9 +59,8 @@ public class UsersEJB implements UsersEJBLocal {
     public void saveUser(UserInfoVo userVo) {
         User user = userVo.getUser();
         if (em.find(User.class, user.getName())==null) {
-            // new user, set a default password and pwStatus = 0
-            user.setPwStatus((byte)0); // change password
-            user.setPassword(md5Hex(user.getName())); // default password
+            // new user, set a default password
+            setDefaultPassword(user);
             em.persist(user);
         } else {
             // existing user, merge back
@@ -86,7 +85,13 @@ public class UsersEJB implements UsersEJBLocal {
         em.createNamedQuery("UserRole.deleteByUserName").setParameter("userName", userName).executeUpdate();
         em.remove(em.find(User.class, userName));
     }
-    
+
+    @Override
+    @RolesAllowed({"superuser"})
+    public void resetPassword(String userName) {
+        setDefaultPassword(em.find(User.class, userName));
+    }
+
     @Override
     @RolesAllowed({"user","admin","superuser"})
     public User getCurrentUser() {
@@ -103,6 +108,12 @@ public class UsersEJB implements UsersEJBLocal {
             throw new RuntimeException("Sorry, the new password cannot be the same as the old password.");
         user.setPassword(md5Hex(newPassword));
         user.setPwStatus((byte)1);
+    }
+    
+    protected static void setDefaultPassword(User user) {
+        // set a default password and pwStatus = 0 (force change pw)
+        user.setPwStatus((byte)0); // change password
+        user.setPassword(md5Hex(user.getName())); // default password
     }
     
     protected static String md5Hex(String in) {

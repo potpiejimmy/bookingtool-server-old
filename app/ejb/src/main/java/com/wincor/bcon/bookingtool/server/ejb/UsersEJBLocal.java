@@ -42,6 +42,13 @@ public interface UsersEJBLocal {
     public void deleteUser(String userName);
 
     /**
+     * Resets the password for the given user to
+     * a default value.
+     * @param userName a user name
+     */
+    public void resetPassword(String userName);
+    
+    /**
      * Changes the password of the currently logged in user
      * @param oldPassword old password
      * @param newPassword new password

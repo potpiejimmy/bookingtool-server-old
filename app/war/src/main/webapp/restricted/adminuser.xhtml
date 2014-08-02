@@ -45,11 +45,17 @@
 						<h:outputText value="#{p.roleList}"/>
 					</p:column>
 					<p:column headerText="PW status">
-                                                <h:outputText value="#{p.user.pwStatus}"/>
+                                            <h:panelGroup rendered="#{p.user.pwStatus eq 0}">
+                                                <h:outputText styleClass="ui-message-warn-icon" title="Default password is set"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{p.user.pwStatus eq 1}">
+                                                <span class="ui-button-icon-left ui-icon ui-c ui-icon-check"> </span>
+                                            </h:panelGroup>
 					</p:column>
 					<p:column headerText="Actions">
-	                    <p:commandLink value="Edit" action="#{usersBean.edit(p)}" ajax="false"/>,  
-	                    <p:commandLink value="Delete" action="#{usersBean.delete(p)}" ajax="false"/>
+	                    <p:commandLink value="Edit" action="#{usersBean.edit(p)}" ajax="false"/>,
+	                    <p:commandLink value="Delete" action="#{usersBean.delete(p)}" ajax="false"/>,
+                            <p:commandLink value="Reset password" action="#{usersBean.resetPassword(p)}" ajax="false"/>
 					</p:column>
 				</p:dataTable>
 			
