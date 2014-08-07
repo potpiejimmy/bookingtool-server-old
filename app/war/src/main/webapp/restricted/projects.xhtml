@@ -89,7 +89,7 @@
 	                    <p:commandLink value="Edit" action="#{projectsBean.edit(p)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,  
 	                    <p:commandLink value="Delete" action="#{projectsBean.delete(p)}" ajax="false"/>
                             <h:panelGroup rendered="#{request.isUserInRole('superuser')}">, 
-                                <p:commandLink value="Drop" oncomplete="PF('confirmDropDialog').show()">
+                                <p:commandLink value="Drop" oncomplete="PF('confirmDropDialog').show()" update=":confirmDropDialogPanel">
                                     <f:setPropertyActionListener value="#{p}" target="#{projectsBean.selectedForDrop}" />
                                 </p:commandLink>
                             </h:panelGroup>
@@ -99,13 +99,15 @@
 			
 			</h:form>
 
+            <p:outputPanel id="confirmDropDialogPanel">
             <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
                 <ui:param name="widgetVar" value="confirmDropDialog"/>
-                <ui:param name="headerText" value="Really drop the project?"/>
+                <ui:param name="headerText" value="Really drop the project '#{projectsBean.selectedForDrop.name}'?"/>
                 <ui:param name="bean" value="#{projectsBean}"/>
                 <ui:param name="action" value="dropProject"/>
                 <ui:param name="dialogText" value="WARNING: All project data - including budgets, templates, bookings and budget plans - will be&lt;br/&gt;erased from the database. This cannot be undone. Do you really wish to proceed?"/>
             </ui:include>  
+            </p:outputPanel>
 
         </ui:define>
         
