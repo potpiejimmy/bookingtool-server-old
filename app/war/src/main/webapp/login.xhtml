@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui">
     
@@ -22,7 +23,11 @@
                                 <p/>
                                 <p:commandButton id="submit" value="Login" ajax="false"/>
                                 <p/>
-
+<f:verbatim>
+<!--[if lt IE 11]>
+<span style="color:red;">Note: Your browser is outdated. To avoid serious performance issues while using this application, please use a different browser.</span>
+<![endif]-->
+</f:verbatim>
                                 <p:outputLabel id="loginFailed" rendered="#{'true' eq param['fail']}" value="Login fehlgeschlagen!" styleClass="ui-message-error ui-widget"/>
                             </h:form>
 			</p:panel>
