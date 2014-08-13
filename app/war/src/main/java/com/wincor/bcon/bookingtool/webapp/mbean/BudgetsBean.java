@@ -182,7 +182,7 @@ public class BudgetsBean implements Serializable {
 	public void setParentFilter(int parentFilter) {
 		this.parentFilter = parentFilter;
 		currentBudget.setParentId(parentFilter);
-                currentRows = null; // reset row data if changing filter
+                refreshList(); // reset row data if changing filter
 	}
 	
 	public String getFullBudgetNameForId(Integer budgetId) {
@@ -201,7 +201,7 @@ public class BudgetsBean implements Serializable {
 				currentBudget.setParentId(null);
 			
 			ejb.saveBudget(currentBudget);
-                        currentRows = null; // reset row data on save
+                        refreshList(); // reset row data on save
 			newBudget();
 		} catch (Exception ex) {
 			WebUtils.addFacesMessage(ex);
@@ -216,11 +216,15 @@ public class BudgetsBean implements Serializable {
 	public void delete(Budget b) {
 		try {
 			ejb.deleteBudget(b.getId());
-                        currentRows = null; // reset row data on delete
+                        refreshList(); // reset row data on delete
 		} catch (Exception ex) {
 			WebUtils.addFacesMessage(ex);
 		}
 	}
+        
+        public void refreshList() {
+            currentRows = null;
+        }
 	
 	public void showSubBudgets(Budget b) {
 		setParentFilter(b.getId());

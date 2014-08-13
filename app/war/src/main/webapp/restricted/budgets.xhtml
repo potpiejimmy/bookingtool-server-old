@@ -83,12 +83,15 @@
 			
 			<h:form id="viewform">
 			
-				<p:panelGrid columns="2">
-					<h:outputText value="Filter Parent Budget:"/>
-					<p:selectOneMenu value="#{budgetsBean.parentFilter}" onchange="this.form.submit()">
-						<f:selectItems value="#{budgetsBean.budgetFilterItems}"/>
-					</p:selectOneMenu>
+				<p:panelGrid columns="2" style="float:left;">
+                                    <h:outputText value="Filter Parent Budget:"/>
+                                    <p:selectOneMenu value="#{budgetsBean.parentFilter}" onchange="this.form.submit()">
+                                            <f:selectItems value="#{budgetsBean.budgetFilterItems}"/>
+                                    </p:selectOneMenu>
 				</p:panelGrid>
+                                <h:panelGrid columns="1" style="float:right;">
+                                    <p:commandButton action="#{budgetsBean.refreshList}" ajax="false" icon="ui-icon-refresh" title="Refresh list"/>
+                                </h:panelGrid>
 			
                             <p:dataTable id="outputTable" value="#{budgetsBean.budgets}" var="b">
 					<p:column headerText="ID">
