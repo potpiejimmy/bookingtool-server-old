@@ -44,41 +44,41 @@
 							<f:selectItems value="#{templatesBean.budgetItems}"/>
 						</p:selectOneMenu>
 						<p:message for="budget" display="text"/>
-						<p:outputLabel value="Bitte mindestens ein Budget zu diesem Projekt anlegen!" rendered="#{not templatesBean.budgetAvailable}" styleClass="ui-message-error ui-widget"/>
+						<p:outputLabel value="Please define at least 1 budget for this project." rendered="#{not templatesBean.budgetAvailable}" styleClass="ui-message-error ui-widget"/>
 					</h:panelGroup>
 					
-					<h:outputText value="PSP:"/>
+					<h:outputText value="#{msg.sap_psp}:"/>
 					<h:panelGroup>
 						<p:inputText id="psp" value="#{templatesBean.currentTemplate.psp}"/>
 						<p:message for="psp" display="text"/>
 					</h:panelGroup>
 					
-					<h:outputText value="Bezeichnung:"/>
+					<h:outputText value="#{msg.sap_pspname}:"/>
 					<h:panelGroup>
 						<p:inputText id="name" value="#{templatesBean.currentTemplate.name}" size="60"/>
 						<p:message for="name" display="text"/>
 					</h:panelGroup>
 					
-					<h:outputText value="Tätigkeitsart:"/>
+					<h:outputText value="#{msg.sap_type}:"/>
 					<p:selectOneMenu value="#{templatesBean.currentTemplate.type}">
 						<f:selectItem itemValue="0W" itemLabel="0W"/>
 						<f:selectItem itemValue="1T" itemLabel="1T"/>
 						<f:selectItem itemValue="NP" itemLabel="NP"/>
 					</p:selectOneMenu>
 					
-					<h:outputText value="Vertriebsbeauftragter:"/>
+					<h:outputText value="#{msg.sap_salescontact}:"/>
 					<p:inputText value="#{templatesBean.currentTemplate.salesRepresentative}"/>
 					
-					<h:outputText value="Teilprojekt:"/>
+					<h:outputText value="#{msg.sap_subproject}:"/>
 					<p:inputText value="#{templatesBean.currentTemplate.subproject}"/>
 					
-					<h:outputText value="Tätigkeit:"/>
+					<h:outputText value="#{msg.sap_description}:"/>
 					<h:panelGroup>
 						<p:inputText id="description" value="#{templatesBean.currentTemplate.description}" size="80"/>
 						<p:message for="description" display="text"/>
 					</h:panelGroup>
 					
-					<h:outputText value="Zusatzinfo:"/>
+                                        <h:outputText value="#{msg.additional_info}:"/>
 					<p:inputText value="#{templatesBean.currentTemplate.additionalInfo}" size="80"/>
 					
 					<h:outputText value="Active: " />  
@@ -105,25 +105,25 @@
 					<p:column headerText="ID">
                                             <h:outputText value="#{t.template.id}"/>
 					</p:column>
-					<p:column headerText="PSP">
+					<p:column headerText="#{msg.sap_psp}">
                                             <h:outputText value="#{t.template.psp}"/>
 					</p:column>
-					<p:column headerText="Bezeichnung">
+					<p:column headerText="#{msg.sap_pspname}">
                                             <h:outputText value="#{t.template.name}"/>
 					</p:column>
-					<p:column headerText="T.-Art">
+                                        <p:column headerText="#{msg.sap_type_short}">
                                             <h:outputText value="#{t.template.type}"/>
 					</p:column>
-					<p:column headerText="VB">
+                                        <p:column headerText="#{msg.sap_salescontact_short}">
                                             <h:outputText value="#{t.template.salesRepresentative}"/>
 					</p:column>
-					<p:column headerText="Teilprojekt">
+					<p:column headerText="#{msg.sap_subproject}">
                                             <h:outputText value="#{t.template.subproject}"/>
 					</p:column>
-					<p:column headerText="Tätigkeit">
+					<p:column headerText="#{msg.sap_description}">
                                             <h:outputText value="#{t.template.description}"/>
 					</p:column>
-					<p:column headerText="Zusatzinfo">
+					<p:column headerText="#{msg.additional_info}">
                                             <h:outputText value="#{t.template.additionalInfo}"/>
 					</p:column>
 					<p:column headerText="Budget">
