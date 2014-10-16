@@ -28,7 +28,7 @@
                                                     <f:selectItems value="#{budgetsBean.projectItems}"/>
                                                     <f:validateLongRange minimum="1"/>
                                             </p:selectOneMenu>
-                                            <p:outputLabel value="Bitte mindestens ein Projekt anlegen." rendered="#{budgetsBean.projectItems.size() eq 1}" styleClass="ui-message-error ui-widget"/>
+                                            <p:outputLabel value="Please create a project first." rendered="#{budgetsBean.projectItems.size() eq 1}" styleClass="ui-message-error ui-widget"/>
                                         </h:panelGroup>
 				</p:panelGrid>
 
@@ -62,9 +62,14 @@
 					<h:outputText id="budgetInfo" value="#{budgetsBean.getFormattedBudgetTime(budgetsBean.currentBudget.minutes)}"/>
 	
 					<h:outputText value="Parent Budget:"/>
-					<p:selectOneMenu id="parentBudget" value="#{budgetsBean.currentBudget.parentId}">
-						<f:selectItems value="#{budgetsBean.parentBudgetItems}"/>
-					</p:selectOneMenu>
+                                        <h:panelGrid id="parentPanel" columns="1">
+                                            <p:selectOneMenu id="parentBudget" value="#{budgetsBean.currentBudget.parentId}">
+                                                <f:selectItems value="#{budgetsBean.parentBudgetItems}"/>
+                                                <p:ajax event="change" update="parentPanel"/>
+                                            </p:selectOneMenu>
+                                            <p:outputLabel value="Note: Assigning to a parent will update the parent's budget hours to the sum of its child budgets."
+                                                           rendered="#{budgetsBean.currentBudget.parentId gt 0}" styleClass="ui-message-error ui-widget"/>
+                                        </h:panelGrid>
 					<p:outputPanel/>
 					
 					<h:outputText value="Allow overrun:" />  
