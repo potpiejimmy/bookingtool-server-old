@@ -84,10 +84,10 @@
                     <p:column headerText="Budget Name">
                         <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budget)}" />
                     </p:column>
-                    <p:column headerText="Budget [PT]">
+                    <p:column headerText="Budget [PD]">
                         <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.budget.minutes)}" />
                     </p:column>
-                    <p:column headerText="Planned [PT]">
+                    <p:column headerText="Planned [PD]">
                         <h:outputText value="#{budgetsBean.getFormattedBudgetTime(budgetPlansBean.getPlannedMinutesForRow(vo.budget.id))}" />
                     </p:column>
                     <p:column headerText="Planned">

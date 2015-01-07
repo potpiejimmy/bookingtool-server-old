@@ -73,8 +73,6 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 				
 		XSSFWorkbook wb = new XSSFWorkbook();
 		SimpleDateFormat sdf = new SimpleDateFormat("E., dd.MM.yyyy");
-		NumberFormat df = NumberFormat.getInstance(Locale.GERMANY);
-                df.setMaximumFractionDigits(2);
 		XSSFSheet sheet = wb.createSheet();
 		sheet = createHeader(sheet, withNameColumn);
 		
@@ -94,8 +92,8 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
                             style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                         }
                         
-			if(lastDate != null && lastDate.after(booking.getDay()))
-				sheet.createRow(++rowPosition);
+                        if (!withNameColumn && lastDate != null && lastDate.after(booking.getDay()))
+                            sheet.createRow(++rowPosition); // add empty row for each new day if person-based export
 
 			XSSFRow row = sheet.createRow(++rowPosition);
 			XSSFCell cell;
@@ -143,7 +141,7 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
                         cell.setCellStyle(style);
 			//Stunden
 			cell = row.createCell(cellPosition++) ;
-			cell.setCellValue(df.format(((float)Math.round(booking.getMinutes().doubleValue()/60*100))/100));
+			cell.setCellValue(((double)Math.round(booking.getMinutes().doubleValue()/60*100))/100);
                         cell.setCellStyle(style);
                         
 			lastDate = booking.getDay();
