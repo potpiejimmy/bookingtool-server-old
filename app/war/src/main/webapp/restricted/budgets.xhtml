@@ -94,8 +94,15 @@
                                         <f:selectItems value="#{budgetsBean.budgetFilterItems}"/>
                                 </p:selectOneMenu>
                             </p:panelGrid>
-                            <h:panelGrid columns="1" style="float:right;">
+                            <h:panelGrid columns="2" style="float:right;">
                                 <p:commandButton action="#{budgetsBean.refreshList}" ajax="false" icon="ui-icon-refresh" title="Refresh list"/>
+                                <p:commandButton id="exportBudgets"
+                                                 value="Export"
+                                                 ajax="false"
+                                                 onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                 icon="ui-icon-arrowthick-1-s">
+                                    <p:fileDownload value="#{budgetsBean.exportBudgets}" />  
+                                </p:commandButton>
                             </h:panelGrid>
                             
                             <div style="clear:both;">

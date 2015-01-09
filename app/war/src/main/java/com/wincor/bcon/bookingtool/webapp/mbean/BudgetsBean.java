@@ -14,11 +14,13 @@ import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
+import com.wincor.bcon.bookingtool.server.util.ExcelExportUtil;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.faces.context.FacesContext;
+import org.primefaces.model.StreamedContent;
 
 @Named
 @SessionScoped
@@ -134,6 +136,10 @@ public class BudgetsBean implements Serializable {
             }
             return currentRows;
 	}
+        
+        public StreamedContent getExportBudgets() {
+            return ExcelExportBean.streamForWorkbook(ExcelExportUtil.createWorkbookForBudgets(getBudgets()), "budgets");
+        }
 	
 	public List<SelectItem> getBudgetFilterItems() {
 		List<Budget> budgets = ejb.getBudgets(currentBudget.getProjectId());
