@@ -24,6 +24,7 @@ import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
+import com.wincor.bcon.bookingtool.server.vo.SAPBooking;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -142,6 +143,24 @@ public class BookingsBean implements Serializable {
 			sumMinutes += b.getMinutes();
 		return getFormattedBookingTime(sumMinutes);
 	}
+        
+        public boolean isSplitBooking() {
+            return (currentTemplate != null && currentTemplate.getPsp().contains(","));
+        }
+        
+        public String getSplitBookingInfoString() {
+            if (current.getMinutes() == null) return ""; // nothing entered yet
+            NumberFormat f = NumberFormat.getNumberInstance();
+            f.setMaximumFractionDigits(2);
+            StringBuilder stb = new StringBuilder("(");
+            for (SAPBooking sb : SAPBooking.createSAPBookingsForBooking(current, currentTemplate)) {
+                stb.append(sb.psp).append(": ");
+                stb.append(f.format(((float)sb.hundredthHours)/100));
+                stb.append(" h, ");
+            }
+            stb.deleteCharAt(stb.length()-1).deleteCharAt(stb.length()-1).append(')');
+            return stb.toString();
+        }
 	
 	public String getPSPForBooking(Integer bookingTemplateId) {
 		return bookingTemplateEjb.getBookingTemplate(bookingTemplateId).getPsp();

@@ -9,7 +9,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.Booking;
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
-import java.text.SimpleDateFormat;
+import com.wincor.bcon.bookingtool.server.vo.SAPBooking;
 import java.util.Date;
 import java.util.List;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -29,7 +29,6 @@ public class ExcelExportUtil {
     public static XSSFWorkbook createWorkbookForBookings(BookingTemplatesEJBLocal bookingTemplateEJB, List<Booking> bookingList, boolean withNameColumn) {
 
         XSSFWorkbook wb = new XSSFWorkbook();
-        SimpleDateFormat sdf = new SimpleDateFormat("E., dd.MM.yyyy");
         XSSFSheet sheet = wb.createSheet();
         sheet = createHeaderSheetForBookings(sheet, withNameColumn);
 
@@ -38,8 +37,10 @@ public class ExcelExportUtil {
 
         for(Booking booking : bookingList)
         {
-                BookingTemplate bt = bookingTemplateEJB.getBookingTemplate(booking.getBookingTemplateId());
+            BookingTemplate bt = bookingTemplateEJB.getBookingTemplate(booking.getBookingTemplateId());
 
+            for (SAPBooking sapBooking : SAPBooking.createSAPBookingsForBooking(booking, bt)) {
+                
                 XSSFCellStyle style = wb.createCellStyle();
 
                 if (booking.getExportState() == 2){
@@ -56,51 +57,52 @@ public class ExcelExportUtil {
 
                 //Datum
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(new XSSFRichTextString(sdf.format(booking.getDay())));
+                cell.setCellValue(new XSSFRichTextString(sapBooking.day));
                 cell.setCellStyle(style);
 
                 if (withNameColumn) {
                         //Person
                         cell = row.createCell(cellPosition++) ;
-                        cell.setCellValue(new XSSFRichTextString(booking.getPerson()));
+                        cell.setCellValue(new XSSFRichTextString(sapBooking.person));
                         cell.setCellStyle(style);
                 }
 
                 //PSP-Element
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(new XSSFRichTextString(bt.getPsp()));
+                cell.setCellValue(new XSSFRichTextString(sapBooking.psp));
                 cell.setCellStyle(style);
                 //Bezeichnung des PSP-Elements
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(new XSSFRichTextString(bt.getName()));
+                cell.setCellValue(new XSSFRichTextString(sapBooking.pspLabel));
                 cell.setCellStyle(style);
                 //Tätigkeitsart
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(new XSSFRichTextString(bt.getType()));
+                cell.setCellValue(new XSSFRichTextString(sapBooking.type));
                 cell.setCellStyle(style);
                 //Bezeichnung der Tätigkeitsart
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(new XSSFRichTextString(Utils.labelForBookingType(bt.getType(), false)));
+                cell.setCellValue(new XSSFRichTextString(sapBooking.typeLabel));
                 cell.setCellStyle(style);
                 //Tätigkeit
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(new XSSFRichTextString(booking.getDescription()));
+                cell.setCellValue(new XSSFRichTextString(sapBooking.description));
                 cell.setCellStyle(style);
                 //VB-Beauftragter
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(new XSSFRichTextString(booking.getSalesRepresentative()));
+                cell.setCellValue(new XSSFRichTextString(sapBooking.salesRepresentative));
                 cell.setCellStyle(style);
                 //Teilprojekt
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(new XSSFRichTextString(bt.getSubproject()));
+                cell.setCellValue(new XSSFRichTextString(sapBooking.subproject));
                 cell.setCellStyle(style);
                 //Stunden
                 cell = row.createCell(cellPosition++) ;
-                cell.setCellValue(((double)Math.round(booking.getMinutes().doubleValue()/60*100))/100);
+                cell.setCellValue(((double)sapBooking.hundredthHours)/100);
                 cell.setCellStyle(style);
 
                 lastDate = booking.getDay();
 
+            }
         }
 
         //autosize every column!

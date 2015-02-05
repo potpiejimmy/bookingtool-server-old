@@ -49,8 +49,12 @@
 					
 					<h:outputText value="#{msg.sap_psp}:"/>
 					<h:panelGroup>
-						<p:inputText id="psp" value="#{templatesBean.currentTemplate.psp}"/>
+                                            <h:panelGrid id="parentPanel" columns="1">
+						<p:inputText id="psp" size="45" value="#{templatesBean.currentTemplate.psp}"/>
+                                                <p:outputLabel value="Note: Use comma for split-bookings, append [x] for split weight (optional)."
+                                                               styleClass="ui-message-info ui-widget"/>
 						<p:message for="psp" display="text"/>
+                                            </h:panelGrid>
 					</h:panelGroup>
 					
 					<h:outputText value="#{msg.sap_pspname}:"/>
