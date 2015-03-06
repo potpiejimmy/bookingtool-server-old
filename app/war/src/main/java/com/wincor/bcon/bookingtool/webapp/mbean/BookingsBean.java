@@ -96,6 +96,12 @@ public class BookingsBean implements Serializable {
             return budgetsEjb.getBudgetInfo(currentTemplate.getBudgetId());
         }
 	
+        public int getCurrentBudgetMinutes() {
+            BudgetInfoVo curBudget = getCurrentBudget();
+            if (curBudget == null) return 0;
+            return Math.abs(curBudget.getBudget().getMinutes());
+        }
+	
 	public void save() {
             try {
 		current.setBookingTemplateId(currentTemplate.getId());

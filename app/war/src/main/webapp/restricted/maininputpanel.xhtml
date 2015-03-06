@@ -42,6 +42,7 @@
                                         <h:outputText value="#{msg.booking_templatesearch}:"/>
                                         <h:panelGroup>
                                             <p:focus for="acSimple" rendered="#{bookingsBean.currentTemplate eq null}"/>
+                                            <p:watermark for="acSimple" value="#{msg.search_watermark}" id="watermark" />
                                             <p:autoComplete id="acSimple" value="#{bookingsBean.currentTemplate}"
                                                 size="160"
                                                     completeMethod="#{bookingsBean.complete}"
@@ -111,9 +112,6 @@
                                         </h:panelGroup>
 					<h:outputText id="templateID" value="#{bookingsBean.currentTemplate.id}"/>
 					
-                                        <h:outputText value="#{msg.username}:"/>
-					<h:outputText id="person" value="#{bookingsBean.current.person}"/>
-					
                                         <h:panelGroup>
                                             <h:outputText value="Budget:"/>
                                             <ui:include src="/WEB-INF/facelets/editButton.xhtml">
@@ -141,17 +139,13 @@
 					<h:outputText value="Budget Left:"/>
                                         <h:panelGroup>
                                             <h:outputText rendered="#{bookingsBean.currentBudget ne null}"
-                                                          value="#{bookingsBean.getFormattedBookingTime((bookingsBean.currentBudget.budget.minutes ge 0 ? bookingsBean.currentBudget.budget.minutes : -bookingsBean.currentBudget.budget.minutes) - bookingsBean.currentBudget.bookedMinutesRecursive)}"/>
+                                                          value="#{bookingsBean.getFormattedBookingTime(bookingsBean.currentBudgetMinutes - bookingsBean.currentBudget.bookedMinutesRecursive)}"/>
+                                            <h:outputText rendered="#{bookingsBean.currentBudget ne null}"
+                                                          value=" #{msg.of} #{bookingsBean.getFormattedBookingTime(bookingsBean.currentBudgetMinutes)}"/>
                                         </h:panelGroup>
 					
                                         <h:outputText value="#{msg.sap_psp}:"/>
-					<h:outputText id="psp" value="#{bookingsBean.currentTemplate.psp}"/>
-					
-                                        <h:outputText value="#{msg.sap_pspname}:"/>
-					<h:outputText id="name" value="#{bookingsBean.currentTemplate.name}"/>
-					
-                                        <h:outputText value="#{msg.sap_type}:"/>
-					<h:outputText id="type" value="#{bookingsBean.currentTemplate.type}"/>
+					<h:outputText id="psp" value="[#{bookingsBean.currentTemplate.type}] #{bookingsBean.currentTemplate.psp} #{bookingsBean.currentTemplate.name}"/>
 					
                                         <h:outputText value="#{msg.sap_description}:"/>
 					<h:panelGroup>
@@ -172,8 +166,8 @@
 					
                                         <h:outputText value="#{msg.booking_timeminutes}:"/>
 					<h:panelGroup>
+                                                <p:focus for="minutes" rendered="#{bookingsBean.currentTemplate ne null}"/>
                                                 <h:panelGrid columns="4">
-                                                    <p:focus for="minutes" rendered="#{bookingsBean.currentTemplate ne null}"/>
                                                     <p:inputText id="minutes" value="#{bookingsBean.current.minutes}" size="10">
                                                             <f:validateLongRange minimum="1" />
                                                             <p:ajax event="keyup" update="hoursInfo" /> 
@@ -186,6 +180,9 @@
                                                 </h:panelGrid>
 					</h:panelGroup>
 
+                                        <h:outputText value="#{msg.additional_info}:"/>
+					<h:outputText value="#{bookingsBean.currentTemplate.additionalInfo}"/>
+					
                                     </p:panelGrid>
                                             
                                 <p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}" value="#{bookingsBean.current.id eq null ? msg.add : msg.save}" action="#{bookingsBean.save}" ajax="false"/>
