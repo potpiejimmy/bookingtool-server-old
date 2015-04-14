@@ -196,11 +196,15 @@ public class BookingsBean implements Serializable {
 	}
         
         public PieChartModel getPieChartType() {
-            return getPieChart(0);
+            PieChartModel model = getPieChart(0);
+            model.setTitle(WebUtils.getResBundle().getString("piechart_title_worktime"));
+            return model;
         }
         
         public PieChartModel getPieChartPsp() {
-            return getPieChart(1);
+            PieChartModel model = getPieChart(1);
+            model.setTitle(WebUtils.getResBundle().getString("piechart_title_projects"));
+            return model;
         }
         
         protected PieChartModel getPieChart(int chartType) {
@@ -226,6 +230,11 @@ public class BookingsBean implements Serializable {
                 }
                 model.set(label, value);
             }
+            model.setLegendPosition("e");
+            model.setFill(false);
+            model.setShowDataLabels(true);
+            model.setSliceMargin(5);
+            model.setDiameter(180);
             return model;
         }
         
