@@ -15,9 +15,10 @@
         	<p:panel header="Deploy EAR file:" rendered="#{request.isUserInRole('superuser')}">
 		        <h:form>
                             <p>
-                                <p:selectBooleanCheckbox value="#{systemAdminBean.maintenanceWarning}" itemLabel="Set System Maintenance Warning: "> 
+                                <h:outputText value="Set System Maintenance Warning: "/>
+                                <p:inputSwitch value="#{systemAdminBean.maintenanceWarning}"> 
                                     <p:ajax/>
-                                </p:selectBooleanCheckbox>
+                                </p:inputSwitch>
                             </p>
                             
                                 <p:fileUpload fileUploadListener="#{systemAdminBean.handleFileUpload}" mode="advanced"  

@@ -86,7 +86,7 @@
 					<p:inputText value="#{templatesBean.currentTemplate.additionalInfo}" size="80"/>
 					
 					<h:outputText value="Active: " />  
-        			<p:selectBooleanCheckbox value="#{templatesBean.active}" /> 
+        			<p:inputSwitch value="#{templatesBean.active}" /> 
 				</p:panelGrid>
 			
 				<p:commandButton rendered="#{templatesBean.budgetAvailable}" value="#{templatesBean.currentTemplate.id eq null ? 'Create' : 'Save'}" action="#{templatesBean.save}" ajax="false"/>
@@ -134,9 +134,9 @@
                                             <h:outputText value="#{templatesBean.getBudgetDisplayName(t.template.budgetId)}"/>
 					</p:column>
 					<p:column  headerText="Active" style="text-align:center;">
-                                            <p:selectBooleanCheckbox value="#{t.active}">
+                                            <p:inputSwitch value="#{t.active}">
                                                 <p:ajax listener="#{templatesBean.rowActiveCheckboxClicked(t)}"/>
-                                            </p:selectBooleanCheckbox>
+                                            </p:inputSwitch>
 					</p:column>
 					<p:column headerText="Actions">
                             <p:commandLink value="Edit" action="#{templatesBean.edit(t.template)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,
