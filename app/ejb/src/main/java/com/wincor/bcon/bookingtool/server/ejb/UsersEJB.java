@@ -63,8 +63,7 @@ public class UsersEJB implements UsersEJBLocal {
             setDefaultPassword(user);
             em.persist(user);
         } else {
-            // existing user, merge back
-            em.merge(user);
+            // existing user, nothing to do (cannot alter name or password here)
             // remove old roles:
             em.createNamedQuery("UserRole.deleteByUserName").setParameter("userName", user.getName()).executeUpdate();
         }
@@ -74,7 +73,7 @@ public class UsersEJB implements UsersEJBLocal {
         for (String rname : roles) {
             UserRole role = new UserRole();
             role.setUserName(user.getName());
-            role.setRole(rname);
+            role.setRole(rname.trim());
             em.persist(role);
         }
     }

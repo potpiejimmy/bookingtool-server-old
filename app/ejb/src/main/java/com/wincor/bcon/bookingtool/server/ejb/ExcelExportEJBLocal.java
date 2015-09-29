@@ -9,6 +9,8 @@ public interface ExcelExportEJBLocal {
 
 	public XSSFWorkbook getExcelForName(String person, Integer weeksToExport);
 
+	public XSSFWorkbook getExcelForProject(Integer projectToExport);
+
 	public XSSFWorkbook getExcelForAdmin(Integer monthsToExport);
 
 	public XSSFWorkbook getExcelForBudget(int budgetId);

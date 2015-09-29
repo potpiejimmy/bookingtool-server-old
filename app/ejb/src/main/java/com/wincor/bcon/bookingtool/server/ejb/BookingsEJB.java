@@ -101,6 +101,12 @@ public class BookingsEJB implements BookingsEJBLocal {
 		return em.createNamedQuery("Booking.findByBudgetId", Booking.class).setParameter("budgetId", budgetId).getResultList();
 	}
         
+	@Override
+	@RolesAllowed({"admin"})
+	public List<Booking> getBookingsForProject(int projectId) {
+		return em.createNamedQuery("Booking.findByProjectId", Booking.class).setParameter("projectId", projectId).getResultList();
+        }
+        
         @Override
         public List<Booking> getBookingsByTemplateId(int bookingTemplateId) {
 		return em.createNamedQuery("Booking.findByTemplateId", Booking.class).setParameter("bookingTemplateId", bookingTemplateId).getResultList();

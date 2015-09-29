@@ -50,7 +50,7 @@ html {
     table-layout: auto;
 }
 
-.no-table-header table thead tr {
+.no-table-header table thead {
     display: none;
 }
 

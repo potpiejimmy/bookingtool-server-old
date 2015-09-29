@@ -36,6 +36,12 @@
 
                 <h:form id="viewform">
 
+                        <h:panelGrid columns="1" style="float:right;">
+                            <p:commandButton action="#{budgetControlBean.refreshList}" ajax="false" icon="ui-icon-refresh" title="Refresh list"/>
+                        </h:panelGrid>
+                    
+                        <div style="clear:both;">
+			
                         <p:dataTable id="outputTable" value="#{budgetControlBean.rows}" var="b"
                                      editable="true" editMode="cell">
                                 <p:column headerText="Name">
@@ -80,6 +86,8 @@
                                     </f:facet>
                                 </p:column>
                         </p:dataTable>
+                            
+                        </div>
                     <p>
                         <p:commandButton id="hiddenSubmit" style="display: none;" update="outputTable"/>
                         <p:commandButton value="Save" action="#{budgetControlBean.save}" ajax="false" rendered="#{budgetControlBean.editingAllowed and budgetControlBean.rows.size() gt 0}"/>

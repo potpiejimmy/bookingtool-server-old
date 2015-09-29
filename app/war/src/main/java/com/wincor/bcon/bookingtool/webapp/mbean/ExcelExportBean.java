@@ -1,5 +1,6 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
+import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.db.entity.ResourceTeam;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +15,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import com.wincor.bcon.bookingtool.server.ejb.ExcelExportEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.ResourceTeamsEJBLocal;
 import com.wincor.bcon.bookingtool.server.ejb.ResourcesEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
@@ -38,10 +40,14 @@ public class ExcelExportBean implements Serializable {
         @EJB
         private ResourcesEJBLocal resourcesEJB;
 	
+        @EJB
+        private ProjectsEJBLocal projectsEjb;
+    
 	private Integer weeksToExport = 1;
 	private Integer monthsToExport = 0;
 	private Integer weeksToExportResPlan = 1;
         private Integer teamToExport = 0;
+        private Integer projectToExport = -1;
 	
         public String getCurrentUserName() {
             return WebUtils.getCurrentPerson();
@@ -51,6 +57,12 @@ public class ExcelExportBean implements Serializable {
 		
                 XSSFWorkbook wb = myExcelExportEJB.getExcelForName(WebUtils.getCurrentPerson(), getWeeksToExport());
 		return streamForWorkbook(wb, "buchungen_"+WebUtils.getCurrentPerson());
+	}
+	
+	public StreamedContent getExcelListProject () {
+		
+		XSSFWorkbook wb = myExcelExportEJB.getExcelForProject(projectToExport);
+		return streamForWorkbook(wb, "buchungen_project_"+projectToExport);
 	}
 	
 	public StreamedContent getExcelListAdmin () {
@@ -102,11 +114,28 @@ public class ExcelExportBean implements Serializable {
             this.teamToExport = teamToExport;
         }
 
+        public Integer getProjectToExport() {
+            return projectToExport;
+        }
+
+        public void setProjectToExport(Integer projectToExport) {
+            this.projectToExport = projectToExport;
+        }
+
         public List<SelectItem> getManagedResourceTeamItems() {
 		List<ResourceTeam> teams = resourceTeamsEJB.getManagedResourceTeams();
 		List<SelectItem> result = new ArrayList<SelectItem>(teams.size());
 		for (ResourceTeam t : teams) {
 			result.add(new SelectItem(t.getId(), t.getName()));
+		}
+		return result;
+	}
+
+        public List<SelectItem> getManagedProjectItems() {
+		List<Project> projects = projectsEjb.getManagedProjects();
+		List<SelectItem> result = new ArrayList<SelectItem>(projects.size());
+		for (Project p : projects) {
+			result.add(new SelectItem(p.getId(), p.getName()));
 		}
 		return result;
 	}

@@ -38,7 +38,14 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
             return result;
 	}
 		
-	@Override
+        @Override
+	@RolesAllowed({"admin"})
+	public XSSFWorkbook getExcelForProject(Integer projectToExport) {
+		List<Booking> bookingList = bookingEJB.getBookingsForProject(projectToExport);
+		return ExcelExportUtil.createWorkbookForBookings(bookingTemplateEJB, bookingList, true);
+        }
+        
+        @Override
 	@RolesAllowed({"superuser"})
 	public XSSFWorkbook getExcelForAdmin(Integer monthsToExport) {
 		

@@ -61,6 +61,10 @@ public class BudgetControlBean implements java.io.Serializable {
         this.rows = null; // reset row data:
     }
 
+    public void refreshList() {
+        this.rows = null;
+    }
+	
     public boolean isEditingAllowed() {
         if (editingAllowed == null) {
             editingAllowed = Boolean.valueOf(

@@ -40,6 +40,22 @@
 	                    </p> 
                     </p:panel>
 
+                    <p:panel header="Export all bookings for a project (Project Managers only)" rendered="#{request.isUserInRole('admin')}">
+	                    <p:panelGrid columns="2" id="excelByProject">
+	                    	<p:outputLabel value="Select a project: "/>
+                                <p:selectOneMenu id="projectToExport" value="#{excelExportBean.projectToExport}">
+                                    <f:selectItems value="#{excelExportBean.managedProjectItems}"/>
+                                </p:selectOneMenu>
+	                    </p:panelGrid>
+	                    
+	                    <p>
+	                    	<p:commandButton id="downloadLinkProject" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
+	                    					 icon="ui-icon-arrowthick-1-s">  
+                                                <p:fileDownload value="#{excelExportBean.excelListProject}" />  
+	                    	</p:commandButton>
+	                    </p>
+                    </p:panel>
+
                     <p:panel header="Export all bookings (Superuser Only)" rendered="#{request.isUserInRole('superuser')}">
                     
 	                    <p:panelGrid columns="2" id="excelByMonths">

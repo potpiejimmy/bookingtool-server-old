@@ -126,8 +126,8 @@ public class AdminFIBean implements Serializable {
 	}
 	
 	protected void newVo() {
-		String lastPsp = "E-122618-02-20";
-		String lastPspName = "R_PC/E - FI 15.0.00";
+		String lastPsp = "E-122950-02-30";
+		String lastPspName = "R_PC/E - FI 16.0";
                 int lastParentBudgetId = 0;
                 int lastSpecBudgetId = 0;
 		if (current != null) {
