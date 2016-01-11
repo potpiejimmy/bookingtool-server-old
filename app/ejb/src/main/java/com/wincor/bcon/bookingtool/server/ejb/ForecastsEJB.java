@@ -34,19 +34,19 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 @Stateless
-public class ForecastsEJB implements ForecastsEJBLocal {
+public class ForecastsEJB {
 
     @PersistenceContext(unitName = "EJBsPU")
     private EntityManager em;
     
     @EJB
-    private DomainsEJBLocal domainsEjb;
+    private DomainsEJB domainsEjb;
     
     @EJB
-    private BudgetsEJBLocal budgetsEjb;
+    private BudgetsEJB budgetsEjb;
     
     @EJB
-    private BudgetPlansEJBLocal budgetPlansEjb;
+    private BudgetPlansEJB budgetPlansEjb;
     
     protected final static int REPORT_COLUMN_YTD_WO_CURRENT_MONTH = -1;
     protected final static int REPORT_COLUMN_CURRENT_MONTH = -2;
@@ -58,7 +58,10 @@ public class ForecastsEJB implements ForecastsEJBLocal {
     protected final static int REPORT_ROW_SALES_IFRS = 2;
     protected final static int REPORT_ROW_EFFORTS = 3;
     
-    @Override
+    /**
+     * Returns all forecasts
+     * @return list of forecasts
+     */
     @RolesAllowed({"admin","user"})
     public List<Forecast> getForecasts() {
         List<Forecast> result = new ArrayList<Forecast>();
@@ -67,7 +70,12 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         return result;
     }
 
-    @Override
+    /**
+     * Inserts or updates the given forecast
+     * @param forecast a forecast
+     * @param assignedPlans assigned budget plans
+     * @return the forecast holding new ID if inserted
+     */
     @RolesAllowed({"admin","user"})
     public Forecast saveForecast(Forecast forecast, List<BudgetPlan> assignedBudgetPlans) {
         if (forecast.getId() == null) {
@@ -92,7 +100,10 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         return forecast;
     }
 
-    @Override
+    /**
+     * Deletes a forecast
+     * @param forecastId a forecast ID
+     */
     @RolesAllowed({"admin","user"})
     public void deleteForecast(int forecastId) {
         // delete existing assignments
@@ -100,7 +111,11 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         em.remove(em.find(Forecast.class, forecastId));
     }
    
-    @Override
+    /**
+     * Returns the assigned budget plans for the given forecast ID
+     * @param forecastId a forecast ID
+     * @return list of budget plans
+     */
     public List<BudgetPlan> getAssignedBudgetPlans(int forecastId) {
         List<ForecastBudgetPlan> assigned = em.createNamedQuery("ForecastBudgetPlan.findByForecastId", ForecastBudgetPlan.class).setParameter("forecastId", forecastId).getResultList();
         List<BudgetPlan> result = new ArrayList<BudgetPlan>(assigned.size());
@@ -108,7 +123,11 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         return result;
     }
 
-    @Override
+    /**
+     * Returns the months for the given fiscal year
+     * @param fiscalYear a fiscal year
+     * @return list of month periods
+     */
     public List<Integer> getMonthsForFiscalYear(int fiscalYear) {
         List<Integer> result = new ArrayList<Integer>(12);
         for (int month = 0; month < 12; month++) {
@@ -120,15 +139,18 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         return result;
     }
     
-    @Override
+    /**
+     * Returns the forecast info row for the given budget ID
+     * @param forecastId a forecast ID
+     * @param budgetId a budget ID
+     * @return forecast info
+     */
     public ForecastInfoRowVo getForecastInfoForBudget(int forecastId, int budgetId) {
         Forecast forecast = em.find(Forecast.class, forecastId);
         ForecastInfoRowVo row = new ForecastInfoRowVo(budgetsEjb.getBudgetInfo(budgetId));
         for (int period : getMonthsForFiscalYear(forecast.getFiscalYear())) {
             ForecastInfoVo cell = new ForecastInfoVo();
-            int year = period / 100;
-            int monthOfYear = (period % 100) - 1;
-            TimePeriod timePeriod = Utils.timePeriodForMonth(year, monthOfYear);
+            TimePeriod timePeriod = Utils.timePeriodForMonth(period);
             cell.setPeriod(period);
             cell.setPlannedMinutes(budgetPlansEjb.getPlannedMinutesForPeriod(budgetId, period));
             cell.setBookedMinutes(budgetsEjb.getBudgetInfo(budgetId, timePeriod).getBookedMinutesRecursive());
@@ -137,7 +159,11 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         return row;
     }
 
-    @Override
+    /**
+     * Returns the forecast info row sum values for all assigned budget plan budgets
+     * @param forecastId a forecast ID
+     * @return forecast info sum row
+     */
     public ForecastInfoRowVo getForecastInfoSummaryRow(int forecastId) {
         Forecast forecast = em.find(Forecast.class, forecastId);
         List<ForecastInfoRowVo> rows = new ArrayList<ForecastInfoRowVo>();
@@ -154,7 +180,11 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         return summaryRow;
     }
     
-    @Override
+    /**
+     * Exports detailed plan data to excel
+     * @param forecastId a forecast ID
+     * @return plan data export
+     */
     public XSSFWorkbook exportPlanData(int forecastId) {
         final DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMMMMM");
         Forecast forecast = em.find(Forecast.class, forecastId);
@@ -241,7 +271,11 @@ public class ForecastsEJB implements ForecastsEJBLocal {
         return summaryRow;
     }
 
-    @Override
+    /**
+     * Create a special sales report sheet for the given forecast
+     * @param forecastId a forecast ID
+     * @return sales report sheet
+     */
     public XSSFWorkbook createSalesReport(int forecastId) {
         Calendar reportCurrentMonth = Calendar.getInstance();
         reportCurrentMonth.add(Calendar.MONTH, -1); // last month is the report's current month

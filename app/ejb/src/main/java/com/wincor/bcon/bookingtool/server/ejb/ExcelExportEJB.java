@@ -13,15 +13,14 @@ import com.wincor.bcon.bookingtool.server.db.entity.Booking;
 import com.wincor.bcon.bookingtool.server.util.ExcelExportUtil;
 
 @Stateless
-public class ExcelExportEJB implements ExcelExportEJBLocal {
+public class ExcelExportEJB {
 
 	@EJB
-	private BookingsEJBLocal bookingEJB;
+	private BookingsEJB bookingEJB;
 	
 	@EJB
-	private BookingTemplatesEJBLocal bookingTemplateEJB;
+	private BookingTemplatesEJB bookingTemplateEJB;
 	
-	@Override
 	@RolesAllowed({"admin","user"})
 	public XSSFWorkbook getExcelForName(String person, Integer weeksToExport) {
 		
@@ -38,14 +37,12 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
             return result;
 	}
 		
-        @Override
 	@RolesAllowed({"admin"})
 	public XSSFWorkbook getExcelForProject(Integer projectToExport) {
 		List<Booking> bookingList = bookingEJB.getBookingsForProject(projectToExport);
 		return ExcelExportUtil.createWorkbookForBookings(bookingTemplateEJB, bookingList, true);
         }
         
-        @Override
 	@RolesAllowed({"superuser"})
 	public XSSFWorkbook getExcelForAdmin(Integer monthsToExport) {
 		
@@ -57,7 +54,6 @@ public class ExcelExportEJB implements ExcelExportEJBLocal {
 		return ExcelExportUtil.createWorkbookForBookings(bookingTemplateEJB, bookingList, true);
 	}
 		
-	@Override
 	@RolesAllowed({"admin"})
 	public XSSFWorkbook getExcelForBudget(int budgetId) {
 		List<Booking> bookingList = bookingEJB.getBookingsForBudget(budgetId);

@@ -2,8 +2,8 @@ package com.wincor.bcon.bookingtool.webapp.mbean;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.db.entity.ResourcePlanItem;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ResourcesEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ResourcesEJB;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 import java.io.Serializable;
 import java.text.DateFormat;
@@ -93,10 +93,10 @@ public class PersPlanBean implements Serializable {
     private List<WeekData> rows = null;
     
     @EJB
-    private ResourcesEJBLocal ejb;
+    private ResourcesEJB ejb;
     
     @EJB
-    private ProjectsEJBLocal projectsEjb;
+    private ProjectsEJB projectsEjb;
     
     public void applySettings() {
         this.rows = null; // reset row data

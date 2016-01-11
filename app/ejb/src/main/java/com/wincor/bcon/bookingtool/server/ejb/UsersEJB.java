@@ -23,7 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class UsersEJB implements UsersEJBLocal {
+public class UsersEJB {
 
     @PersistenceContext(unitName = "EJBsPU")
     private EntityManager em;
@@ -31,7 +31,10 @@ public class UsersEJB implements UsersEJBLocal {
     @Resource
     private SessionContext ctx;
 	
-    @Override
+    /**
+     * Returns the list of users
+     * @return list of users
+     */
     @RolesAllowed({"superuser"})
     public List<UserInfoVo> getUsers() {
         List<User> users = em.createNamedQuery("User.findAll", User.class).getResultList();
@@ -54,7 +57,10 @@ public class UsersEJB implements UsersEJBLocal {
         return stb.toString();
     }
 
-    @Override
+    /**
+     * Saves the user to the database.
+     * @param userVo a user value object
+     */
     @RolesAllowed({"superuser"})
     public void saveUser(UserInfoVo userVo) {
         User user = userVo.getUser();
@@ -78,26 +84,40 @@ public class UsersEJB implements UsersEJBLocal {
         }
     }
 
-    @Override
+    /**
+     * Deletes the user
+     * @param userName a user name
+     */
     @RolesAllowed({"superuser"})
     public void deleteUser(String userName) {
         em.createNamedQuery("UserRole.deleteByUserName").setParameter("userName", userName).executeUpdate();
         em.remove(em.find(User.class, userName));
     }
 
-    @Override
+    /**
+     * Resets the password for the given user to
+     * a default value.
+     * @param userName a user name
+     */
     @RolesAllowed({"superuser"})
     public void resetPassword(String userName) {
         setDefaultPassword(em.find(User.class, userName));
     }
 
-    @Override
+    /**
+     * Get the current user
+     * @return current user
+     */
     @RolesAllowed({"user","admin","superuser"})
     public User getCurrentUser() {
         return em.find(User.class, ctx.getCallerPrincipal().getName());
     }
 
-    @Override
+    /**
+     * Changes the password of the currently logged in user
+     * @param oldPassword old password
+     * @param newPassword new password
+     */
     @RolesAllowed({"user","admin","superuser"})
     public void changePassword(String oldPassword, String newPassword) {
         User user = getCurrentUser();

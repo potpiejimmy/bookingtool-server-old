@@ -12,20 +12,19 @@ import javax.persistence.PersistenceContext;
 
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
-import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJB;
 import com.wincor.bcon.bookingtool.server.vo.AutoCreateInfoVo;
 import javax.ejb.EJB;
 
 @Stateless
-public class AdminFIEJB implements AdminFIEJBLocal {
+public class AdminFIEJB {
 
 	@PersistenceContext(unitName = "EJBsPU")
 	private EntityManager em;
         
         @EJB
-        private BookingTemplatesEJBLocal templatesEJB;
+        private BookingTemplatesEJB templatesEJB;
 	
-	@Override
 	@RolesAllowed({"admin"})
 	public Map<Class<?>, List<?>> autoCreateBudgetsAndTemplates(AutoCreateInfoVo createVo) {
 		

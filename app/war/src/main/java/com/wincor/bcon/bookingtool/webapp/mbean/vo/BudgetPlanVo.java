@@ -6,25 +6,31 @@
 
 package com.wincor.bcon.bookingtool.webapp.mbean.vo;
 
-import com.wincor.bcon.bookingtool.server.db.entity.Budget;
+import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BudgetPlanVo
 {
-    private final Budget budget;
-    private final Map<Integer,Number> values;
+    private final BudgetInfoVo budget;
+    private final Map<Integer,Number> planValues; // as entered, person days
+    private final Map<Integer,Integer> usageValues; // minutes
 
-    public BudgetPlanVo(Budget b) {
+    public BudgetPlanVo(BudgetInfoVo b) {
         this.budget = b;
-        this.values = new HashMap<Integer,Number>();
+        this.planValues = new HashMap<Integer,Number>();
+        this.usageValues = new HashMap<Integer,Integer>();
     }
 
-    public Budget getBudget() {
+    public BudgetInfoVo getBudgetInfo() {
         return budget;
     }
     
-    public Map<Integer,Number> getValues() {
-        return values;
+    public Map<Integer,Number> getPlanValues() {
+        return planValues;
+    }
+
+    public Map<Integer,Integer> getUsageValues() {
+        return usageValues;
     }
 }

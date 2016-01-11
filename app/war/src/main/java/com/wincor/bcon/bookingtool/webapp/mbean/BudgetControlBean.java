@@ -7,8 +7,8 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ public class BudgetControlBean implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    private BudgetsEJBLocal ejb;
+    private BudgetsEJB ejb;
     
     @EJB
-    private ProjectsEJBLocal projectsEjb;
+    private ProjectsEJB projectsEjb;
     
     @Inject
     private BudgetsBean budgetsBean;

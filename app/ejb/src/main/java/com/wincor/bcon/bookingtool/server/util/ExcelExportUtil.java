@@ -7,7 +7,7 @@ package com.wincor.bcon.bookingtool.server.util;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
-import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJB;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.SAPBooking;
 import java.util.Date;
@@ -26,7 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class ExcelExportUtil {
     
-    public static XSSFWorkbook createWorkbookForBookings(BookingTemplatesEJBLocal bookingTemplateEJB, List<Booking> bookingList, boolean withNameColumn) {
+    public static XSSFWorkbook createWorkbookForBookings(BookingTemplatesEJB bookingTemplateEJB, List<Booking> bookingList, boolean withNameColumn) {
 
         XSSFWorkbook wb = new XSSFWorkbook();
         XSSFSheet sheet = wb.createSheet();

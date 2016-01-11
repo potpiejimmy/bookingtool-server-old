@@ -14,9 +14,9 @@ import javax.inject.Named;
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.fi.AdminFIEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.fi.AdminFIEJB;
 import com.wincor.bcon.bookingtool.server.vo.AutoCreateInfoVo;
 import com.wincor.bcon.bookingtool.webapp.mbean.BudgetsBean;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
@@ -28,13 +28,13 @@ public class AdminFIBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
         @EJB
-        private ProjectsEJBLocal projectsEjb;
+        private ProjectsEJB projectsEjb;
     
 	@EJB
-	private BudgetsEJBLocal budgetsEjb;
+	private BudgetsEJB budgetsEjb;
 	
 	@EJB
-	private AdminFIEJBLocal adminEjb;
+	private AdminFIEJB adminEjb;
 	
 	@Inject
 	private BudgetsBean budgetsBean;

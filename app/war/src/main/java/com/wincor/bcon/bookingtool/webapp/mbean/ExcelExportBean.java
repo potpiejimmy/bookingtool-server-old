@@ -2,6 +2,10 @@ package com.wincor.bcon.bookingtool.webapp.mbean;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.db.entity.ResourceTeam;
+import com.wincor.bcon.bookingtool.server.ejb.ExcelExportEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ResourceTeamsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ResourcesEJB;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,10 +18,6 @@ import javax.inject.Named;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import com.wincor.bcon.bookingtool.server.ejb.ExcelExportEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ResourceTeamsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ResourcesEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +32,16 @@ public class ExcelExportBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private ExcelExportEJBLocal myExcelExportEJB; 
+	private ExcelExportEJB myExcelExportEJB; 
         
         @EJB
-        private ResourceTeamsEJBLocal resourceTeamsEJB;
+        private ResourceTeamsEJB resourceTeamsEJB;
 	
         @EJB
-        private ResourcesEJBLocal resourcesEJB;
+        private ResourcesEJB resourcesEJB;
 	
         @EJB
-        private ProjectsEJBLocal projectsEjb;
+        private ProjectsEJB projectsEjb;
     
 	private Integer weeksToExport = 1;
 	private Integer monthsToExport = 0;

@@ -12,8 +12,8 @@ import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
 import com.wincor.bcon.bookingtool.server.util.ExcelExportUtil;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
@@ -29,10 +29,10 @@ public class BudgetsBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private BudgetsEJBLocal ejb;
+	private BudgetsEJB ejb;
 
         @EJB
-        private ProjectsEJBLocal projectsEjb;
+        private ProjectsEJB projectsEjb;
     
         private final NumberFormat budgetTimeFormatter = NumberFormat.getNumberInstance();
         private final String daysSuffix = " " + WebUtils.getResBundle().getString("days_suffix");
@@ -171,9 +171,15 @@ public class BudgetsBean implements Serializable {
 	}
 	
 	public String getFormattedBudgetTime(int minutes) {
+            return getFormattedBudgetTime(minutes, true);
+        }
+        
+	public String getFormattedBudgetTime(int minutes, boolean appendSuffix) {
 		float hours = ((float)Math.abs(minutes)) / 60;
 		budgetTimeFormatter.setMaximumFractionDigits(2);
-		return budgetTimeFormatter.format(hours/8) + daysSuffix;
+		String result = budgetTimeFormatter.format(hours/8);
+                if (appendSuffix) result += daysSuffix;
+                return result;
 	}
 
 	public void setCurrentBudgetHours(int currentBudgetHours) {

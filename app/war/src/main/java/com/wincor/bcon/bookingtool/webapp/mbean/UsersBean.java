@@ -8,7 +8,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.db.entity.User;
-import com.wincor.bcon.bookingtool.server.ejb.UsersEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.UsersEJB;
 import com.wincor.bcon.bookingtool.server.vo.UserInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 
@@ -19,7 +19,7 @@ public class UsersBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private UsersEJBLocal ejb;
+	private UsersEJB ejb;
 	
 	private UserInfoVo current = new UserInfoVo(new User());
 

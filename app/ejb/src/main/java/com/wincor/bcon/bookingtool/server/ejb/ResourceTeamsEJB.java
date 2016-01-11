@@ -23,14 +23,19 @@ import com.wincor.bcon.bookingtool.server.db.entity.ResourceTeamMember;
  * ResourceTeams EJB
  */
 @Stateless
-public class ResourceTeamsEJB implements ResourceTeamsEJBLocal {
+public class ResourceTeamsEJB {
     @PersistenceContext(unitName = "EJBsPU")
     private EntityManager em;
     
     @Resource
     private SessionContext ctx;
 	
-    @Override
+    /**
+     * Returns the list of resource teams. For a superuser role, a complete list
+     * of all teams is returned. For an admin or user role, only those
+     * teams are returned that belong the user's visible domains.
+     * @return list of teams
+     */
     @RolesAllowed({"superuser","admin","user"})
     public List<ResourceTeam> getResourceTeams() {
         if (ctx.isCallerInRole("superuser"))
@@ -40,19 +45,32 @@ public class ResourceTeamsEJB implements ResourceTeamsEJBLocal {
         }
     }
     
-    @Override
+    /**
+     * Returns the list of managed resource teams. Only those teams are returned
+     * that the current user is the manager of.
+     * @return list of managed teams
+     */
     @RolesAllowed({"superuser","admin","user"})
     public List<ResourceTeam> getManagedResourceTeams() {
         return em.createNamedQuery("ResourceTeam.findByManager", ResourceTeam.class).setParameter("manager", ctx.getCallerPrincipal().getName()).getResultList();
     }
     
-    @Override
+    /**
+     * Get the team for the given ID
+     * @param teamId a team ID
+     * @return resource team
+     */
     @RolesAllowed({"superuser","admin","user"})
     public ResourceTeam getResourceTeam(int teamId) {
         return em.find(ResourceTeam.class, teamId);
     }
 
-    @Override
+    /**
+     * Saves a team.
+     * @param team a resource team
+     * @param assignedUsers list of assigned user names
+     * @return the saved team (holds new ID if inserted)
+     */
     @RolesAllowed({"superuser","admin"})
     public ResourceTeam saveResourceTeam(ResourceTeam team, List<String> assignedUsers) {
         if (!ctx.isCallerInRole("superuser"))
@@ -79,7 +97,10 @@ public class ResourceTeamsEJB implements ResourceTeamsEJBLocal {
         return team;
     }
     
-    @Override
+    /**
+     * Deletes the given team
+     * @param teamId a resource team ID
+     */
     @RolesAllowed({"superuser"})
     public void deleteResourceTeam(int teamId) {
         // delete existing user assignments
@@ -87,7 +108,11 @@ public class ResourceTeamsEJB implements ResourceTeamsEJBLocal {
         em.remove(em.find(ResourceTeam.class, teamId));
     }
    
-    @Override
+    /**
+     * Returns the list of all assigned user names for the given team
+     * @param teamId a team ID
+     * @return list of user names
+     */
     @RolesAllowed({"admin"})
     public List<String> getAssignedUsers(int teamId) {
         List<ResourceTeamMember> users = em.createNamedQuery("ResourceTeamMember.findByResourceTeamId", ResourceTeamMember.class).setParameter("resourceTeamId", teamId).getResultList();

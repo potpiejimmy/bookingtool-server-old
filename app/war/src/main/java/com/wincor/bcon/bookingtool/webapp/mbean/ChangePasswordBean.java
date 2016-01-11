@@ -1,11 +1,11 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
+import com.wincor.bcon.bookingtool.server.ejb.UsersEJB;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
-import com.wincor.bcon.bookingtool.server.ejb.UsersEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 
 @Named
@@ -14,7 +14,7 @@ public class ChangePasswordBean {
 
 
     @EJB
-    private UsersEJBLocal ejb;
+    private UsersEJB ejb;
 
     private String oldPassword;
     private String newPassword;

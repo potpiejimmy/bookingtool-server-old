@@ -1,5 +1,6 @@
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
+import com.wincor.bcon.bookingtool.server.ejb.SystemEJB;
 import java.io.Serializable;
 
 import javax.ejb.EJB;
@@ -8,7 +9,6 @@ import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 
-import com.wincor.bcon.bookingtool.server.ejb.SystemEJBLocal;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 
 @Named
@@ -18,7 +18,7 @@ public class SystemAdminBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private SystemEJBLocal ejb;
+	private SystemEJB ejb;
 	
 	public void handleFileUpload(FileUploadEvent event) {
 		try {

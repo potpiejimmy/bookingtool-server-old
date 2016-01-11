@@ -26,7 +26,7 @@ import javax.persistence.PersistenceContext;
  * Projects EJB
  */
 @Stateless
-public class ProjectsEJB implements ProjectsEJBLocal {
+public class ProjectsEJB {
     @PersistenceContext(unitName = "EJBsPU")
     private EntityManager em;
     
@@ -34,9 +34,13 @@ public class ProjectsEJB implements ProjectsEJBLocal {
     private SessionContext ctx;
     
     @EJB
-    private BudgetsEJBLocal budgetsEjb;
+    private BudgetsEJB budgetsEjb;
 	
-    @Override
+    /**
+     * Returns all projects that are visible to the current user. This
+     * includes all projects in the user's domains that are active.
+     * @return list of projects
+     */
     @RolesAllowed({"admin","user"})
     public List<Project> getProjects() {
         if (ctx.isCallerInRole("superuser"))
@@ -46,7 +50,11 @@ public class ProjectsEJB implements ProjectsEJBLocal {
         }
     }
     
-    @Override
+    /**
+     * Returns all projects that are visible to the current administration user.
+     * This includes all projects in the user's domains, including all statuses.
+     * @return list of projects
+     */
     @RolesAllowed("admin")
     public List<Project> getProjectsForAdmin() {
         if (ctx.isCallerInRole("superuser"))
@@ -56,7 +64,10 @@ public class ProjectsEJB implements ProjectsEJBLocal {
         }
     }
 
-    @Override
+    /**
+     * Returns all projects the current user is a manager of.
+     * @return list of projects assigned as project manager
+     */
     @RolesAllowed({"admin","user"})
     public List<Project> getManagedProjects() {
         if (ctx.isCallerInRole("superuser"))
@@ -69,13 +80,22 @@ public class ProjectsEJB implements ProjectsEJBLocal {
         }
     }
     
-    @Override
+    /**
+     * Returns the project with the given ID
+     * @param projectId a project ID
+     * @return the project
+     */
     @RolesAllowed({"admin","user"})
     public Project getProject(int projectId) {
             return em.find(Project.class, projectId);
     }
 
-    @Override
+    /**
+     * Saves or updates the given project
+     * @param project a project
+     * @param assignedManagers assigned manager user names
+     * @return inserted or updated project
+     */
     @RolesAllowed({"admin"})
     public Project saveProject(Project project, List<String> assignedManagers) {
         if (!ctx.isCallerInRole("superuser") &&
@@ -107,7 +127,11 @@ public class ProjectsEJB implements ProjectsEJBLocal {
         return project;
     }
     
-    @Override
+    /**
+     * Removes the project with the given project ID. This will fail if there
+     * is data referencing this project.
+     * @param projectId a project ID
+     */
     @RolesAllowed({"admin"})
     public void deleteProject(int projectId) {
         // delete existing user assignments
@@ -115,7 +139,11 @@ public class ProjectsEJB implements ProjectsEJBLocal {
         em.remove(em.find(Project.class, projectId));
     }
    
-    @Override
+    /**
+     * Drops the project with the given project ID. All data related to the
+     * project will be erased as well. Use with caution.
+     * @param projectId a project ID
+     */
     @RolesAllowed("superuser")
     public void dropProject(int projectId) {
         /**
@@ -157,7 +185,11 @@ public class ProjectsEJB implements ProjectsEJBLocal {
         deleteProject(projectId);
     }
    
-    @Override
+    /**
+     * Returns the list of all assigned project managers for the given project
+     * @param projectId a project ID
+     * @return list of user names
+     */
     @RolesAllowed({"admin"})
     public List<String> getAssignedManagers(int projectId) {
         List<ProjectManager> managers = em.createNamedQuery("ProjectManager.findByProjectId", ProjectManager.class).setParameter("projectId", projectId).getResultList();

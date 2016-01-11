@@ -82,17 +82,21 @@
                              editable="true" editMode="cell">
                     
                     <p:column headerText="Budget Name">
-                        <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budget)}" />
+                        <h:outputText value="#{budgetsBean.getFullBudgetName(vo.budgetInfo.budget)}" />
+                        <br/>
+                        <h:outputText value="Used:" rendered="#{vo.budgetInfo.bookedMinutesRecursive gt 0}" style="font-style: italic; color: blue;"/>
                     </p:column>
                     <p:column headerText="Budget [PD]">
-                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.budget.minutes)}" />
+                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.budgetInfo.budget.minutes)}" />
                     </p:column>
                     <p:column headerText="Planned [PD]">
-                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(budgetPlansBean.getPlannedMinutesForRow(vo.budget.id))}" />
+                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(budgetPlansBean.getPlannedMinutesForRow(vo.budgetInfo.budget.id))}" />
+                        <br/>
+                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.budgetInfo.bookedMinutesRecursive)}" rendered="#{vo.budgetInfo.bookedMinutesRecursive gt 0}" style="font-style: italic; color: blue;"/>
                     </p:column>
                     <p:column headerText="Planned">
                             <p:progressBar labelTemplate="{value}%"
-                                           value="#{budgetPlansBean.getPlannedMinutesForRow(vo.budget.id)*100/vo.budget.minutes}"/>
+                                           value="#{budgetPlansBean.getPlannedMinutesForRow(vo.budgetInfo.budget.id)*100/vo.budgetInfo.budget.minutes}"/>
                     </p:column>
 
                     <p:columns value="#{budgetPlansBean.monthColumns}" var="month" style="text-align: right;" styleClass="ui-editable-column">
@@ -100,8 +104,9 @@
                             <h:outputText value="#{budgetPlansBean.formatPeriodName(month)}"/>
                         </f:facet>
                         <ui:include src="/WEB-INF/facelets/budgetplaneditor.xhtml">
-                            <ui:param name="binding" value="#{vo.values[month]}"/>
+                            <ui:param name="binding" value="#{vo.planValues[month]}"/>
                         </ui:include>
+                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.usageValues[month],false)}" rendered="#{vo.usageValues[month] ne null}" style="font-style: italic; color: blue;"/>
                         <f:facet name="footer">
                             <h:outputText value="#{budgetsBean.getFormattedBudgetTime(budgetPlansBean.getPlannedMinutesForColumn(month))}"/>
                         </f:facet>

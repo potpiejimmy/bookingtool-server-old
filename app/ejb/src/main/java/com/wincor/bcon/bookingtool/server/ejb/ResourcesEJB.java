@@ -29,15 +29,20 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * Implementation of the resources EJB.
  */
 @Stateless
-public class ResourcesEJB implements ResourcesEJBLocal {
+public class ResourcesEJB {
 
     @PersistenceContext(unitName = "EJBsPU")
     private EntityManager em;
     
     @EJB
-    private ResourceTeamsEJBLocal resourceTeamsEjb;
+    private ResourceTeamsEJB resourceTeamsEjb;
     
-    @Override
+    /**
+     * Saves the given personal plan items for the given user and time period.
+     * @param person a user name
+     * @param timePeriod the affected time period (needed to clear all existing plan items in that period)
+     * @param items the plan items to save
+     */
     @RolesAllowed({"admin","user"})
     public void savePersonalPlan(String person, TimePeriod timePeriod, List<ResourcePlanItem> items) {
         // first, remove all existing items for the affected time period:
@@ -53,7 +58,12 @@ public class ResourcesEJB implements ResourcesEJBLocal {
         }
     }
 
-    @Override
+    /**
+     * Gets the personal plan items for the given person and time period.
+     * @param person a user name
+     * @param timePeriod a time period
+     * @return list of plan items
+     */
     @RolesAllowed({"admin","user"})
     public List<ResourcePlanItem> getPersonalPlan(String person, TimePeriod timePeriod) {
         return em.createNamedQuery("ResourcePlanItem.findByUserAndDateRange", ResourcePlanItem.class).
@@ -64,7 +74,12 @@ public class ResourcesEJB implements ResourcesEJBLocal {
         
     }
     
-    @Override
+    /**
+     * Export the resource plan for the given team.
+     * @param teamId a team ID
+     * @param weeksToExport number of weeks to export
+     * @return resource plan
+     */
     @RolesAllowed({"admin","user"})
     public XSSFWorkbook exportResourcePlan(int teamId, int weeksToExport) {
         XSSFWorkbook wb = new XSSFWorkbook();

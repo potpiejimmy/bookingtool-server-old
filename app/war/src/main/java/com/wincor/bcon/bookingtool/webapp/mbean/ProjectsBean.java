@@ -9,8 +9,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
-import com.wincor.bcon.bookingtool.server.ejb.DomainsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.DomainsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import javax.faces.model.SelectItem;
@@ -23,10 +23,10 @@ public class ProjectsBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
         @EJB
-        private ProjectsEJBLocal ejb;
+        private ProjectsEJB ejb;
     
 	@EJB
-	private DomainsEJBLocal domainsEjb;
+	private DomainsEJB domainsEjb;
 	
 	private Project currentProject = null;
         private Project selectedForDrop = null;

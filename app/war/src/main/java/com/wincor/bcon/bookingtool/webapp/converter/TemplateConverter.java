@@ -9,13 +9,13 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
-import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJB;
 
 @ManagedBean
 public class TemplateConverter implements Converter {
 
 	@EJB
-	BookingTemplatesEJBLocal bookingTemplateEJB;
+	BookingTemplatesEJB bookingTemplateEJB;
 	
 	@Override
 	public Object getAsObject(FacesContext arg0, UIComponent arg1, String submittedValue) {

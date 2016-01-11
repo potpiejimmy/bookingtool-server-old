@@ -86,6 +86,15 @@ public class Booking implements Serializable {
 
 	public Booking() {
 	}
+        
+        public Booking(Booking copy) {
+            this.day = copy.day;
+            this.description = copy.description;
+            this.salesRepresentative = copy.salesRepresentative;
+            this.minutes = copy.minutes;
+            this.person = copy.person;
+            this.bookingTemplateId = copy.bookingTemplateId;
+        }
 
 	public Integer getId() {
 		return id;

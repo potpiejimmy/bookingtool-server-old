@@ -15,7 +15,16 @@ import java.util.Calendar;
 public class Utils {
     
     /**
-     * Creates and returns a TimePeriod object for the given month.
+     * Creates and returns a TimePeriod object for the given year and month.
+     * @param yearAndMonth must be in the decimal format yyyymm
+     * @return TimePeriod object holding start and end timestamp
+     */
+    public static TimePeriod timePeriodForMonth(int yearAndMonth) {
+        return timePeriodForMonth(yearAndMonth / 100, (yearAndMonth % 100) - 1);
+    }
+    
+    /**
+     * Creates and returns a TimePeriod object for the given year and month.
      * @param year a year, e.g. 2013
      * @param monthOfYear a month constant as defined by Calendar.JANUARY to Calendar.DECEMBER
      * @return TimePeriod object holding start and end timestamp

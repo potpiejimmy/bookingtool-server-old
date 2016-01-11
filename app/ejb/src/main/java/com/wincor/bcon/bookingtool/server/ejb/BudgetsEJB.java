@@ -15,27 +15,43 @@ import javax.ejb.EJB;
 import javax.persistence.TemporalType;
 
 @Stateless
-public class BudgetsEJB implements BudgetsEJBLocal {
+public class BudgetsEJB {
 
 	@PersistenceContext(unitName = "EJBsPU")
 	EntityManager em;
         
         @EJB
-        private BookingTemplatesEJBLocal bookingsEjb;
+        private BookingTemplatesEJB bookingsEjb;
 	
-	@Override
+	/**
+	 * Returns the list of all budgets found in the "budget" table
+	 * for the given project
+	 * @param projectId a project ID
+	 * @return list of budgets
+	 */
 	@RolesAllowed({"admin","user"})
 	public List<Budget> getBudgets(int projectId) {
 		return em.createNamedQuery("Budget.findByProjectId", Budget.class).setParameter("projectId", projectId).getResultList();
 	}
         
-	@Override
+	/**
+	 * Returns the list of budgets found for the given parent budget ID.
+	 * 
+	 * @param parentId a budget ID
+	 * @return list of budgets
+	 */
 	@RolesAllowed({"admin","user"})
         public List<Budget> getBudgetsForParent(int parentId) {
         	return em.createNamedQuery("Budget.findByParentId", Budget.class).setParameter("parentId", parentId).getResultList();
         }
 
-        @Override
+	/**
+	 * Returns the list of all leaf budgets (recursively) found for the given
+         * project
+	 * 
+	 * @param projectId a project ID
+	 * @return list of leaf budgets (recursively)
+	 */
 	@RolesAllowed({"admin","user"})
         public List<Budget> getLeafBudgets(int projectId) {
             List<Budget> result = new ArrayList<Budget>();
@@ -44,7 +60,13 @@ public class BudgetsEJB implements BudgetsEJBLocal {
             return result;
         }
         
-        @Override
+	/**
+	 * Returns the list of leaf budgets (recursively) found for the given
+         * parent budget ID.
+	 * 
+	 * @param parentId a budget ID
+	 * @return list of leaf budgets (recursively)
+	 */
 	@RolesAllowed({"admin","user"})
         public List<Budget> getLeafBudgetsForParent(int parentId) {
             List<Budget> result = new ArrayList<Budget>();
@@ -65,19 +87,41 @@ public class BudgetsEJB implements BudgetsEJBLocal {
             }
         }
 
-	@Override
+	/**
+	 * Returns the list of all budgets found in the "budget" table
+	 * for the given project
+	 * @param projectId a project ID
+	 * @return list of budgets
+	 */
 	@RolesAllowed({"admin","user"})
 	public List<BudgetInfoVo> getBudgetInfos(int projectId) {
             return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByProjectId", Budget.class).setParameter("projectId", projectId).getResultList()), null);
 	}
 
-	@Override
+	/**
+	 * Returns the list of budgets found for the given parent budget ID.
+	 * If null is specified for the parentId, the list of root budgets
+	 * without a parent ID is returned.
+	 * 
+	 * @param projectId a project ID
+	 * @param parentId a budget ID or null to retrieve root budgets
+	 * @return list of budgets
+	 */
 	@RolesAllowed({"admin","user"})
 	public List<BudgetInfoVo> getBudgetInfosForParent(int projectId, Integer parentId) {
             return getBudgetInfosForParent(projectId, parentId, null);
 	}
 
-	@Override
+	/**
+	 * Returns the list of budgets found for the given parent budget ID.
+	 * If null is specified for the parentId, the list of root budgets
+	 * without a parent ID is returned.
+	 * 
+	 * @param projectId a project ID
+	 * @param parentId a budget ID or null to retrieve root budgets
+         * @param period  a time period for the sum of booking minutes returned in the info value object
+	 * @return list of budgets
+	 */
 	@RolesAllowed({"admin","user"})
 	public List<BudgetInfoVo> getBudgetInfosForParent(int projectId, Integer parentId, TimePeriod period) {
             if (parentId == null)
@@ -86,31 +130,52 @@ public class BudgetsEJB implements BudgetsEJBLocal {
                 return calculateBudgets(toInfoVos(em.createNamedQuery("Budget.findByParentId", Budget.class).setParameter("parentId", parentId).getResultList(), period), period);
 	}
 
-	@Override
+	/**
+	 * Returns the list of all leaf budgets found in the "budget" table
+	 * for the given project
+	 * @param projectId a project ID
+	 * @return list of leaf budgets
+	 */
 	@RolesAllowed({"admin","user"})
 	public List<BudgetInfoVo> getLeafBudgetInfos(int projectId) {
             return calculateBudgets(toInfoVos(getLeafBudgets(projectId)), null);
 	}
 
-	@Override
+	/**
+	 * Returns the budget with the given ID
+	 * @param budgetId a budget ID
+	 * @return the budget
+	 */
 	@RolesAllowed({"admin","user"})
 	public Budget getBudget(int budgetId) {
 		return em.find(Budget.class, budgetId);
 	}
 
-	@Override
+	/**
+	 * Returns the budget info value object for the given budget ID
+	 * @param budgetId a budget ID
+	 * @return the budget info value object
+	 */
 	@RolesAllowed({"admin","user"})
 	public BudgetInfoVo getBudgetInfo(int budgetId) {
             return getBudgetInfo(budgetId, null);
         }
         
-	@Override
+	/**
+	 * Returns the budget info value object for the given budget ID
+	 * @param budgetId a budget ID
+         * @param period  a time period for the sum of booking minutes returned in the info value object
+	 * @return the budget info value object
+	 */
 	@RolesAllowed({"admin","user"})
 	public BudgetInfoVo getBudgetInfo(int budgetId, TimePeriod period) {
             return calculateBudget(toInfoVo(getBudget(budgetId), period), period);
         }
         
-	@Override
+	/**
+	 * Saves or updates the given budget
+	 * @param budget a budget
+	 */
 	@RolesAllowed("admin")
 	public void saveBudget(Budget budget) {
 		if (budget.getId() != null)
@@ -119,14 +184,25 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 			em.persist(budget);  // insert a new project
 	}
 
-	@Override
+	/**
+	 * Removes the budget with the given budget ID
+	 * @param budgetId a budget ID
+	 */
 	@RolesAllowed("admin")
 	public void deleteBudget(int budgetId) {
 		em.remove(getBudget(budgetId));
 		
 	}
 	
-        @Override
+        /**
+         * Moves the given budget to the given target project. The budget itself
+         * and all its recursive children will be moved to the given target project.
+         * The parent budget of the given budget is set to null so that the new
+         * budget tree can be found at the root position of the target project.
+         * 
+         * @param budgetId
+         * @param targetProjectId 
+         */
 	@RolesAllowed("admin")
         public void moveBudget(int budgetId, int targetProjectId) {
             Budget budget = em.find(Budget.class, budgetId);
@@ -205,7 +281,13 @@ public class BudgetsEJB implements BudgetsEJBLocal {
 		return budget;
 	}
         
-        @Override
+        /**
+         * Returns true if the given budget is either the same as or a recursive
+         * descendant of the given parent budget.
+         * @param parentBudgetId a parent budget ID
+         * @param budgetId a budget ID
+         * @return true or false
+         */
         public boolean isDescendantOf(int parentBudgetId, int budgetId) {
             if (budgetId == parentBudgetId) return true;
             for (Budget b : getBudgetsForParent(parentBudgetId)) {
@@ -214,7 +296,11 @@ public class BudgetsEJB implements BudgetsEJBLocal {
             return false;
         }
         
-        @Override
+        /**
+         * Returns the full path name for the given budget ID
+         * @param budgetId a budget ID
+         * @return full budget path name
+         */
         public String getFullBudgetName(int budgetId) {
             Budget b = em.find(Budget.class, budgetId);
             StringBuilder stb = new StringBuilder(b.getName());
@@ -225,7 +311,12 @@ public class BudgetsEJB implements BudgetsEJBLocal {
             return stb.toString();
 	}
         
-        @Override
+        /**
+         * Calculates the budget prognosis and returns the offset to the
+         * budget amount.
+         * @param budget a budget
+         * @return the budget prognosis offset
+         */
         public int getBudgetPrognosisOffset(BudgetInfoVo budget) {
             if (budget.getBudget().getWorkProgress() == null ||
                 budget.getBudget().getWorkProgress() == 0) return 0;

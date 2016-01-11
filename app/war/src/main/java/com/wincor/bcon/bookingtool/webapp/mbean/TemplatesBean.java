@@ -13,9 +13,9 @@ import javax.inject.Named;
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
-import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJB;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import javax.faces.context.FacesContext;
 
@@ -26,13 +26,13 @@ public class TemplatesBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private BookingTemplatesEJBLocal ejb;
+	private BookingTemplatesEJB ejb;
 	
         @EJB
-        private ProjectsEJBLocal projectsEjb;
+        private ProjectsEJB projectsEjb;
     
 	@EJB
-	private BudgetsEJBLocal budgetsEjb;
+	private BudgetsEJB budgetsEjb;
 	
 	@Inject
 	private BudgetsBean budgetsBean;
@@ -43,6 +43,8 @@ public class TemplatesBean implements Serializable {
 	
 	private int budgetFilter = 0;
 
+        private Boolean editingAllowed = null;
+        
 	public TemplatesBean() {
 		clear();
 	}
@@ -93,7 +95,7 @@ public class TemplatesBean implements Serializable {
 	
 	public int getCurrentProjectId() {
 		if (currentProjectId == 0) {
-			List<Project> projects = projectsEjb.getManagedProjects();
+			List<Project> projects = projectsEjb.getProjects();
 			if (projects.size() > 0)
 				setCurrentProjectId(projects.get(projects.size()-1).getId());
 		}
@@ -104,10 +106,20 @@ public class TemplatesBean implements Serializable {
                 // clear filter if project changed:
                 if (this.currentProjectId != currentProjectId) budgetFilter = 0;
                 this.currentProjectId = currentProjectId;
+                editingAllowed = null; // reset editing allowed flag
 	}
 
+        public boolean isEditingAllowed() {
+            if (editingAllowed == null) {
+                editingAllowed =
+                        WebUtils.getHttpServletRequest().isUserInRole("admin") &&
+                        projectsEjb.getAssignedManagers(getCurrentProjectId()).contains(WebUtils.getCurrentPerson());
+            }
+            return editingAllowed;
+        }
+	
 	public List<SelectItem> getProjectItems() {
-		List<Project> projects = projectsEjb.getManagedProjects();
+		List<Project> projects = projectsEjb.getProjects();
 		List<SelectItem> result = new ArrayList<SelectItem>(projects.size());
 		for (Project p : projects) {
 			result.add(new SelectItem(p.getId(), p.getName()));

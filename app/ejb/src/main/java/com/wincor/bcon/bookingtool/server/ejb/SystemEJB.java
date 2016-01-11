@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class SystemEJB implements SystemEJBLocal {
+public class SystemEJB {
 
 	//protected final static String EAR_FILE = "C:\\jboss-7.1.1\\standalone\\deployments\\bookingtool.ear";
 	//protected final static String EAR_FILE = "/opt/glassfish3/glassfish/domains/domain1/autodeploy/bookingtool.ear";
@@ -20,7 +20,6 @@ public class SystemEJB implements SystemEJBLocal {
     @PersistenceContext(unitName = "EJBsPU")
     private EntityManager em;
     
-	@Override
 	@RolesAllowed("superuser")
 	public void deployEar(byte[] contents) throws IOException {
 		FileOutputStream fos = new FileOutputStream(EAR_FILE);
@@ -28,7 +27,6 @@ public class SystemEJB implements SystemEJBLocal {
 		fos.close();
 	}
 
-        @Override
         @PermitAll
         public String getSystemWarning() {
             SystemInfo info = em.find(SystemInfo.class, "syswarning");
@@ -36,7 +34,6 @@ public class SystemEJB implements SystemEJBLocal {
             return null;
         }
 
-        @Override
 	@RolesAllowed("superuser")
         public void setSystemWarning(String warning) {
             SystemInfo info = em.find(SystemInfo.class, "syswarning");

@@ -9,8 +9,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.db.entity.ResourceTeam;
-import com.wincor.bcon.bookingtool.server.ejb.DomainsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ResourceTeamsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.DomainsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ResourceTeamsEJB;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import javax.faces.model.SelectItem;
@@ -23,10 +23,10 @@ public class ResTeamsBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
         @EJB
-        private ResourceTeamsEJBLocal ejb;
+        private ResourceTeamsEJB ejb;
     
 	@EJB
-	private DomainsEJBLocal domainsEjb;
+	private DomainsEJB domainsEjb;
 	
 	private ResourceTeam currentTeam = null;
 

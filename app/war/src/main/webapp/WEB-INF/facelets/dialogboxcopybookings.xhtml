@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <ui:composition template="/WEB-INF/facelets/dialogbox.xhtml">
+        
+        <ui:define name="dialogContents">
+            <p>
+                <h:outputText escape="false" value="#{msg.booking_copydialog_text}"/>
+            </p>
+            <p>
+                <p:panelGrid columns="2" style="text-align: left;">
+                    <h:outputText value="Source date: "/>
+                    <p:calendar value="#{bookingsBean.current.day}" 
+                                pattern="dd. MMM yyyy"
+                                disabled="true"/>
+                    <h:outputText value="Target date: "/>
+                    <p:calendar value="#{bookingsBean.copyToDate}" 
+                                id="copyToCal" 
+                                pattern="dd. MMM yyyy"
+                                showWeek="true"
+                                mode="inline"
+                                required="true"/>
+                </p:panelGrid>
+                <p:message for="copyToCal"/>
+            </p>
+        </ui:define>
+        
+    </ui:composition>
+    
+</html>
+

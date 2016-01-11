@@ -17,9 +17,11 @@ import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlanItem;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetPlansEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetPlansEJB;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
+import com.wincor.bcon.bookingtool.server.util.Utils;
+import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.mbean.vo.BudgetPlanVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 
@@ -36,13 +38,13 @@ public class BudgetPlansBean implements Serializable {
     private BudgetsBean budgetsBean;
 
     @EJB
-    private BudgetPlansEJBLocal ejb;
+    private BudgetPlansEJB ejb;
 
     @EJB
-    private ProjectsEJBLocal projectsEjb;
+    private ProjectsEJB projectsEjb;
     
     @EJB
-    private BudgetsEJBLocal budgetsEjb;
+    private BudgetsEJB budgetsEjb;
 
     private int currentProjectId = 0;
     private BudgetPlan currentBudgetPlan = null;
@@ -175,16 +177,21 @@ public class BudgetPlansBean implements Serializable {
             List<Budget> leafBudgets = budgetsEjb.getLeafBudgetsForParent(currentBudgetPlan.getBudgetId());
             planData = new ArrayList<BudgetPlanVo>(leafBudgets.size());
             for (Budget bu : leafBudgets) {
-                BudgetPlanVo vo = new BudgetPlanVo(bu);
+                BudgetPlanVo vo = new BudgetPlanVo(budgetsEjb.getBudgetInfo(bu.getId()));
                 loadVo(vo);
                 planData.add(vo);
             }
     }
     
     protected void loadVo(BudgetPlanVo vo) {
-        List<BudgetPlanItem> items = ejb.getBudgetPlanItems(vo.getBudget().getId());
+        List<BudgetPlanItem> items = ejb.getBudgetPlanItems(vo.getBudgetInfo().getBudget().getId());
         for (BudgetPlanItem item : items) {
-            vo.getValues().put(item.getPeriod(), ((float)item.getMinutes())/480);
+            vo.getPlanValues().put(item.getPeriod(), ((float)item.getMinutes())/480);
+        }
+        for (int period : getMonthColumns()) {
+            BudgetInfoVo b = budgetsEjb.getBudgetInfo(vo.getBudgetInfo().getBudget().getId(), Utils.timePeriodForMonth(period));
+            if (b.getBookedMinutesRecursive() > 0)
+                vo.getUsageValues().put(period, b.getBookedMinutesRecursive());
         }
     }
     
@@ -245,7 +252,7 @@ public class BudgetPlansBean implements Serializable {
     public int getPlannedMinutesForRow(int budgetId) {
         int result = 0;
         for (BudgetPlanVo planVo : planData) {
-            if (planVo.getBudget().getId().equals(budgetId)) {
+            if (planVo.getBudgetInfo().getBudget().getId().equals(budgetId)) {
                 int i = 0;
                 while (getMonthPeriod(i) <= currentBudgetPlan.getPlanEnd()) {
                     result += getMinutesForCell(planVo, getMonthPeriod(i));
@@ -265,8 +272,8 @@ public class BudgetPlansBean implements Serializable {
     }
     
     protected int getMinutesForCell(BudgetPlanVo vo, int period) {
-        if (vo.getValues().get(period) == null) return 0;
-        return Math.round(vo.getValues().get(period).floatValue() * 480);
+        if (vo.getPlanValues().get(period) == null) return 0;
+        return Math.round(vo.getPlanValues().get(period).floatValue() * 480);
     }
     
     public boolean renderMonthColumn(int column) {
@@ -287,7 +294,7 @@ public class BudgetPlansBean implements Serializable {
                         items.add(item);
                     }
                 }
-                ejb.saveBudgetPlanItems(vo.getBudget().getId(), items);
+                ejb.saveBudgetPlanItems(vo.getBudgetInfo().getBudget().getId(), items);
             }
             // leave current editing mode:
             clear();

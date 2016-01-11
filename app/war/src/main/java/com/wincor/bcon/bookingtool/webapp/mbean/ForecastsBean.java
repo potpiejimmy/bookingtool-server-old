@@ -19,9 +19,9 @@ import org.primefaces.model.StreamedContent;
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import com.wincor.bcon.bookingtool.server.db.entity.Forecast;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetPlansEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ForecastsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetPlansEJB;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ForecastsEJB;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoRowVo;
 import com.wincor.bcon.bookingtool.server.vo.ForecastInfoVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
@@ -33,13 +33,13 @@ public class ForecastsBean implements Serializable, Converter {
     private static final long serialVersionUID = 1L;
 
     @EJB
-    private ForecastsEJBLocal ejb;
+    private ForecastsEJB ejb;
 
     @EJB
-    private BudgetsEJBLocal budgetsEjb;
+    private BudgetsEJB budgetsEjb;
 
     @EJB
-    private BudgetPlansEJBLocal budgetPlansEjb;
+    private BudgetPlansEJB budgetPlansEjb;
     
     @Inject
     private BudgetsBean budgetsBean;

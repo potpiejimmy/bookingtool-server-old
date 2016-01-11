@@ -18,10 +18,10 @@ import org.primefaces.model.chart.PieChartModel;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
-import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.BookingsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJBLocal;
-import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJB;
+import com.wincor.bcon.bookingtool.server.ejb.BookingsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJB;
+import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
 import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.SAPBooking;
@@ -39,13 +39,13 @@ public class BookingsBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@EJB
-	private BookingsEJBLocal bookingEjb;
+	private BookingsEJB bookingEjb;
 	@EJB
-	private BookingTemplatesEJBLocal bookingTemplateEjb;
+	private BookingTemplatesEJB bookingTemplateEjb;
 	@EJB
-	private BudgetsEJBLocal budgetsEjb;
+	private BudgetsEJB budgetsEjb;
         @EJB
-        private ProjectsEJBLocal projectsEjb;
+        private ProjectsEJB projectsEjb;
 	
         private Booking current;
 	private Booking selected;
@@ -53,6 +53,8 @@ public class BookingsBean implements Serializable {
         private int numberOfQuickSelectRows = 5;
 	
 	private BookingTemplate currentTemplate = null;
+        
+        private Date copyToDate = new Date();
 	
 	private final DateFormat DATE_FORMATTER = new SimpleDateFormat("EEEEE", FacesContext.getCurrentInstance().getViewRoot().getLocale());
 	private final DateFormat MONTH_FORMATTER = new SimpleDateFormat("MMMMM", FacesContext.getCurrentInstance().getViewRoot().getLocale());
@@ -128,6 +130,24 @@ public class BookingsBean implements Serializable {
 	public void deleteSelected() {
 		bookingEjb.deleteBooking(getSelected().getId());
 	}
+
+        public Date getCopyToDate() {
+            return copyToDate;
+        }
+
+        public void setCopyToDate(Date copyToDate) {
+            this.copyToDate = copyToDate;
+        }
+        
+        public void copyBookings() {
+            try {
+                bookingEjb.copyBookings(WebUtils.getCurrentPerson(), current.getDay(), copyToDate);
+                current.setDay(copyToDate);
+                WebUtils.addFacesMessage("Bookings copied successfully.");
+            } catch (Exception ex) {
+                WebUtils.addFacesMessage(ex);
+            }
+        }
 	
 	public List<BookingTemplate> complete(String v) { 
 		return bookingTemplateEjb.findBookingTemplates(v);

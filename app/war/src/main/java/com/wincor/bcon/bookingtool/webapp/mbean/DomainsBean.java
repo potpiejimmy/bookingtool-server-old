@@ -8,7 +8,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Domain;
-import com.wincor.bcon.bookingtool.server.ejb.DomainsEJBLocal;
+import com.wincor.bcon.bookingtool.server.ejb.DomainsEJB;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
 import org.primefaces.model.DualListModel;
@@ -20,7 +20,7 @@ public class DomainsBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private DomainsEJBLocal ejb;
+	private DomainsEJB ejb;
 	
 	private Domain currentDomain = null;
 

@@ -8,7 +8,7 @@
     
     <ui:composition template="/WEB-INF/facelets/templates/baselayout.xhtml">
 
-       	<ui:param name="tabIndex" value="5" />
+       	<ui:param name="tabIndex" value="#{request.isUserInRole('admin') ? 5 : 3}" />
 
         <ui:define name="pagetitle">Booking Templates Administration</ui:define>
         
@@ -32,7 +32,7 @@
 
 			<p/>
 
-			<h:form id="editform">
+			<h:form id="editform" rendered="#{templatesBean.editingAllowed}">
 			
 				<p:panelGrid columns="2">
 					<h:outputText value="ID:"/>
@@ -134,11 +134,11 @@
                                             <h:outputText value="#{templatesBean.getBudgetDisplayName(t.template.budgetId)}"/>
 					</p:column>
 					<p:column  headerText="Active" style="text-align:center;">
-                                            <p:inputSwitch value="#{t.active}">
+                                            <p:inputSwitch value="#{t.active}" disabled="#{not templatesBean.editingAllowed}">
                                                 <p:ajax listener="#{templatesBean.rowActiveCheckboxClicked(t)}"/>
                                             </p:inputSwitch>
 					</p:column>
-					<p:column headerText="Actions">
+					<p:column headerText="Actions" rendered="#{templatesBean.editingAllowed}">
                             <p:commandLink value="Edit" action="#{templatesBean.edit(t.template)}" ajax="false"> <p:resetInput target=":editform"/> </p:commandLink>,
                             <p:commandLink value="Copy" action="#{templatesBean.copy(t.template)}" ajax="false"/>, 
                             <p:commandLink value="Delete" action="#{templatesBean.delete(t.template)}" ajax="false"/>
