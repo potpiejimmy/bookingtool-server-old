@@ -240,7 +240,7 @@ public class BookingsBean implements Serializable {
             String[] keys = sums.keySet().toArray(new String[sums.size()]);
             Arrays.sort(keys);
             for (int i=0; i<keys.length; i++) {
-                String key = keys[i];
+                String key = keys[chartType == 0 ? keys.length-1-i : i];
                 String label = chartType == 0 ? key + " " + Utils.labelForBookingType(key, true) : key;
                 int value = sums.get(key).intValue();
                 if (i >= MAX_LEGEND-1) {

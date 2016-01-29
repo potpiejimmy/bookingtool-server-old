@@ -45,12 +45,9 @@ public class AdminFIBean implements Serializable {
 	
 	private Map<Class<?>, List<?>> created = null;
 
-	public AdminFIBean() {
-		newVo();
-	}
-	
 	public AutoCreateInfoVo getCurrent() {
-		return current;
+            if (current == null) newVo(null);
+            return current;
 	}
 	
 	public int getCurrentProjectId() {
@@ -65,6 +62,7 @@ public class AdminFIBean implements Serializable {
 	public void setCurrentProjectId(int currentProjectId) {
             if (this.currentProjectId != currentProjectId) {
                 this.currentProjectId = currentProjectId;
+                newVo(null);
                 selectDefaults();
             }
 	}
@@ -119,22 +117,23 @@ public class AdminFIBean implements Serializable {
 		try {
 			current.setProjectId(currentProjectId);
 			created = adminEjb.autoCreateBudgetsAndTemplates(current);
-			newVo();
+			newVo(current);
 		} catch (Exception ex) {
 			WebUtils.addFacesMessage(ex);
 		}
 	}
 	
-	protected void newVo() {
-		String lastPsp = "E-122950-02-30";
-		String lastPspName = "R_PC/E - FI 16.0";
+	protected void newVo(AutoCreateInfoVo lastUsed) {
+                Project project = projectsEjb.getProject(getCurrentProjectId());
+		String lastPsp = project.getPsp() != null ? project.getPsp() : "E-122951-02-40";
+		String lastPspName = "R_PC/E - " + project.getName();
                 int lastParentBudgetId = 0;
                 int lastSpecBudgetId = 0;
-		if (current != null) {
-			lastPsp = current.getPspTemplate();
-			lastPspName = current.getPspNameTemplate();
-                        lastParentBudgetId = current.getParentBudgetId();
-                        lastSpecBudgetId = current.getSpecBudgetId();
+		if (lastUsed != null) {
+			lastPsp = lastUsed.getPspTemplate();
+			lastPspName = lastUsed.getPspNameTemplate();
+                        lastParentBudgetId = lastUsed.getParentBudgetId();
+                        lastSpecBudgetId = lastUsed.getSpecBudgetId();
 		}
 		current = new AutoCreateInfoVo();
 		current.setPspTemplate(lastPsp);

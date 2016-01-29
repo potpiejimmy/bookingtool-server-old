@@ -28,6 +28,11 @@
 						<p:inputText id="project" value="#{projectsBean.currentProject.name}"/>
 						<p:message id="noProject" for="project" display="text"/>
 					</h:panelGroup>
+					<h:outputText value="Default PSP (optional):"/>
+					<h:panelGroup>
+                                                <p:inputText id="psp" value="#{projectsBean.currentProject.psp}"/>
+						<p:message for="psp" display="text"/>
+					</h:panelGroup>
 					<h:outputText value="Status:"/>
                                         <h:panelGroup>
                                             <p:selectOneMenu id="statusSel" value="#{projectsBean.currentProject.status}">

@@ -77,6 +77,12 @@ public class ExcelExportBean implements Serializable {
 		return streamForWorkbook(wb, "buchungen_budget_"+budgetId);
 	}
         
+	public StreamedContent getExcelListForGrindstone() {
+		
+		XSSFWorkbook wb = myExcelExportEJB.getExcelForGrindstone();
+		return streamForWorkbook(wb, "grindstone_tasks");
+	}
+        
         public StreamedContent getResourcePlan() {
 		XSSFWorkbook wb = resourcesEJB.exportResourcePlan(teamToExport, weeksToExportResPlan);
 		return streamForWorkbook(wb, "resource_plan_team"+teamToExport);

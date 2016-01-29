@@ -61,7 +61,7 @@ public class TemplatesBean implements Serializable {
                     this.budgetFilter = filterBudget.getId();
                     
                     if (paramCreate != null) {
-                        newForBudget(filterBudget.getId());
+                        newForBudget(filterBudget);
                     }
                 } catch (Exception ex) {
                     // ignore
@@ -78,9 +78,13 @@ public class TemplatesBean implements Serializable {
             }
         }
 
-        protected void newForBudget(int budgetId) {
+        protected void newForBudget(Budget budget) {
             clear();
-            currentTemplate.setBudgetId(budgetId);
+            Project project = projectsEjb.getProject(budget.getProjectId());
+            currentTemplate.setBudgetId(budget.getId());
+            currentTemplate.setPsp(project.getPsp());
+            currentTemplate.setName(project.getName());
+            currentTemplate.setDescription(budget.getName());
             edit(currentTemplate);
         }
         

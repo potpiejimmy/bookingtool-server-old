@@ -221,4 +221,40 @@ public class ExcelExportUtil {
         return ws;
     }
 
+    public static XSSFWorkbook createWorkbookForTemplates(List<BookingTemplate> templates) {
+        XSSFWorkbook wb = new XSSFWorkbook();
+        XSSFSheet sheet = wb.createSheet();
+        int rowPosition = 0;
+
+        for(BookingTemplate t : templates)
+        {
+            XSSFRow row = sheet.createRow(rowPosition++);
+            XSSFCell cell;
+            int cellPosition = 0;
+
+            //ID
+            cell = row.createCell(cellPosition++);
+            cell.setCellValue(t.getId());
+            
+            //PSP
+            cell = row.createCell(cellPosition++);
+            cell.setCellValue(new XSSFRichTextString(t.getPsp()));
+            
+            //Name
+            cell = row.createCell(cellPosition++);
+            cell.setCellValue(new XSSFRichTextString(t.getName()));
+            
+            //Description
+            cell = row.createCell(cellPosition++);
+            cell.setCellValue(new XSSFRichTextString(t.getDescription()));
+            
+            //AdditionalInfo
+            cell = row.createCell(cellPosition++);
+            cell.setCellValue(new XSSFRichTextString(t.getAdditionalInfo()));
+        }
+        // autosize columns
+        for(int i = 0; i < sheet.getRow(0).getPhysicalNumberOfCells()-1; i++)	
+            sheet.autoSizeColumn(i);
+        return wb;
+    }
 }

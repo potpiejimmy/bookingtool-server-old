@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `project` (
   `name` VARCHAR(64) NOT NULL,
   `domain_id` INT NOT NULL,
   `status` TINYINT NOT NULL DEFAULT 0,
+  `psp` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_project_domain1_idx` (`domain_id` ASC),
   CONSTRAINT `fk_project_domain1`

@@ -102,6 +102,15 @@
                         
                     </p:panel>
                     
+                    <p:panel header="Export Grindstone tasks for #{excelExportBean.currentUserName}">
+                        <p>
+                            <p:commandButton id="downloadLinkGrindstone" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                             icon="ui-icon-arrowthick-1-s">
+                                <p:fileDownload value="#{excelExportBean.excelListForGrindstone}" />  
+                            </p:commandButton>
+                        </p> 
+                    </p:panel>
+                    
 	        </h:form>
 
         </ui:define>

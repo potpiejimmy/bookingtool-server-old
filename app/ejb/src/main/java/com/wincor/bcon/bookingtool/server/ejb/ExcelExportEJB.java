@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
+import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.util.ExcelExportUtil;
 
 @Stateless
@@ -58,5 +59,11 @@ public class ExcelExportEJB {
 	public XSSFWorkbook getExcelForBudget(int budgetId) {
 		List<Booking> bookingList = bookingEJB.getBookingsForBudget(budgetId);
 		return ExcelExportUtil.createWorkbookForBookings(bookingTemplateEJB, bookingList, true);
+	}
+        
+	@RolesAllowed({"user"})
+	public XSSFWorkbook getExcelForGrindstone() {
+		List<BookingTemplate> templates = bookingTemplateEJB.findBookingTemplates("%");
+		return ExcelExportUtil.createWorkbookForTemplates(templates);
 	}
 }

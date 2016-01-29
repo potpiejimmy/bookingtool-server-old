@@ -9,6 +9,7 @@
   <modules>
     <module>ejb</module>
     <module>war</module>
+    <module>rest</module>
     <module>ear</module>
   </modules>
 </project>

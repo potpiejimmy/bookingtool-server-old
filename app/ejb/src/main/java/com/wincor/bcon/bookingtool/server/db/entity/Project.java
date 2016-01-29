@@ -49,6 +49,10 @@ public class Project implements Serializable {
 	@NotNull
 	private byte status;
         
+	@Column
+	@Size(min = 0, max=45)
+	private String psp;
+
 	public Project() {
 	}
 
@@ -82,6 +86,14 @@ public class Project implements Serializable {
 
     public void setStatus(byte status) {
         this.status = status;
+    }
+
+    public String getPsp() {
+        return psp;
+    }
+
+    public void setPsp(String psp) {
+        this.psp = psp;
     }
 
 	@Override

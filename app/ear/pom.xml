@@ -24,6 +24,12 @@
       </dependency>
       <dependency>
          <groupId>com.wincor.bcon</groupId>
+         <artifactId>bookingtool-rest</artifactId>
+		 <version>0.0.1-SNAPSHOT</version>
+         <type>war</type>
+      </dependency>
+      <dependency>
+         <groupId>com.wincor.bcon</groupId>
          <artifactId>bookingtool-ejb</artifactId>
 		 <version>0.0.1-SNAPSHOT</version>
          <type>ejb</type>
@@ -52,6 +58,12 @@
                      <artifactId>bookingtool-war</artifactId>
                      <!-- Define the context root for the webapp -->
                      <contextRoot>/pt</contextRoot>
+                  </webModule>
+                  <webModule>
+                     <groupId>com.wincor.bcon</groupId>
+                     <artifactId>bookingtool-rest</artifactId>
+                     <!-- Define the context root for the webapp -->
+                     <contextRoot>/pt/rs</contextRoot>
                   </webModule>
                </modules>
 			   <security>
