@@ -13,7 +13,7 @@
                 <ui:define name="headerdivright">
                     <h:form>
                         <h:panelGrid columns="1">
-                            <p:commandLink id="logoutBtn" value="Logout" action="#{logoutBean.logout}" ajax="false" immediate="true"/>
+                            <p:commandLink id="logoutBtn" value="Logout" action="#{logoutBean.logout}" ajax="false" immediate="true" style="color:white !important;"/>
                             <p:outputPanel><h:outputText value="#{request.userPrincipal.name}"/></p:outputPanel>
                         </h:panelGrid>
                     </h:form>
@@ -53,7 +53,9 @@
 
 		<ui:define name="rootfooter">
 			
-                <ui:insert name="body_footer"/>
+	        <div id="body_footer">
+                    <ui:insert name="body_footer"/>
+                </div>
                 
 	        <div id="root_footer">
 	            <hr/>

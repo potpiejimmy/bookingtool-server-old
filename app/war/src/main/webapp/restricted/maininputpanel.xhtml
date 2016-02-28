@@ -20,9 +20,11 @@
 			<h:form id="searchform">
 				<p:panelGrid columns="2">
                                         <h:outputText value="#{msg.date}:"/>
-					<h:panelGroup>
-						<p:commandButton immediate="true" process="@this" update=":searchform, :currentTemplate, :viewform, :pieChart" id="back"  
-							actionListener="#{bookingsBean.changeDay(false)}" icon="ui-icon-carat-1-w"/>
+                                        <h:panelGrid columns="6">
+						<p:commandLink immediate="true" process="@this" update=":searchform, :currentTemplate, :viewform, :pieChart" id="back"  
+							actionListener="#{bookingsBean.changeDay(false)}">
+                                                    <i class="ui-icon ui-icon-carat-1-w"/>
+                                                </p:commandLink>
 							
 						<p:calendar value="#{bookingsBean.current.day}" 
 						            id="popupCal" 
@@ -32,14 +34,18 @@
 							<p:ajax event="dateSelect" update=":searchform, :currentTemplate, :viewform, :pieChart"/>
 						</p:calendar>
 			
-						<p:commandButton style="margin-left:3px;" immediate="true" process="@this" update=":searchform, :currentTemplate,:viewform, :pieChart" id="forward"  
-							actionListener="#{bookingsBean.changeDay(true)}" icon="ui-icon-carat-1-e"/>
+						<p:commandLink style="margin-left:3px;" immediate="true" process="@this" update=":searchform, :currentTemplate,:viewform, :pieChart" id="forward"  
+							actionListener="#{bookingsBean.changeDay(true)}">
+                                                    <i class="ui-icon ui-icon-carat-1-e"/>
+                                                </p:commandLink>
             				
-                                                <p:commandButton oncomplete="PF('copyDayDialog').show()" icon="ui-icon-copy" title="#{msg.booking_copyday}"/>
+                                                <p:commandLink oncomplete="PF('copyDayDialog').show()" title="#{msg.booking_copyday}">
+                                                    <i class="ui-icon ui-icon-copy"/>
+                                                </p:commandLink>
                             
 						<h:outputText id="formattedDay" value="#{bookingsBean.currentDayFormatted}" style="vertical-align: middle; margin-left:10px; font-size:small;"/>
 						<p:message for="popupCal" display="text"/>
-					</h:panelGroup>
+					</h:panelGrid>
 					
                                         <h:outputText value="#{msg.booking_templatesearch}:"/>
                                         <h:panelGroup>
@@ -82,8 +88,12 @@
                                             </p:dataTable>
                                             <h:panelGroup>
                                                 <h:panelGrid columns="1" cellspacing="0" cellpadding="0">
-                                                    <p:commandButton action="#{bookingsBean.numberOfQuickSelectRowsDec}" update=":searchform" icon="ui-icon-carat-1-n" style="width:1.75em; height:1.25em; border-radius:0;"/>
-                                                    <p:commandButton action="#{bookingsBean.numberOfQuickSelectRowsInc}" update=":searchform" icon="ui-icon-carat-1-s" style="width:1.75em; height:1.25em; border-radius:0;"/>
+                                                    <p:commandLink action="#{bookingsBean.numberOfQuickSelectRowsDec}" update=":searchform">
+                                                        <i class="ui-icon ui-icon-carat-1-n"/>
+                                                    </p:commandLink>
+                                                    <p:commandLink action="#{bookingsBean.numberOfQuickSelectRowsInc}" update=":searchform">
+                                                        <i class="ui-icon ui-icon-carat-1-s"/>
+                                                    </p:commandLink>
                                                 </h:panelGrid>
                                             </h:panelGroup>
                                         </h:panelGrid>

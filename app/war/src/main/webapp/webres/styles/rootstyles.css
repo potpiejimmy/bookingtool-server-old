@@ -3,11 +3,11 @@
    Syntax recommendation http://www.w3.org/TR/REC-CSS2/
 */
 
-html { 
+html, body { 
     display: block;
     margin: 0;
     padding: 0;
-    font-family: Arial;
+    font-family: 'roboto_condensedregular';
 }
 
 .floatleft {
@@ -15,30 +15,37 @@ html {
 }
 
 #root_header {
-    background-color: #fff;
-    font-family: Arial;
+    background-color: #0288d1;
     font-size: 13pt;
     padding: 5px;
-    color: black;
-    height: 42px;
+    color: white;
+    height: 46px;
+    padding: 1em;
 }
 
 #root_title {
     float: left;
     line-height: 28px;
-    margin: 7px 20px;
+    margin: 9px 20px;
 }
 
 #root_body {
     background-color: #fff;
+    padding: 1em;
 }
 
 #root_footer {
     font-size: 10pt;
+    padding: 1em;
 }
 
-.ui-widget, .ui-widget .ui-widget {
-    font-size: 85%;
+#body_footer {
+    font-size: 10pt;
+    padding: 1em;
+}
+
+.ui-panel .ui-panel-titlebar {
+    background-color: #0288d1;
 }
 
 .ui-picklist .ui-picklist-list { 
@@ -63,7 +70,7 @@ html {
 }
 
 .jqplot-target {
-    font-size: 125%;
+    font-size: 80%;
 }
 
 .redColoredPanel .ui-panel-content {

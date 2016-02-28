@@ -39,11 +39,6 @@
             <artifactId>primefaces</artifactId>  
             <version>5.3</version>
         </dependency>
-        <dependency>
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>start</artifactId>
-            <version>1.0.10</version>
-        </dependency>
 		<!-- For primefaces enhanced file upload -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>

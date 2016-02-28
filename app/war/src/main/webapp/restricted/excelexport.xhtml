@@ -25,7 +25,7 @@
 	                    <p:panelGrid columns="2" id="excelByWeeks">
 	                    	<p:outputLabel value="Export last"/>
 	                    	<h:panelGroup>
-	                    		<p:spinner id="weeksToExport" value="#{excelExportBean.weeksToExport}" size="2" min="1" max="999" maxlength="3">
+	                    		<p:spinner id="weeksToExport" value="#{excelExportBean.weeksToExport}" size="8" min="1" max="999" maxlength="3">
                                             <f:validateLongRange minimum="1"/>
                                         </p:spinner>
 	                    		<h:outputText value="  week(s)"/>
@@ -61,7 +61,7 @@
 	                    <p:panelGrid columns="2" id="excelByMonths">
 	                    	<p:outputLabel value="Export last"/>
 	                    	<h:panelGroup>
-	                    		<p:spinner id="monthsToExport" value="#{excelExportBean.monthsToExport}" size="2" min="0" max="999" maxlength="3">
+	                    		<p:spinner id="monthsToExport" value="#{excelExportBean.monthsToExport}" size="8" min="0" max="999" maxlength="3">
                                             <f:validateLongRange minimum="0"/>
                                         </p:spinner>
 	                    		<h:outputText value="  month(s)"/>
@@ -86,7 +86,7 @@
                                 </p:selectOneMenu>
                                 <p:outputLabel value="No. of weeks"/>
 	                    	<h:panelGroup>
-	                    		<p:spinner id="weeksToExportResPlan" value="#{excelExportBean.weeksToExportResPlan}" size="2" min="0" max="999" maxlength="3">
+	                    		<p:spinner id="weeksToExportResPlan" value="#{excelExportBean.weeksToExportResPlan}" size="8" min="0" max="999" maxlength="3">
                                             <f:validateLongRange minimum="0"/>
                                         </p:spinner>
 	                    		<h:outputText value="  week(s)"/>

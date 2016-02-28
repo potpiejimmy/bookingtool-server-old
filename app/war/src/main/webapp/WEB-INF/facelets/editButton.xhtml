@@ -9,9 +9,10 @@
     <ui:composition>
         
         <div style="float: right;">
-            <p:button outcome="#{outcome}" icon="#{icon}" title="#{toolTip}" rendered="#{renderingAllowed}" style="width: 16px; height: 16px;">
+            <p:commandLink action="#{outcome}" title="#{toolTip}" rendered="#{renderingAllowed}" style="width: 16px; height: 16px;">
                 <f:param name="#{paramName}" value="#{paramValue}" />
-            </p:button>
+                <i class="ui-icon #{icon}"/>
+            </p:commandLink>
         </div>
         
     </ui:composition>

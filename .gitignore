@@ -1,0 +1,4 @@
+/app/ejb/target/
+/app/war/target/
+/app/rest/target/
+/app/ear/target/
