@@ -11,7 +11,7 @@
 		<ui:define name="pagetitle">Login</ui:define>
 
 		<ui:define name="rootbody">
-			<p:panel header="Login">
+			<p:panel>
                             <h:form id="login" onsubmit="this.action='j_security_check';" prependId="false">
                                 <p:focus/>
                                 <h:panelGrid columns="2">
@@ -21,7 +21,7 @@
                                     <p:password id="j_password" size="30"/>
                                 </h:panelGrid>
                                 <p/>
-                                <p:commandButton id="submit" value="Login" ajax="false"/>
+                                <p:commandButton id="submit" value="Sign in" ajax="false" icon="fa fa-sign-in"/>
                                 <p/>
                                 <p:outputLabel id="loginFailed" rendered="#{'true' eq param['fail']}" value="Login failed. Please check your login credentials." styleClass="ui-message-error ui-widget"/>
 <f:verbatim rendered="#{'true' ne param['fail']}">

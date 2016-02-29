@@ -23,7 +23,7 @@
                                         <h:panelGrid columns="6">
 						<p:commandLink immediate="true" process="@this" update=":searchform, :currentTemplate, :viewform, :pieChart" id="back"  
 							actionListener="#{bookingsBean.changeDay(false)}">
-                                                    <i class="ui-icon ui-icon-carat-1-w"/>
+                                                    <i class="fa fa-arrow-circle-left"/>
                                                 </p:commandLink>
 							
 						<p:calendar value="#{bookingsBean.current.day}" 
@@ -36,11 +36,11 @@
 			
 						<p:commandLink style="margin-left:3px;" immediate="true" process="@this" update=":searchform, :currentTemplate,:viewform, :pieChart" id="forward"  
 							actionListener="#{bookingsBean.changeDay(true)}">
-                                                    <i class="ui-icon ui-icon-carat-1-e"/>
+                                                    <i class="fa fa-arrow-circle-right"/>
                                                 </p:commandLink>
             				
                                                 <p:commandLink oncomplete="PF('copyDayDialog').show()" title="#{msg.booking_copyday}">
-                                                    <i class="ui-icon ui-icon-copy"/>
+                                                    <i class="fa fa-copy"/>
                                                 </p:commandLink>
                             
 						<h:outputText id="formattedDay" value="#{bookingsBean.currentDayFormatted}" style="vertical-align: middle; margin-left:10px; font-size:small;"/>
@@ -89,10 +89,10 @@
                                             <h:panelGroup>
                                                 <h:panelGrid columns="1" cellspacing="0" cellpadding="0">
                                                     <p:commandLink action="#{bookingsBean.numberOfQuickSelectRowsDec}" update=":searchform">
-                                                        <i class="ui-icon ui-icon-carat-1-n"/>
+                                                        <i class="fa fa-arrow-circle-o-up"/>
                                                     </p:commandLink>
                                                     <p:commandLink action="#{bookingsBean.numberOfQuickSelectRowsInc}" update=":searchform">
-                                                        <i class="ui-icon ui-icon-carat-1-s"/>
+                                                        <i class="fa fa-arrow-circle-o-down"/>
                                                     </p:commandLink>
                                                 </h:panelGrid>
                                             </h:panelGroup>
@@ -119,7 +119,7 @@
                                                 <ui:param name="toolTip" value="#{msg.edit_template_tooltip}"/>
                                                 <ui:param name="paramName" value="editTemplate"/>
                                                 <ui:param name="paramValue" value="#{bookingsBean.currentTemplate.id}"/>
-                                                <ui:param name="icon" value="ui-icon-pencil"/>
+                                                <ui:param name="icon" value="fa-edit"/>
                                             </ui:include>  
                                         </h:panelGroup>
 					<h:outputText id="templateID" value="#{bookingsBean.currentTemplate.id}"/>
@@ -132,7 +132,7 @@
                                                 <ui:param name="toolTip" value="#{msg.edit_budget_tooltip}"/>
                                                 <ui:param name="paramName" value="budgetId"/>
                                                 <ui:param name="paramValue" value="#{bookingsBean.currentTemplate.budgetId}"/>
-                                                <ui:param name="icon" value="ui-icon-pencil"/>
+                                                <ui:param name="icon" value="fa-edit"/>
                                             </ui:include> 
                                         </h:panelGroup>
                                         <h:panelGroup>
@@ -196,11 +196,13 @@
 					<h:outputText value="#{bookingsBean.currentTemplate.additionalInfo}"/>
 					
                                     </p:panelGrid>
-                                            
+
+                            <p>
                                 <p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}" value="#{bookingsBean.current.id eq null ? msg.add : msg.save}" action="#{bookingsBean.save}" ajax="false"/>
                                 <p:commandButton id="cancelBtn" rendered="#{bookingsBean.current.id ne null or bookingsBean.currentTemplate.id ne null}" value="#{msg.cancel}" action="#{bookingsBean.clear}" ajax="false" immediate="true">
 					<p:resetInput target=":currentTemplate"/>
 				</p:commandButton>
+                            </p>
 	        </h:form>
 
                     <p/>
@@ -227,9 +229,13 @@
 	                    <h:outputText value="#{bookingsBean.getFormattedBookingTime(v.minutes)}"/>
 	                </p:column>
 	                <p:column headerText="Actions">
-                            <p:commandLink value="#{msg.edit}" action="#{bookingsBean.edit(v)}" ajax="false"> <p:resetInput target=":currentTemplate"/> </p:commandLink>,
-                            <p:commandLink value="#{msg.delete}" oncomplete="PF('confirmDeleteDialog').show()">
+                            <p:commandLink title="#{msg.edit}" action="#{bookingsBean.edit(v)}" ajax="false">
+                                <p:resetInput target=":currentTemplate"/>
+                                <i class="fa fa-edit actionIconFs"/>
+                            </p:commandLink><span> </span>
+                            <p:commandLink title="#{msg.delete}" oncomplete="PF('confirmDeleteDialog').show()">
   	                       <f:setPropertyActionListener value="#{v}" target="#{bookingsBean.selected}" />
+                                <i class="fa fa-remove actionIconFs"/>
   	                    </p:commandLink>
 	                </p:column>
                         </p:dataTable>

@@ -62,6 +62,10 @@ html, body {
     display: none;
 }
 
+.actionIconFs {
+    font-size: 18px;
+}
+
 .topAlign {
     vertical-align: top;
 }

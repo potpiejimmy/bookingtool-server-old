@@ -13,7 +13,9 @@
                 <ui:define name="headerdivright">
                     <h:form>
                         <h:panelGrid columns="1">
-                            <p:commandLink id="logoutBtn" value="Logout" action="#{logoutBean.logout}" ajax="false" immediate="true" style="color:white !important;"/>
+                            <p:commandLink id="logoutBtn" title="#{msg.log_off}" action="#{logoutBean.logout}" ajax="false" immediate="true" style="color:white !important;">
+                                <i class="fa fa-sign-out"/>
+                            </p:commandLink>
                             <p:outputPanel><h:outputText value="#{request.userPrincipal.name}"/></p:outputPanel>
                         </h:panelGrid>
                     </h:form>

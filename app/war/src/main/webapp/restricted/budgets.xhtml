@@ -95,12 +95,12 @@
                                 </p:selectOneMenu>
                             </p:panelGrid>
                             <h:panelGrid columns="2" style="float:right;">
-                                <p:commandButton action="#{budgetsBean.refreshList}" ajax="false" icon="ui-icon-refresh" title="Refresh list"/>
+                                <p:commandButton action="#{budgetsBean.refreshList}" ajax="false" icon="fa fa-refresh" title="Refresh list"/>
                                 <p:commandButton id="exportBudgets"
                                                  value="Export"
                                                  ajax="false"
                                                  onclick="PrimeFaces.monitorDownload(start, stop)"
-                                                 icon="ui-icon-arrowthick-1-s">
+                                                 icon="fa fa-file-excel-o">
                                     <p:fileDownload value="#{budgetsBean.exportBudgets}" />  
                                 </p:commandButton>
                             </h:panelGrid>
@@ -141,7 +141,7 @@
                                                     <ui:param name="toolTip" value="#{msg.create_template_tooltip}"/>
                                                     <ui:param name="paramName" value="create"/>
                                                     <ui:param name="paramValue" value="#{b.budget.id}"/>
-                                                    <ui:param name="icon" value="ui-icon-plus"/>
+                                                    <ui:param name="icon" value="fa-plus-circle"/>
                                                 </ui:include>  
 					</p:column>
 					<p:column headerText="Bookings">
