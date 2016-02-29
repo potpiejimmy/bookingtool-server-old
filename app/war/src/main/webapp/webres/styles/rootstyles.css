@@ -25,6 +25,7 @@ html, body {
 
 #root_title {
     float: left;
+    font-size: 18px;
     line-height: 28px;
     margin: 9px 20px;
 }
