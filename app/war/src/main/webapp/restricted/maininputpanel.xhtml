@@ -52,7 +52,7 @@
                                             <p:focus for="acSimple" rendered="#{bookingsBean.currentTemplate eq null}"/>
                                             <p:watermark for="acSimple" value="#{msg.search_watermark}" id="watermark" />
                                             <p:autoComplete id="acSimple" value="#{bookingsBean.currentTemplate}"
-                                                size="160"
+                                                size="120"
                                                     completeMethod="#{bookingsBean.complete}"
                                                     minQueryLength="3"
                                                     maxResults="20"
@@ -108,9 +108,6 @@
                                     
                                     <p:panelGrid columns="2" id="editPanel" rendered="#{bookingsBean.currentTemplate ne null}">
 
-                                        <h:outputText value="ID:"/>
-                                        <h:outputText id="ID" value="#{bookingsBean.current.id eq null ? msg.newid : bookingsBean.current.id}"/>
-					
                                         <h:panelGroup>
                                             <h:outputText value="#{msg.booking_templateid}:"/>
                                             <ui:include src="/WEB-INF/facelets/editButton.xhtml">
@@ -139,21 +136,17 @@
                                             <h:outputText id="budget" 
                                                           rendered="#{bookingsBean.currentBudget ne null}"
                                                           value="#{budgetsBean.getFullBudgetName(bookingsBean.currentBudget.budget)}"/>
-                                        </h:panelGroup>
-					
-					<h:outputText value="Budget Used:"/>
-                                        <h:panelGroup>
+                                            <p/>
                                             <p:progressBar rendered="#{bookingsBean.currentBudget ne null and bookingsBean.currentBudget.budget.minutes ne 0}"
                                                            labelTemplate="{value}%"
                                                            value="#{bookingsBean.currentBudget.bookedMinutesRecursive*100/(bookingsBean.currentBudget.budget.minutes ge 0 ? bookingsBean.currentBudget.budget.minutes : -bookingsBean.currentBudget.budget.minutes)}"/>
-                                        </h:panelGroup>
+                                            <br/>
 					
-					<h:outputText value="Budget Left:"/>
-                                        <h:panelGroup>
                                             <h:outputText rendered="#{bookingsBean.currentBudget ne null}"
                                                           value="#{bookingsBean.getFormattedBookingTime(bookingsBean.currentBudgetMinutes - bookingsBean.currentBudget.bookedMinutesRecursive)}"/>
                                             <h:outputText rendered="#{bookingsBean.currentBudget ne null}"
                                                           value=" #{msg.of} #{bookingsBean.getFormattedBookingTime(bookingsBean.currentBudgetMinutes)}"/>
+                                            <h:outputText value=" remaining" rendered="#{bookingsBean.currentBudget ne null}"/>
                                         </h:panelGroup>
 					
                                         <h:outputText value="#{msg.sap_psp}:"/>
@@ -161,7 +154,7 @@
 					
                                         <h:outputText value="#{msg.sap_description}:"/>
 					<h:panelGroup>
-						<p:inputText  id="description" value="#{bookingsBean.current.description}" size="150"/>
+						<p:inputText  id="description" value="#{bookingsBean.current.description}" size="120"/>
 						<p:message for="description" display="text"/>
 					</h:panelGroup>
 					
@@ -198,7 +191,10 @@
                                     </p:panelGrid>
 
                             <p>
-                                <p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}" value="#{bookingsBean.current.id eq null ? msg.add : msg.save}" action="#{bookingsBean.save}" ajax="false"/>
+                                <p:commandButton id="saveBtn" rendered="#{bookingsBean.currentTemplate ne null}"
+                                                 value="#{bookingsBean.current.id eq null ? msg.add : msg.save}"
+                                                 action="#{bookingsBean.save}" ajax="false"
+                                                 icon="#{bookingsBean.current.id eq null ? 'fa fa-plus-square' : 'fa fa-save'}"/>
                                 <p:commandButton id="cancelBtn" rendered="#{bookingsBean.current.id ne null or bookingsBean.currentTemplate.id ne null}" value="#{msg.cancel}" action="#{bookingsBean.clear}" ajax="false" immediate="true">
 					<p:resetInput target=":currentTemplate"/>
 				</p:commandButton>
@@ -224,6 +220,9 @@
 	                </p:column>
                         <p:column headerText="#{msg.sap_salescontact}">
 	                    <h:outputText value="#{v.salesRepresentative}"/>
+	                </p:column>
+                        <p:column headerText="#{msg.sap_subproject}">
+                            <h:outputText value="#{bookingsBean.getSubprojectForBooking(v.bookingTemplateId)}"/>
 	                </p:column>
                         <p:column headerText="#{msg.sap_hours}" footerText="#{bookingsBean.formattedBookingTimeSum}">
 	                    <h:outputText value="#{bookingsBean.getFormattedBookingTime(v.minutes)}"/>

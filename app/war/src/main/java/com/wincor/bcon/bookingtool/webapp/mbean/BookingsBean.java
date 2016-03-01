@@ -196,6 +196,10 @@ public class BookingsBean implements Serializable {
 		return bookingTemplateEjb.getBookingTemplate(bookingTemplateId).getName();
 	}
 	
+	public String getSubprojectForBooking(Integer bookingTemplateId) {
+		return bookingTemplateEjb.getBookingTemplate(bookingTemplateId).getSubproject();
+	}
+	
 	public void changeDay(Boolean forward) {
 		Calendar c = Calendar.getInstance(Locale.GERMANY);
 		c.setTime(getCurrent().getDay());
