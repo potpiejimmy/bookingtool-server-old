@@ -50,7 +50,7 @@ public class BookingsBean implements Serializable {
         private Booking current;
 	private Booking selected;
         
-        private int numberOfQuickSelectRows = 5;
+        private int numberOfQuickSelectRows = 10;
 	
 	private BookingTemplate currentTemplate = null;
         

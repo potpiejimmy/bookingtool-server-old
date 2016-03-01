@@ -18,7 +18,7 @@
                         <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
                     </f:metadata>
 			<h:form id="searchform">
-				<p:panelGrid columns="2">
+                                    <p:panelGrid columns="2" styleClass="no-grid-borders">
                                         <h:outputText value="#{msg.date}:"/>
                                         <h:panelGrid columns="6">
 						<p:commandLink immediate="true" process="@this" update=":searchform, :currentTemplate, :viewform, :pieChart" id="back"  
@@ -52,7 +52,8 @@
                                             <p:focus for="acSimple" rendered="#{bookingsBean.currentTemplate eq null}"/>
                                             <p:watermark for="acSimple" value="#{msg.search_watermark}" id="watermark" />
                                             <p:autoComplete id="acSimple" value="#{bookingsBean.currentTemplate}"
-                                                size="120"
+                                                    size="120"
+                                                    onclick="PF('qsOverlay').toggle();"
                                                     completeMethod="#{bookingsBean.complete}"
                                                     minQueryLength="3"
                                                     maxResults="20"
@@ -64,39 +65,40 @@
 
                                                     <p:ajax event="itemSelect" update=":currentTemplate, :searchform"/>
                                             </p:autoComplete>
+                                            <p:overlayPanel for="overlayAnchor" dynamic="true" hideEffect="blind" style="width:960px" widgetVar="qsOverlay">
+                                                <h:outputText value="#{msg.booking_quickselect}" escape="false" rendered="#{bookingsBean.currentTemplate eq null}"/>
+                                                <h:panelGrid columns="2" rowClasses="topAlign" columnClasses="maxWidth,topAlign" rendered="#{bookingsBean.currentTemplate eq null}">
+                                                    <p:dataTable id="qsTable" styleClass="no-table-header" value="#{bookingsBean.quickSelectionList}" var="t" rowIndexVar="i" selectionMode="single" selection="#{bookingsBean.quickSelectedBookingTemplate}" rowKey="#{t.id}">
+                                                        <p:ajax event="rowSelect" listener="#{bookingsBean.onQuickSelect}" update=":currentTemplate, :searchform" />
+                                                        <p:column>
+                                                            <h:outputText value="#{i+1}"/>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <h:outputText value="#{t.psp}"/>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <h:outputText value="#{t.name}"/>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <h:outputText value="#{t.description}"/>
+                                                        </p:column>
+                                                        <p:column>
+                                                            <h:outputText value="#{t.salesRepresentative}"/>
+                                                        </p:column>
+                                                    </p:dataTable>
+                                                    <h:panelGrid columns="1" cellspacing="0" cellpadding="0">
+                                                        <p:commandLink action="#{bookingsBean.numberOfQuickSelectRowsDec}" update="qsTable">
+                                                            <i class="fa fa-arrow-circle-o-up"/>
+                                                        </p:commandLink>
+                                                        <p:commandLink action="#{bookingsBean.numberOfQuickSelectRowsInc}" update="qsTable">
+                                                            <i class="fa fa-arrow-circle-o-down"/>
+                                                        </p:commandLink>
+                                                    </h:panelGrid>
+                                                </h:panelGrid>                                                
+                                            </p:overlayPanel>
                                         </h:panelGroup>
-
-                                        <h:outputText value="#{msg.booking_quickselect}" escape="false" rendered="#{bookingsBean.currentTemplate eq null}"/>
-                                        <h:panelGrid columns="2" rowClasses="topAlign" columnClasses="maxWidth,topAlign" rendered="#{bookingsBean.currentTemplate eq null}">
-                                            <p:dataTable styleClass="no-table-header" value="#{bookingsBean.quickSelectionList}" var="t" rowIndexVar="i" selectionMode="single" selection="#{bookingsBean.quickSelectedBookingTemplate}" rowKey="#{t.id}">
-                                                <p:ajax event="rowSelect" listener="#{bookingsBean.onQuickSelect}" update=":currentTemplate, :searchform" />
-                                                <p:column>
-                                                    <h:outputText value="#{i+1}"/>
-                                                </p:column>
-                                                <p:column>
-                                                    <h:outputText value="#{t.psp}"/>
-                                                </p:column>
-                                                <p:column>
-                                                    <h:outputText value="#{t.name}"/>
-                                                </p:column>
-                                                <p:column>
-                                                    <h:outputText value="#{t.description}"/>
-                                                </p:column>
-                                                <p:column>
-                                                    <h:outputText value="#{t.salesRepresentative}"/>
-                                                </p:column>
-                                            </p:dataTable>
-                                            <h:panelGroup>
-                                                <h:panelGrid columns="1" cellspacing="0" cellpadding="0">
-                                                    <p:commandLink action="#{bookingsBean.numberOfQuickSelectRowsDec}" update=":searchform">
-                                                        <i class="fa fa-arrow-circle-o-up"/>
-                                                    </p:commandLink>
-                                                    <p:commandLink action="#{bookingsBean.numberOfQuickSelectRowsInc}" update=":searchform">
-                                                        <i class="fa fa-arrow-circle-o-down"/>
-                                                    </p:commandLink>
-                                                </h:panelGrid>
-                                            </h:panelGroup>
-                                        </h:panelGrid>
+                                        <h:panelGroup/>
+                                        <h:panelGroup id="overlayAnchor"/>
 				</p:panelGrid>
                             
                                 <p:defaultCommand target="acSimple" />
