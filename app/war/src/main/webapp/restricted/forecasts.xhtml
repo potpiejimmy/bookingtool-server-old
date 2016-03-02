@@ -23,7 +23,7 @@
                 
                 <p:dataTable id="forecasts" var="f" value="#{forecastsBean.forecasts}">
                     <p:column headerText="Name">
-                        <h:graphicImage value="/webres/img/forecast.png" alt="forecast" title="Forecast" style="vertical-align: middle;"/>
+                        <i class="fa fa-bar-chart" style="font-size: 20pt; vertical-align: middle;"/>
                         <span> </span>
                         <p:commandLink value="#{f.name}" style="font-size: 12pt; vertical-align: middle;" action="#{forecastsBean.edit(f)}" ajax="false"/>
                     </p:column>

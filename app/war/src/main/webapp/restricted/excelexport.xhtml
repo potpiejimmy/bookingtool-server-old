@@ -20,7 +20,8 @@
 
 	        <h:form id="from">
 	           
-                    <p:panel header="Export all bookings for #{excelExportBean.currentUserName}">
+                    <p:accordionPanel>
+                        <p:tab title="Export all bookings for #{excelExportBean.currentUserName}">
                     
 	                    <p:panelGrid columns="2" id="excelByWeeks">
 	                    	<p:outputLabel value="Export last"/>
@@ -38,9 +39,9 @@
 	                    			<p:fileDownload value="#{excelExportBean.excelList}" />  
 	                    	</p:commandButton>
 	                    </p> 
-                    </p:panel>
+                        </p:tab>
 
-                    <p:panel header="Export all bookings for a project (Project Managers only)" rendered="#{request.isUserInRole('admin')}">
+                        <p:tab title="Export all bookings for a project (Project Managers only)" rendered="#{request.isUserInRole('admin')}">
 	                    <p:panelGrid columns="2" id="excelByProject">
 	                    	<p:outputLabel value="Select a project: "/>
                                 <p:selectOneMenu id="projectToExport" value="#{excelExportBean.projectToExport}">
@@ -54,9 +55,9 @@
                                                 <p:fileDownload value="#{excelExportBean.excelListProject}" />  
 	                    	</p:commandButton>
 	                    </p>
-                    </p:panel>
+                        </p:tab>
 
-                    <p:panel header="Export all bookings (Superuser Only)" rendered="#{request.isUserInRole('superuser')}">
+                        <p:tab title="Export all bookings (Superuser Only)" rendered="#{request.isUserInRole('superuser')}">
                     
 	                    <p:panelGrid columns="2" id="excelByMonths">
 	                    	<p:outputLabel value="Export last"/>
@@ -75,9 +76,9 @@
 	                    	</p:commandButton>
 	                    </p>
                         
-                    </p:panel>
+                        </p:tab>
 
-                    <p:panel header="Export Resource Plans" rendered="#{excelExportBean.managedResourceTeamItems.size() gt 0}">
+                        <p:tab title="Export Resource Plans" rendered="#{excelExportBean.managedResourceTeamItems.size() gt 0}">
 
                             <p:panelGrid columns="2">
 	                    	<p:outputLabel value="Team:"/>
@@ -100,16 +101,18 @@
 	                    	</p:commandButton>
 	                    </p>
                         
-                    </p:panel>
+                        </p:tab>
                     
-                    <p:panel header="Export Grindstone tasks for #{excelExportBean.currentUserName}">
+                        <p:tab title="Export Grindstone tasks for #{excelExportBean.currentUserName}">
                         <p>
                             <p:commandButton id="downloadLinkGrindstone" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"
                                                              icon="fa fa-download">
                                 <p:fileDownload value="#{excelExportBean.excelListForGrindstone}" />  
                             </p:commandButton>
                         </p> 
-                    </p:panel>
+                        </p:tab>
+                        
+                    </p:accordionPanel>
                     
 	        </h:form>
 
