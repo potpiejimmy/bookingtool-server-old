@@ -6,6 +6,7 @@
 package com.wincor.bcon.bookingtool.webapp.rest.service;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
+import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJB;
 import com.wincor.bcon.bookingtool.server.ejb.BookingsEJB;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,9 @@ public class BookingsResource {
     @EJB
     private BookingsEJB bookingsEjb;
     
+    @EJB
+    private BookingTemplatesEJB templatesEjb;
+
     @Consumes("application/json")
     @POST
     public void insertBooking(@Context HttpServletRequest hsr, Booking booking) {
@@ -40,6 +44,8 @@ public class BookingsResource {
     @Produces("application/json")
     @GET
     public List<Booking> getBookingsForToday(@Context HttpServletRequest hsr) {
-        return bookingsEjb.getBookings(hsr.getUserPrincipal().getName(), new Date());
+        List<Booking> bookings = bookingsEjb.getBookings(hsr.getUserPrincipal().getName(), new Date());
+        for (Booking b : bookings) b.setBookingTemplate(templatesEjb.getBookingTemplate(b.getBookingTemplateId()));
+        return bookings;
     }
 }

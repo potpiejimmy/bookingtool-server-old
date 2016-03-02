@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -84,6 +85,9 @@ public class Booking implements Serializable {
         @NotNull
         private Date modifiedDate;
 
+        @Transient
+        private BookingTemplate bookingTemplate = null;
+        
 	public Booking() {
 	}
         
@@ -165,6 +169,14 @@ public class Booking implements Serializable {
 
     public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    public BookingTemplate getBookingTemplate() {
+        return bookingTemplate;
+    }
+
+    public void setBookingTemplate(BookingTemplate bookingTemplate) {
+        this.bookingTemplate = bookingTemplate;
     }
 
 	@Override
