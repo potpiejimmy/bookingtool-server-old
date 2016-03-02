@@ -189,7 +189,7 @@ public class TemplatesBean implements Serializable {
 	
 	public void edit(BookingTemplate t) {
 		currentTemplate = t;
-		currentProjectId = budgetsEjb.getBudget(t.getBudgetId()).getProjectId();
+		setCurrentProjectId(budgetsEjb.getBudget(t.getBudgetId()).getProjectId());
 	}
 	
 	public void delete(BookingTemplate t) {
