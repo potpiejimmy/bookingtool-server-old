@@ -47,6 +47,14 @@
                                 <p:selectOneMenu id="projectToExport" value="#{excelExportBean.projectToExport}">
                                     <f:selectItems value="#{excelExportBean.managedProjectItems}"/>
                                 </p:selectOneMenu>
+                                
+	                    	<p:outputLabel value="Export last"/>
+	                    	<h:panelGroup>
+	                    		<p:spinner id="projectMonthsToExport" value="#{excelExportBean.monthsToExport}" size="8" min="0" max="999" maxlength="3">
+                                            <f:validateLongRange minimum="0"/>
+                                        </p:spinner>
+	                    		<h:outputText value="  month(s)"/>
+	                    	</h:panelGroup>
 	                    </p:panelGrid>
 	                    
 	                    <p>

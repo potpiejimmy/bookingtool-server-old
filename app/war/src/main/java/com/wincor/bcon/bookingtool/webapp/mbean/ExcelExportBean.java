@@ -61,7 +61,7 @@ public class ExcelExportBean implements Serializable {
 	
 	public StreamedContent getExcelListProject () {
 		
-		XSSFWorkbook wb = myExcelExportEJB.getExcelForProject(projectToExport);
+		XSSFWorkbook wb = myExcelExportEJB.getExcelForProject(projectToExport, getMonthsToExport());
 		return streamForWorkbook(wb, "buchungen_project_"+projectToExport);
 	}
 	

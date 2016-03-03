@@ -147,8 +147,7 @@
                                             <h:outputText rendered="#{bookingsBean.currentBudget ne null}"
                                                           value="#{bookingsBean.getFormattedBookingTime(bookingsBean.currentBudgetMinutes - bookingsBean.currentBudget.bookedMinutesRecursive)}"/>
                                             <h:outputText rendered="#{bookingsBean.currentBudget ne null}"
-                                                          value=" #{msg.of} #{bookingsBean.getFormattedBookingTime(bookingsBean.currentBudgetMinutes)}"/>
-                                            <h:outputText value=" remaining" rendered="#{bookingsBean.currentBudget ne null}"/>
+                                                          value=" #{msg.of} #{bookingsBean.getFormattedBookingTime(bookingsBean.currentBudgetMinutes)} #{msg.remaining}"/>
                                         </h:panelGroup>
 					
                                         <h:outputText value="#{msg.sap_psp}:"/>

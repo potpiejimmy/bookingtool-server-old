@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.wincor.bcon.bookingtool.server.db.entity.Booking;
 import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.util.ExcelExportUtil;
+import java.util.Date;
 
 @Stateless
 public class ExcelExportEJB {
@@ -38,20 +39,26 @@ public class ExcelExportEJB {
             return result;
 	}
 		
+        protected static Date startDayForMonthsToExport(int monthsToExport) {
+		Calendar lastExportDay = Calendar.getInstance();
+		lastExportDay.add(Calendar.MONTH, -monthsToExport);
+		lastExportDay.set(Calendar.DAY_OF_MONTH, 1);
+                lastExportDay.set(Calendar.HOUR_OF_DAY, 0);
+                lastExportDay.set(Calendar.MINUTE, 0);
+                lastExportDay.set(Calendar.SECOND, 0);
+                lastExportDay.set(Calendar.MILLISECOND, 0);
+                return lastExportDay.getTime();
+        }
+        
 	@RolesAllowed({"admin"})
-	public XSSFWorkbook getExcelForProject(Integer projectToExport) {
-		List<Booking> bookingList = bookingEJB.getBookingsForProject(projectToExport);
+	public XSSFWorkbook getExcelForProject(Integer projectToExport, Integer monthsToExport) {
+		List<Booking> bookingList = bookingEJB.getBookingsForProject(projectToExport, startDayForMonthsToExport(monthsToExport));
 		return ExcelExportUtil.createWorkbookForBookings(bookingTemplateEJB, bookingList, true);
         }
         
 	@RolesAllowed({"superuser"})
 	public XSSFWorkbook getExcelForAdmin(Integer monthsToExport) {
-		
-		Calendar lastExportDay = Calendar.getInstance();
-		lastExportDay.add(Calendar.MONTH, -monthsToExport);
-		lastExportDay.set(Calendar.DAY_OF_MONTH, 1);
-		
-		List<Booking> bookingList = bookingEJB.getBookingsByLastExportDayForSuperuser(lastExportDay.getTime());
+		List<Booking> bookingList = bookingEJB.getBookingsByLastExportDayForSuperuser(startDayForMonthsToExport(monthsToExport));
 		return ExcelExportUtil.createWorkbookForBookings(bookingTemplateEJB, bookingList, true);
 	}
 		

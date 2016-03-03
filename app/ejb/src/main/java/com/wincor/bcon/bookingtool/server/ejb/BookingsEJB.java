@@ -137,11 +137,12 @@ public class BookingsEJB {
 	/**
 	 * Returns all bookings for the given project
 	 * @param projectId a project id
+         * @param fromDay starting from this day
 	 * @return list of bookings
 	 */
 	@RolesAllowed({"admin"})
-	public List<Booking> getBookingsForProject(int projectId) {
-		return em.createNamedQuery("Booking.findByProjectId", Booking.class).setParameter("projectId", projectId).getResultList();
+	public List<Booking> getBookingsForProject(int projectId, Date fromDay) {
+		return em.createNamedQuery("Booking.findByProjectIdFromDay", Booking.class).setParameter("projectId", projectId).setParameter("day", fromDay).getResultList();
         }
         
 	/**
