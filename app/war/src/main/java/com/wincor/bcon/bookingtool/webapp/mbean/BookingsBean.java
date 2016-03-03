@@ -27,6 +27,7 @@ import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.SAPBooking;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.SelectEvent;
@@ -150,6 +151,7 @@ public class BookingsBean implements Serializable {
         }
 	
 	public List<BookingTemplate> complete(String v) { 
+		if (v.trim().length() < 3) return new ArrayList<BookingTemplate>(0);
 		return bookingTemplateEjb.findBookingTemplates(v);
 	} 
         

@@ -54,6 +54,7 @@
                                             <p:autoComplete id="acSimple" value="#{bookingsBean.currentTemplate}"
                                                     size="120"
                                                     onclick="PF('qsOverlay').toggle();"
+                                                    onkeydown="PF('qsOverlay').hide();"
                                                     completeMethod="#{bookingsBean.complete}"
                                                     minQueryLength="3"
                                                     maxResults="20"
