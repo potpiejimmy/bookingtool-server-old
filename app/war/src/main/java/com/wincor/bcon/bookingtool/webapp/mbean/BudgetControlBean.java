@@ -6,6 +6,7 @@
 
 package com.wincor.bcon.bookingtool.webapp.mbean;
 
+import com.wincor.bcon.bookingtool.server.db.entity.Budget;
 import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.ejb.BudgetsEJB;
 import com.wincor.bcon.bookingtool.server.ejb.ProjectsEJB;
@@ -37,6 +38,8 @@ public class BudgetControlBean implements java.io.Serializable {
     
     private int projectId = 0;
     
+    private int parentFilter = -1; // default <Show All>
+        
     private Boolean editingAllowed = null;
         
     private List<BudgetInfoVo> rows = null;
@@ -58,9 +61,33 @@ public class BudgetControlBean implements java.io.Serializable {
     public void setProjectId(int projectId) {
         this.projectId = projectId;
         this.editingAllowed = null; // reset editing allowed flag
+        this.parentFilter = -1; // reset filter if changing project
         this.rows = null; // reset row data:
     }
 
+    public int getParentFilter() {
+        return parentFilter;
+    }
+
+    public void setParentFilter(int parentFilter) {
+        if (this.parentFilter != parentFilter) {
+            this.parentFilter = parentFilter;
+            refreshList(); // reset row data if changing filter
+        }
+    }
+	
+    public List<SelectItem> getBudgetFilterItems() {
+        List<Budget> budgets = ejb.getBudgets(this.projectId);
+        List<Budget> leaves = ejb.getLeafBudgets(this.projectId);
+        List<SelectItem> result = new ArrayList<SelectItem>(budgets.size() + 1);
+        result.add(new SelectItem(-1, "<Show all>"));
+        for (Budget b : budgets) {
+            if (!leaves.contains(b))
+                result.add(new SelectItem(b.getId(), budgetsBean.getFullBudgetName(b)));
+        }
+        return WebUtils.sortSelectItems(result);
+    }
+	
     public void refreshList() {
         this.rows = null;
     }
@@ -76,11 +103,19 @@ public class BudgetControlBean implements java.io.Serializable {
 	
     public List<BudgetInfoVo> getRows() {
         if (rows == null) {
-            List<BudgetInfoVo> budgets = ejb.getBudgetInfos(projectId);
+            List<Budget> budgets = null;
+            List<Budget> leaves = ejb.getLeafBudgets(this.projectId);
+            if (parentFilter < 0) { // special filter <Show all>
+                budgets = ejb.getBudgets(projectId);
+            } else {
+                budgets = ejb.getBudgetsForParentRecursive(parentFilter);
+            }
             rows = new ArrayList<BudgetInfoVo>();
-            for (BudgetInfoVo b : budgets) {
+            for (Budget bu : budgets) {
+                BudgetInfoVo b = ejb.getBudgetInfo(bu.getId());
                 if (b.getBookedMinutes() > 0 || // only show budgets with booked minutes...
-                    (b.getBudget().getWorkProgress()!=null && b.getBudget().getWorkProgress()>0)) {  // ...or already edited work progress
+                    (b.getBudget().getWorkProgress()!=null && b.getBudget().getWorkProgress()>0) || // ...or already edited work progress
+                    leaves.contains(b.getBudget())) { // ...or a leaf budget 
                     b.setFullBudgetName(budgetsBean.getFullBudgetName(b.getBudget()));
                     rows.add(b);
                 }

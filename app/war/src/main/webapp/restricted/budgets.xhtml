@@ -130,8 +130,7 @@
 					</p:column>
                                         <p:column headerText="Templates">
                                                 <p:outputPanel style="float: left" rendered="#{b.numberOfTemplates gt 0}">
-                                                        <h:outputLink disabled="#{not budgetsBean.editingAllowed}"
-                                                                      value="templates.xhtml?filter=#{b.budget.id}">
+                                                        <h:outputLink value="templates.xhtml?filter=#{b.budget.id}">
                                                             <h:outputText value="#{b.numberOfTemplates}"/>
                                                         </h:outputLink>
                                                 </p:outputPanel>

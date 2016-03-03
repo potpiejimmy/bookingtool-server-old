@@ -46,6 +46,20 @@ public class BudgetsEJB {
         }
 
 	/**
+	 * Returns the list of budgets found for the given parent budget ID
+         * in a recursive manner.
+	 * 
+	 * @param parentId a budget ID
+	 * @return list of budgets
+	 */
+	@RolesAllowed({"admin","user"})
+        public List<Budget> getBudgetsForParentRecursive(int parentId) {
+            List<Budget> result = new ArrayList<Budget>();
+            iterateChildBudgets(result, getBudget(parentId), false);
+            return result;
+        }
+
+	/**
 	 * Returns the list of all leaf budgets (recursively) found for the given
          * project
 	 * 
@@ -56,7 +70,7 @@ public class BudgetsEJB {
         public List<Budget> getLeafBudgets(int projectId) {
             List<Budget> result = new ArrayList<Budget>();
             for (Budget budget : em.createNamedQuery("Budget.findRoots", Budget.class).setParameter("projectId", projectId).getResultList())
-                iterateLeafBudgets(result, budget);
+                iterateChildBudgets(result, budget, true);
             return result;
         }
         
@@ -70,19 +84,20 @@ public class BudgetsEJB {
 	@RolesAllowed({"admin","user"})
         public List<Budget> getLeafBudgetsForParent(int parentId) {
             List<Budget> result = new ArrayList<Budget>();
-            iterateLeafBudgets(result, getBudget(parentId));
+            iterateChildBudgets(result, getBudget(parentId), true);
             return result;
         }
         
-        protected void iterateLeafBudgets(List<Budget> leafs, Budget currentBudget) {
+        protected void iterateChildBudgets(List<Budget> collecting, Budget currentBudget, boolean collectLeavesOnly) {
             List<Budget> children = getBudgetsForParent(currentBudget.getId());
             if (children.isEmpty()) {
                 // leaf budget:
-                leafs.add(currentBudget);
+                collecting.add(currentBudget);
             } else {
+                if (!collectLeavesOnly) collecting.add(currentBudget);
                 // iterate children:
                 for (Budget c : children) {
-                    iterateLeafBudgets(leafs, c);
+                    iterateChildBudgets(collecting, c, collectLeavesOnly);
                 }
             }
         }
@@ -262,7 +277,7 @@ public class BudgetsEJB {
 		List<Budget> childBudgets = getBudgetsForParent(budget.getBudget().getId());
 		if (childBudgets.isEmpty()) {
 			// leaf budget
-			//change prefix if budget was a root in his previous life
+			//change prefix if budget was a root in its previous life
 			if(budget.getBudget().getMinutes() < 0)
 				budget.getBudget().setMinutes(-budget.getBudget().getMinutes());
 			budget.setBookedMinutesRecursive(budget.getBookedMinutes());

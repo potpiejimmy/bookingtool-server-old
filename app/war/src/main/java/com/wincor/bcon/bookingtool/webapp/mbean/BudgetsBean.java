@@ -143,7 +143,7 @@ public class BudgetsBean implements Serializable {
 	
 	public List<SelectItem> getBudgetFilterItems() {
 		List<Budget> budgets = ejb.getBudgets(currentBudget.getProjectId());
-		List<SelectItem> result = new ArrayList<SelectItem>(budgets.size() + 2);
+		List<SelectItem> result = new ArrayList<SelectItem>(budgets.size() + 3);
 		result.add(new SelectItem(0, "<Root budgets>"));
 		result.add(new SelectItem(-1, "<Show all>"));
 		result.add(new SelectItem(-2, "<Leaf budgets>"));

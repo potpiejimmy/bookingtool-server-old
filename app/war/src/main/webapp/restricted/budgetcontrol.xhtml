@@ -36,6 +36,12 @@
 
                 <h:form id="viewform">
 
+                        <p:panelGrid columns="2" style="float:left;">
+                            <h:outputText value="Filter children of:"/>
+                            <p:selectOneMenu value="#{budgetControlBean.parentFilter}" onchange="this.form.submit()">
+                                    <f:selectItems value="#{budgetControlBean.budgetFilterItems}"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
                         <h:panelGrid columns="1" style="float:right;">
                             <p:commandButton action="#{budgetControlBean.refreshList}" ajax="false" icon="fa fa-refresh" title="Refresh list"/>
                         </h:panelGrid>
