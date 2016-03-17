@@ -21,7 +21,7 @@
                                     <p:panelGrid columns="2" styleClass="no-grid-borders">
                                         <h:outputText value="#{msg.date}:"/>
                                         <h:panelGrid columns="6">
-						<p:commandLink immediate="true" process="@this" update=":searchform, :currentTemplate, :viewform, :pieChart" id="back"  
+						<p:commandLink immediate="true" process="@this" update=":searchform, :currentTemplate, :viewform, :pieChart, :dialogsPanel" id="back"  
 							actionListener="#{bookingsBean.changeDay(false)}">
                                                     <i class="fa fa-arrow-circle-left"/>
                                                 </p:commandLink>
@@ -31,10 +31,10 @@
 						            style="margin-left:2px;"
 						            pattern="dd. MMM yyyy"
 						            showWeek="true">
-							<p:ajax event="dateSelect" update=":searchform, :currentTemplate, :viewform, :pieChart"/>
+							<p:ajax event="dateSelect" update=":searchform, :currentTemplate, :viewform, :pieChart, :dialogsPanel"/>
 						</p:calendar>
 			
-						<p:commandLink style="margin-left:3px;" immediate="true" process="@this" update=":searchform, :currentTemplate,:viewform, :pieChart" id="forward"  
+						<p:commandLink style="margin-left:3px;" immediate="true" process="@this" update=":searchform, :currentTemplate,:viewform, :pieChart, :dialogsPanel" id="forward"  
 							actionListener="#{bookingsBean.changeDay(true)}">
                                                     <i class="fa fa-arrow-circle-right"/>
                                                 </p:commandLink>
@@ -242,6 +242,7 @@
                         </p:dataTable>
                     </h:form>
                     
+                    <p:outputPanel id="dialogsPanel">
             <ui:include src="/WEB-INF/facelets/dialogbox.xhtml">
                 <ui:param name="widgetVar" value="confirmDeleteDialog"/>
                 <ui:param name="headerText" value="#{msg.booking_reallydelete}"/>
@@ -255,6 +256,7 @@
                 <ui:param name="bean" value="#{bookingsBean}"/>
                 <ui:param name="action" value="copyBookings"/>
             </ui:include>
+                    </p:outputPanel>
                 
         </ui:define>
 

@@ -15,7 +15,8 @@
             <p>
                 <p:panelGrid columns="2" style="text-align: left;">
                     <h:outputText value="Source date: "/>
-                    <p:calendar value="#{bookingsBean.current.day}" 
+                    <p:calendar value="#{bookingsBean.current.day}"
+                                id="copyFromCal"
                                 pattern="dd. MMM yyyy"
                                 disabled="true"/>
                     <h:outputText value="Target date: "/>

@@ -25,11 +25,11 @@
                     <p:panelGrid columns="2">
                         <h:outputText value="Start-KW:"/>
                         <h:panelGroup>
-                            <p:spinner size="2" maxlength="2" min="1" max="53" value="#{persPlanBean.weekOfYear}"/>
-                            <p:spinner size="4" maxlength="4" min="2000" max="3000" value="#{persPlanBean.year}"/>
+                            <p:spinner size="7" maxlength="2" min="1" max="53" value="#{persPlanBean.weekOfYear}"/>
+                            <p:spinner size="9" maxlength="4" min="2000" max="3000" value="#{persPlanBean.year}"/>
                         </h:panelGroup>
                         <h:outputText value="Anzahl Wochen:"/>
-                        <p:spinner size="2" maxlength="2" min="1" max="53" value="#{persPlanBean.numWeeks}">
+                        <p:spinner size="7" maxlength="2" min="1" max="53" value="#{persPlanBean.numWeeks}">
                             <f:validateLongRange minimum="1"/>
                         </p:spinner>
                     </p:panelGrid>
