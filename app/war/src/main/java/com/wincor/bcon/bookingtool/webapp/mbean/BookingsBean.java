@@ -257,9 +257,9 @@ public class BookingsBean implements Serializable {
                 model.set(label, value);
             }
             model.setLegendPosition("e");
-            model.setFill(false);
+//            model.setFill(false);
             model.setShowDataLabels(true);
-            model.setSliceMargin(5);
+//            model.setSliceMargin(5);
             model.setDiameter(180);
             return model;
         }

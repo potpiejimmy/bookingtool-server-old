@@ -17,7 +17,7 @@
                             <p>
                                 <h:outputText value="Set System Maintenance Warning: "/>
                                 <p:inputSwitch value="#{systemAdminBean.maintenanceWarning}"> 
-                                    <p:ajax/>
+                                    <p:ajax update="tabMenuForm:systemMsg"/>
                                 </p:inputSwitch>
                             </p>
                             
