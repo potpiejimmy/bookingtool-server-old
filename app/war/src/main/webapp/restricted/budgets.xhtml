@@ -61,6 +61,18 @@
 					</h:panelGroup>
 					<h:outputText id="budgetInfo" value="#{budgetsBean.getFormattedBudgetTime(budgetsBean.currentBudget.minutes)}"/>
 	
+					<h:outputText value="Used:"/>
+					<h:panelGroup>
+                                            <p:progressBar rendered="#{budgetsBean.currentBudget.id ne null and budgetsBean.currentBudget.minutes gt 0}"
+                                                           labelTemplate="{value}%"
+                                                           value="#{budgetsBean.currentBudgetInfo.bookedMinutes*100/budgetsBean.currentBudget.minutes}"/>
+                                            <br/>
+					</h:panelGroup>
+					<h:panelGroup>
+                                            <h:outputText rendered="#{budgetsBean.currentBudget.id ne null and budgetsBean.currentBudget.minutes gt 0}"
+                                                          value="#{budgetsBean.getFormattedBudgetTime(budgetsBean.currentBudgetInfo.bookedMinutes)}"/>
+					</h:panelGroup>
+                                            
 					<h:outputText value="Parent Budget:"/>
                                         <h:panelGrid id="parentPanel" columns="1">
                                             <p:selectOneMenu id="parentBudget" value="#{budgetsBean.currentBudget.parentId}">

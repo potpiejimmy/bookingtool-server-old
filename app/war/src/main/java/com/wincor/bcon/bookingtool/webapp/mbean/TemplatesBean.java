@@ -221,6 +221,10 @@ public class TemplatesBean implements Serializable {
             ejb.setTemplateActive(vo.getTemplate().getId(), vo.getTemplate().getActive());
         }
         
+        public String getRedirectToBudget(BookingTemplateRowVo vo) {
+            return "budgets?faces-redirect=true&budgetId=" + vo.getTemplate().getBudgetId();
+        }
+
         /**
          * Wrapper class for row-editing of the 'active' field via selectBooleanCheckbox
          */

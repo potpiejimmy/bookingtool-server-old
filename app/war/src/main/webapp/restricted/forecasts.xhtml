@@ -109,7 +109,8 @@
                     <p:dataTable value="#{forecastsBean.forecastRows}" var="vo"
                                  rowIndexVar="i">
                         <p:column styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" headerText="Budget Plan">
-                            <h:outputText value="#{forecastsBean.getBudgetDisplayName(vo.budgetInfo.budget)}"/>
+                            <p:commandLink value="#{forecastsBean.getBudgetDisplayName(vo.budgetInfo.budget)}"
+                                           action="#{forecastsBean.getRedirectToBudget(vo)}"/>
                         </p:column>
                         <p:columns styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" value="#{forecastsBean.monthColumnsForDisplay}" var="month" columnIndexVar="monthIndex" style="width:80px;text-align:right;">
                             <f:facet name="header">

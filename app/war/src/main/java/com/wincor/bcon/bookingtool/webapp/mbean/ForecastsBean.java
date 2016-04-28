@@ -321,6 +321,10 @@ public class ForecastsBean implements Serializable, Converter {
     public StreamedContent getSalesReport() {
         return ExcelExportBean.streamForWorkbook(ejb.createSalesReport(current.getId()), "sales_report");
     }
+    
+    public String getRedirectToBudget(ForecastInfoRowVo vo) {
+        return "budgets?faces-redirect=true&budgetId=" + vo.getBudgetInfo().getBudget().getId();
+    }
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {

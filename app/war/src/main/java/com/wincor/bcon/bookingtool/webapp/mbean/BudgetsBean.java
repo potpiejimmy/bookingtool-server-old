@@ -71,6 +71,10 @@ public class BudgetsBean implements Serializable {
 		return currentBudget;
 	}
         
+	public BudgetInfoVo getCurrentBudgetInfo() {
+		return ejb.getBudgetInfo(getCurrentBudget().getId());
+	}
+	
         public boolean isEditingAllowed() {
             if (editingAllowed == null) {
                 editingAllowed =

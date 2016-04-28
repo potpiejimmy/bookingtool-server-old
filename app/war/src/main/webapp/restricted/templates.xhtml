@@ -132,9 +132,7 @@
 					</p:column>
 					<p:column headerText="Budget">
                                             <p:commandLink value="#{templatesBean.getBudgetDisplayName(t.template.budgetId)}"
-                                                           action="budgets">
-                                                <f:param name="budgetId" value="#{t.template.budgetId}"/>
-                                            </p:commandLink>
+                                                           action="#{templatesBean.getRedirectToBudget(t)}"/>
 					</p:column>
 					<p:column  headerText="Active" style="text-align:center;">
                                             <p:inputSwitch value="#{t.active}" disabled="#{not templatesBean.editingAllowed}">
