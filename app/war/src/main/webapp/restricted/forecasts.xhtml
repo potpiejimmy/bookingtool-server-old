@@ -110,7 +110,8 @@
                                  rowIndexVar="i">
                         <p:column styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" headerText="Budget Plan">
                             <p:commandLink value="#{forecastsBean.getBudgetDisplayName(vo.budgetInfo.budget)}"
-                                           action="#{forecastsBean.getRedirectToBudget(vo)}"/>
+                                           action="#{forecastsBean.getRedirectToBudget(vo)}"
+                                           immediate="true"/>
                         </p:column>
                         <p:columns styleClass="#{vo.summaryRow ? 'rowhighlight' : null}" value="#{forecastsBean.monthColumnsForDisplay}" var="month" columnIndexVar="monthIndex" style="width:80px;text-align:right;">
                             <f:facet name="header">
