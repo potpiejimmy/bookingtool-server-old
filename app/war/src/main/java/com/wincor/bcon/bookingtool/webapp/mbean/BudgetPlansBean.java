@@ -24,6 +24,7 @@ import com.wincor.bcon.bookingtool.server.util.Utils;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.webapp.mbean.vo.BudgetPlanVo;
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
+import javax.faces.context.FacesContext;
 
 @Named
 @SessionScoped
@@ -54,6 +55,19 @@ public class BudgetPlansBean implements Serializable {
     
     private List<BudgetPlanVo> planData = null;
 
+    public void checkRequestParams() {
+        String budgetPlanId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("budgetPlanId");
+        if (budgetPlanId != null) {
+            try {
+                BudgetPlan p = ejb.getBudgetPlan(Integer.parseInt(budgetPlanId));
+                this.setCurrentProjectId(budgetsEjb.getBudget(p.getBudgetId()).getProjectId());
+                this.edit(p);
+            } catch (Exception ex) {
+                // ignore
+            } 
+        }
+    }
+        
     public void clear() {
             currentBudgetPlan = null;
     }
@@ -213,6 +227,10 @@ public class BudgetPlansBean implements Serializable {
 
     public void newBudgetPlan() {
             currentBudgetPlan = new BudgetPlan();
+    }
+    
+    public String getRedirectToBudget(BudgetPlanVo vo) {
+        return "budgets?faces-redirect=true&budgetId=" + vo.getBudgetInfo().getBudget().getId();
     }
     
     // ------------------------------------------------------------

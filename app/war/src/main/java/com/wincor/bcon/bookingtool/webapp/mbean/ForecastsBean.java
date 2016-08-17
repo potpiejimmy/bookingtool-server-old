@@ -165,6 +165,7 @@ public class ForecastsBean implements Serializable, Converter {
         rows = new ArrayList<ForecastInfoRowVo>();
         for (BudgetPlan p : ejb.getAssignedBudgetPlans(current.getId())) {
             ForecastInfoRowVo parentRow = ejb.getForecastInfoForBudget(current.getId(), p.getBudgetId());
+            parentRow.setBudgetPlan(p); // remember the associated budget plan in summary rows
             rows.add(parentRow);
 
             if (showDetails) {
@@ -323,7 +324,11 @@ public class ForecastsBean implements Serializable, Converter {
     }
     
     public String getRedirectToBudget(ForecastInfoRowVo vo) {
-        return "budgets?faces-redirect=true&budgetId=" + vo.getBudgetInfo().getBudget().getId();
+        if (vo.getBudgetPlan() != null) { // summary row: redirect to budget plan
+            return "budgetplans?faces-redirect=true&budgetPlanId=" + vo.getBudgetPlan().getId();
+        } else {
+            return "budgets?faces-redirect=true&budgetId=" + vo.getBudgetInfo().getBudget().getId();
+        }
     }
 
     @Override

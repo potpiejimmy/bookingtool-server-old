@@ -6,6 +6,7 @@
 
 package com.wincor.bcon.bookingtool.server.vo;
 
+import com.wincor.bcon.bookingtool.server.db.entity.BudgetPlan;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ import java.util.Map;
 public class ForecastInfoRowVo implements java.io.Serializable {
     
     private BudgetInfoVo budgetInfo = null;
+    
+    private BudgetPlan budgetPlan = null;
     
     private Map<Integer,ForecastInfoVo> months = null;
     
@@ -39,5 +42,13 @@ public class ForecastInfoRowVo implements java.io.Serializable {
 
     public void setSummaryRow(boolean summaryRow) {
         this.summaryRow = summaryRow;
+    }
+
+    public BudgetPlan getBudgetPlan() {
+        return budgetPlan;
+    }
+
+    public void setBudgetPlan(BudgetPlan budgetPlan) {
+        this.budgetPlan = budgetPlan;
     }
 }

@@ -16,6 +16,7 @@
 
             <f:metadata>
                 <f:event type="preRenderView" listener="#{changePasswordBean.checkChangePasswordNeeded}"/>
+                <f:event type="preRenderView" listener="#{budgetPlansBean.checkRequestParams}"/>
             </f:metadata>
                 
             <h:form id="projectform" rendered="#{budgetPlansBean.currentBudgetPlan eq null}">
@@ -87,7 +88,9 @@
                         <h:outputText value="Used:" rendered="#{vo.budgetInfo.bookedMinutesRecursive gt 0}" style="font-style: italic; color: blue;"/>
                     </p:column>
                     <p:column headerText="Budget [PD]">
-                        <h:outputText value="#{budgetsBean.getFormattedBudgetTime(vo.budgetInfo.budget.minutes)}" />
+                        <p:commandLink value="#{budgetsBean.getFormattedBudgetTime(vo.budgetInfo.budget.minutes)}"
+                                       action="#{budgetPlansBean.getRedirectToBudget(vo)}"
+                                       immediate="true"/>
                     </p:column>
                     <p:column headerText="Planned [PD]">
                         <h:outputText value="#{budgetsBean.getFormattedBudgetTime(budgetPlansBean.getPlannedMinutesForRow(vo.budgetInfo.budget.id))}" />

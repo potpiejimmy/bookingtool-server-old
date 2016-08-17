@@ -57,7 +57,7 @@ public class TemplatesBean implements Serializable {
                 try {
                     int filter = Integer.parseInt(paramFilter!=null ? paramFilter : paramCreate);
                     Budget filterBudget = budgetsEjb.getBudget(filter);
-                    this.currentProjectId = filterBudget.getProjectId();
+                    setCurrentProjectId(filterBudget.getProjectId());
                     this.budgetFilter = filterBudget.getId();
                     
                     if (paramCreate != null) {
