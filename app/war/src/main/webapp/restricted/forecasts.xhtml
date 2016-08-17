@@ -82,6 +82,10 @@
                                      icon="fa fa-file-excel-o">
                         <p:fileDownload value="#{forecastsBean.salesReport}" />  
                     </p:commandButton>
+
+                    <h:panelGrid columns="1" style="float:right;">
+                        <p:commandButton action="#{forecastsBean.refreshList}" ajax="false" icon="fa fa-refresh" title="Refresh list"/>
+                    </h:panelGrid>
                     
                     <p:ajaxStatus style="width:16px;height:16px;" id="ajaxStatusPanel">  
                         <f:facet name="start">  

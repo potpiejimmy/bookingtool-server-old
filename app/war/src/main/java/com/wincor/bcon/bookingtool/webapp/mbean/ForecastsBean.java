@@ -131,6 +131,10 @@ public class ForecastsBean implements Serializable, Converter {
         assignedBudgetPlans.setTarget(target);
     }
     
+    public void refreshList() {
+        this.rows = null;
+    }
+    
     public Forecast getSelected() {
 		return selected;
 	}

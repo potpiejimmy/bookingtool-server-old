@@ -131,10 +131,7 @@ public class ForecastsEJB {
     public List<Integer> getMonthsForFiscalYear(int fiscalYear) {
         List<Integer> result = new ArrayList<Integer>(12);
         for (int month = 0; month < 12; month++) {
-            int year = month < 3 ? fiscalYear - 1 : fiscalYear;
-            int monthOfYear = month < 3 ? month + 9 : month - 3;
-            int period = year * 100 + (monthOfYear+1);
-            result.add(period);
+            result.add(fiscalYear * 100 + (month + 1));
         }
         return result;
     }
