@@ -83,6 +83,20 @@ public class BookingTemplate implements Serializable {
 	public BookingTemplate() {
 	}
 
+        /* copy constructor */
+	public BookingTemplate(BookingTemplate copy) {
+            this.active = copy.getActive();
+            this.description = copy.getDescription();
+            this.name = copy.getName();
+            this.psp = copy.getPsp();
+            this.salesRepresentative = copy.getSalesRepresentative();
+            this.subproject = copy.getSubproject();
+            this.type = copy.getType();
+            this.additionalInfo = copy.getAdditionalInfo();
+            this.searchString = copy.getSearchString();
+            this.budgetId = copy.getBudgetId();
+	}
+
 	public Integer getId() {
 		return id;
 	}

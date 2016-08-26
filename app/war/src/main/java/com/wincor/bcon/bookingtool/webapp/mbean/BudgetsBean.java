@@ -288,6 +288,11 @@ public class BudgetsBean implements Serializable {
         currentRows = null; // reset row data
     }
 
+    public void cloneSelectedBudget() {
+        ejb.cloneBudget(selectedBudget.getId(), moveToProjectId);
+        setCurrentProjectId(moveToProjectId); // go to target project after clone
+    }
+
     public Integer getMoveToProjectId() {
         return moveToProjectId;
     }

@@ -1,5 +1,6 @@
 package com.wincor.bcon.bookingtool.server.ejb;
 
+import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.wincor.bcon.bookingtool.server.db.entity.Budget;
+import com.wincor.bcon.bookingtool.server.db.entity.Project;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.TimePeriod;
 import javax.ejb.EJB;
@@ -233,6 +235,44 @@ public class BudgetsEJB {
             // move children, too:
             for (Budget child : getBudgetsForParent(budget.getId()))
                 moveBudgetImpl(child, targetProjectId);
+        }
+
+        /**
+         * Clones the given budget into the given target project. The budget itself
+         * and all its recursive children will be cloned to the given target project.
+         * The parent budget of the given budget is set to null so that the new
+         * budget tree can be found at the root position of the target project.
+         * All associated bookings templates are also cloned, replacing the
+         * occurrences of default PSP and PSP template. Bookings are not cloned.
+         * 
+         * @param budgetId
+         * @param targetProjectId 
+         */
+	@RolesAllowed("admin")
+        public void cloneBudget(int budgetId, int targetProjectId) {
+            Budget budget = em.find(Budget.class, budgetId);
+            Project sourceProject = em.find(Project.class, budget.getProjectId());
+            Project targetProject = em.find(Project.class, targetProjectId);
+            cloneBudgetImpl(budget, null, sourceProject, targetProject);
+        }
+        
+        protected void cloneBudgetImpl(Budget budget, Integer newParentBudgetId, Project sourceProject, Project targetProject) {
+            Budget clone = new Budget(budget);
+            clone.setProjectId(targetProject.getId());
+            clone.setParentId(newParentBudgetId);
+            em.persist(clone);
+            em.flush(); // fetches new ID
+            // clone templates:
+            for (BookingTemplate t : bookingsEjb.getBookingTemplatesByBudgetId(budget.getId())) {
+                BookingTemplate tclone = new BookingTemplate(t);
+                tclone.setBudgetId(clone.getId());
+                tclone.setName(tclone.getName().replace(sourceProject.getName(), targetProject.getName()));
+                tclone.setPsp(tclone.getPsp().replace(sourceProject.getPsp(), targetProject.getPsp()));
+                bookingsEjb.saveBookingTemplate(tclone); // updates searchstring
+            }
+            // clone children, too:
+            for (Budget child : getBudgetsForParent(budget.getId()))
+                cloneBudgetImpl(child, clone.getId(), sourceProject, targetProject);
         }
 
 	protected int getBookedMinutes(int budgetId) {

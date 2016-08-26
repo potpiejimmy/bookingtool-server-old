@@ -62,6 +62,16 @@ public class Budget implements Serializable {
 
 	public Budget() {
 	}
+        
+        /* Copy constructor */
+        public Budget(Budget copy) {
+            this.minutes = copy.getMinutes();
+            this.name = copy.getName();
+            this.parentId = copy.getParentId();
+            this.projectId = copy.getProjectId();
+            this.allowOverrun = copy.getAllowOverrun();
+            this.workProgress = copy.getWorkProgress();
+        }
 
 	public Integer getId() {
 		return id;
