@@ -39,6 +39,25 @@ public class ExcelExportEJB {
             return result;
 	}
 		
+	@RolesAllowed({"admin","user"})
+	public XSSFWorkbook getExcelForNamePpm(String person, int week, int year) {
+		
+            Calendar fromDay = Calendar.getInstance();
+            fromDay.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+            fromDay.set(Calendar.WEEK_OF_YEAR, week);
+            fromDay.set(Calendar.YEAR, year);
+            
+            Calendar toDay = Calendar.getInstance();
+            toDay.setTimeInMillis(fromDay.getTimeInMillis());
+            toDay.add(Calendar.WEEK_OF_YEAR, 1);
+
+            List<Object[]> bookingList = bookingEJB.getBookingSumsForDayOfWeekAndPerson(person, fromDay.getTime(), toDay.getTime());
+
+            XSSFWorkbook result = ExcelExportUtil.createWorkbookForPpm(bookingTemplateEJB, bookingList, fromDay);
+		
+            return result;
+	}
+		
         protected static Date startDayForMonthsToExport(int monthsToExport) {
 		Calendar lastExportDay = Calendar.getInstance();
 		lastExportDay.add(Calendar.MONTH, -monthsToExport);

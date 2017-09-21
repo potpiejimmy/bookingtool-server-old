@@ -10,6 +10,7 @@ import com.wincor.bcon.bookingtool.server.db.entity.BookingTemplate;
 import com.wincor.bcon.bookingtool.server.ejb.BookingTemplatesEJB;
 import com.wincor.bcon.bookingtool.server.vo.BudgetInfoVo;
 import com.wincor.bcon.bookingtool.server.vo.SAPBooking;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -256,5 +257,9 @@ public class ExcelExportUtil {
         for(int i = 0; i < sheet.getRow(0).getPhysicalNumberOfCells()-1; i++)	
             sheet.autoSizeColumn(i);
         return wb;
+    }
+    
+    public static XSSFWorkbook createWorkbookForPpm(BookingTemplatesEJB bookingTemplateEJB, List<Object[]> bookingList, Calendar startOfWeek) {
+        return null; // XXX TODO
     }
 }

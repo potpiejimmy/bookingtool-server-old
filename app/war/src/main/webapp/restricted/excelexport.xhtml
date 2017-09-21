@@ -23,22 +23,39 @@
                     <p:accordionPanel>
                         <p:tab title="Export all bookings for #{excelExportBean.currentUserName}">
                     
-	                    <p:panelGrid columns="2" id="excelByWeeks">
-	                    	<p:outputLabel value="Export last"/>
-	                    	<h:panelGroup>
-	                    		<p:spinner id="weeksToExport" value="#{excelExportBean.weeksToExport}" size="8" min="1" max="999" maxlength="3">
+	                    <p:panelGrid columns="2">
+                                
+                                <h:outputText value="SAP CATS Format"/>
+                                <h:outputText value="PPM Format"/>
+                                
+                                <h:panelGroup>
+                                    <p:outputLabel value="Export last "/>
+                                        <p:spinner id="weeksToExport" value="#{excelExportBean.weeksToExport}" size="8" min="1" max="999" maxlength="3">
                                             <f:validateLongRange minimum="1"/>
                                         </p:spinner>
-	                    		<h:outputText value="  week(s)"/>
-	                    	</h:panelGroup>
-	                    </p:panelGrid>
-	                    
-	                    <p>
-	                    	<p:commandButton id="downloadLink" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"
-	                    					 icon="fa fa-download">
-	                    			<p:fileDownload value="#{excelExportBean.excelList}" />  
-	                    	</p:commandButton>
-	                    </p> 
+                                        <h:outputText value="  week(s)"/>
+                                </h:panelGroup>
+                                <h:panelGroup>
+                                        <h:outputText value="KW: "/>
+                                        <p:spinner id="kwToExport" value="#{excelExportBean.kwToExport}" size="6" min="1" max="52" maxlength="3">
+                                            <f:validateLongRange minimum="1"/>
+                                        </p:spinner>
+                                        <p:spinner id="kwYearToExport" value="#{excelExportBean.kwYearToExport}" size="10" min="1970" max="2100" maxlength="4">
+                                            <f:validateLongRange minimum="1970"/>
+                                        </p:spinner>
+                                </h:panelGroup>
+
+                                <p:commandButton id="downloadLink" value="Download for CATS" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                                 icon="fa fa-download">
+                                                <p:fileDownload value="#{excelExportBean.excelList}" />  
+                                </p:commandButton>
+                                <p:commandButton id="downloadLinkPpm" value="Download for PPM" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"
+                                                                 icon="fa fa-download">
+                                                <p:fileDownload value="#{excelExportBean.excelPpm}" />  
+                                </p:commandButton>
+                                
+                            </p:panelGrid>
+                            
                         </p:tab>
 
                         <p:tab title="Export all bookings for a project (Project Managers only)" rendered="#{request.isUserInRole('admin')}">

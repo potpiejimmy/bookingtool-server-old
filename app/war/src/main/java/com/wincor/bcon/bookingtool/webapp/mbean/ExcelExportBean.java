@@ -20,6 +20,7 @@ import org.primefaces.model.StreamedContent;
 
 import com.wincor.bcon.bookingtool.webapp.util.WebUtils;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.faces.model.SelectItem;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -44,6 +45,8 @@ public class ExcelExportBean implements Serializable {
         private ProjectsEJB projectsEjb;
     
 	private Integer weeksToExport = 1;
+	private Integer kwToExport = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR);
+	private Integer kwYearToExport = Calendar.getInstance().get(Calendar.YEAR);
 	private Integer monthsToExport = 0;
 	private Integer weeksToExportResPlan = 1;
         private Integer teamToExport = 0;
@@ -57,6 +60,12 @@ public class ExcelExportBean implements Serializable {
 		
                 XSSFWorkbook wb = myExcelExportEJB.getExcelForName(WebUtils.getCurrentPerson(), getWeeksToExport());
 		return streamForWorkbook(wb, "buchungen_"+WebUtils.getCurrentPerson());
+	}
+	
+	public StreamedContent getExcelPpm () {
+		
+                XSSFWorkbook wb = myExcelExportEJB.getExcelForNamePpm(WebUtils.getCurrentPerson(), getKwToExport(), getKwYearToExport());
+		return streamForWorkbook(wb, "buchungen_ppm_"+getKwYearToExport()+"_"+getKwToExport()+"_"+WebUtils.getCurrentPerson());
 	}
 	
 	public StreamedContent getExcelListProject () {
@@ -95,7 +104,23 @@ public class ExcelExportBean implements Serializable {
 	public void setWeeksToExport(Integer weeksToExport) {
 		this.weeksToExport = weeksToExport;
 	}
-	
+
+        public Integer getKwToExport() {
+            return kwToExport;
+        }
+
+        public void setKwToExport(Integer kwToExport) {
+            this.kwToExport = kwToExport;
+        }
+
+        public Integer getKwYearToExport() {
+            return kwYearToExport;
+        }
+
+        public void setKwYearToExport(Integer kwYearToExport) {
+            this.kwYearToExport = kwYearToExport;
+        }
+
 	public Integer getMonthsToExport() {
 		return monthsToExport;
 	}

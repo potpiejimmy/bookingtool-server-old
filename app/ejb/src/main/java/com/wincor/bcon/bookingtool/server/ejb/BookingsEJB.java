@@ -64,6 +64,24 @@ public class BookingsEJB {
 	}
 	
 	/**
+	 * Returns a table of bookings with the day of week as columns and
+         * psp names as rows for the given person and time range
+	 * @param person a person name
+	 * @param from from date
+         * @param to to date
+	 * @return list of bookings
+	 */
+	@RolesAllowed({"admin", "user"})
+	public List<Object[]> getBookingSumsForDayOfWeekAndPerson(String person, Date from, Date to) {
+		TypedQuery<Object[]> tq = em.createNamedQuery("Booking.sumsByPspAndDayForPersonAndTimePeriod", Object[].class);
+		tq.setParameter("person", person);
+                tq.setParameter("from", from, TemporalType.DATE);
+                tq.setParameter("to", to, TemporalType.DATE);
+		
+		return tq.getResultList();
+	}
+	
+	/**
 	 * Returns the list of all bookings for the given last day
 	 * @param day - the last export day
 	 * @return list of bookings

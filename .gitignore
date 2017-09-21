@@ -2,3 +2,4 @@
 /app/war/target/
 /app/rest/target/
 /app/ear/target/
+**/.DS_Store

@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Booking.findByPerson", query = "SELECT b FROM Booking b WHERE b.person = :person ORDER BY b.day DESC"),
     @NamedQuery(name = "Booking.findByPersonAndDay", query = "SELECT b FROM Booking b WHERE b.person = :person AND b.day = :day"),
     @NamedQuery(name = "Booking.sumsByTypeForPersonAndTimePeriod", query = "SELECT t.type,SUM(b.minutes) FROM Booking b,BookingTemplate t WHERE b.bookingTemplateId=t.id AND b.person=:person AND b.day>=:from AND b.day<:to GROUP BY t.type"),
+    @NamedQuery(name = "Booking.sumsByPspAndDayForPersonAndTimePeriod", query = "SELECT t.psp,t.name,b.day,SUM(b.minutes) FROM Booking b,BookingTemplate t WHERE b.bookingTemplateId=t.id AND b.person=:person AND b.day>=:from AND b.day<:to GROUP BY t.psp,t.name,b.day ORDER BY t.psp,b.day"),
     @NamedQuery(name = "Booking.sumsByProjectForPersonAndTimePeriod", query = "SELECT p.name,SUM(b.minutes) FROM Booking b,BookingTemplate t,Budget bu,Project p WHERE b.bookingTemplateId=t.id AND t.budgetId=bu.id AND bu.projectId=p.id AND b.person=:person AND b.day>=:from AND b.day<:to GROUP BY p.name"),
     @NamedQuery(name = "Booking.sumAndCountDayForPersonAndTimePeriod", query = "SELECT SUM(b.minutes),COUNT(DISTINCT day) FROM Booking b WHERE b.person=:person AND b.day>=:from AND b.day<:to")})
 
